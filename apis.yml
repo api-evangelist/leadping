@@ -1,0 +1,58 @@
+name: Leadping
+description: >-
+  A lead-management and responsible-outreach platform that helps businesses capture and manage leads, automate
+  follow-up, send SMS and MMS messages, place calls, track conversations, enforce contact suppression, and analyze
+  communication workflows.
+url: https://leadping.apievangelist.com/apis.yml
+created: '2026-08-18'
+modified: '2026-08-18'
+specificationVersion: '0.21'
+tags:
+  - Lead management
+  - Sales & marketing automation
+  - SMS/messaging
+  - A2P 10DLC
+  - CPaaS
+  - Communications
+  - Voice/calling
+  - Compliance & consent
+  - Agent-native
+  - MCP
+apis:
+  - name: Leadping API
+    description: >-
+      REST API to capture and manage leads, automate follow-up, send SMS/MMS, place calls, track conversations, enforce
+      suppression, and analyze workflows. Includes public OpenAPI 3.1.1 contract, docs, MCP servers, and an llms.txt
+      index.
+    humanURL: https://leadping.ai/docs/api-reference
+    baseURL: https://api.leadping.ai
+    tags:
+      - Lead management
+      - Sales & marketing automation
+      - SMS/messaging
+      - A2P 10DLC
+      - CPaaS
+      - Communications
+      - Voice/calling
+      - Compliance & consent
+      - Agent-native
+      - MCP
+    properties:
+      - type: OpenAPI
+        url: https://leadping.ai/docs/openapi.json
+      - type: Documentation
+        url: https://leadping.ai/docs
+      - type: LLMsTxt
+        url: https://leadping.ai/docs/llms.txt
+      - type: MCPServer
+        url: https://leadping.ai/docs/mcp
+      - type: MCPServer
+        url: https://api.leadping.ai/mcp
+maintainers:
+  - FN: Leadping
+    url: https://leadping.ai
+generated:
+  by: apis.io/add
+  model: claude-opus-4-8
+  confidence: 97
+  at: '2026-08-18T14:39:21.305Z'
