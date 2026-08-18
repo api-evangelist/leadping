@@ -1,0 +1,948 @@
+openapi: 3.2.0
+info:
+  title: Leadping Notifications API
+  description: The Leadping API helps businesses capture and manage leads, automate follow-up, send SMS and MMS messages, place calls, track conversations, enforce contact suppression, and analyze communication workflows. Use this OpenAPI 3.1 contract to integrate lead sources, build organization tools, or generate a typed API client. Authenticate protected operations with a Leadping user access token or WorkOS organization API key. Lead intake operations also accept a Leadping source key.
+  termsOfService: https://leadping.ai/docs/terms-of-service
+  contact:
+    name: Leadping Support
+    url: https://leadping.ai/contact
+    email: support@leadping.ai
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: v1
+  summary: Lead management, messaging, calling, and automation API
+servers:
+- url: https://api.leadping.ai
+  description: Production
+tags:
+- name: Notifications
+  description: Manages user notifications, announcements, and push-notification installations. Use these endpoints to retrieve notification feeds and unread counts, update read state, and register or remove client push installations.
+paths:
+  /notifications/{id}:
+    get:
+      tags:
+      - Notifications
+      summary: Get a current-user notification
+      description: Returns one notification for the current user and organization, including its content, read state, delivery context, and relevant account activity.
+      operationId: Notifications_GetForCurrentUser
+      parameters:
+      - name: id
+        in: path
+        description: The notification ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/NotificationResponse'
+                description: Describes notification data used in Leadping API requests and responses.
+        '404':
+          description: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /notifications/me:
+    post:
+      tags:
+      - Notifications
+      summary: List notifications for current user
+      description: Lists current-user notifications with paging, sorting, and filters for operational alerts, announcements, and follow-up updates.
+      operationId: Notifications_GetAllForCurrentUser
+      parameters:
+      - name: startAt
+        in: query
+        description: Inclusive beginning of the created date range.
+        schema:
+          type: string
+          format: date-time
+      - name: endAt
+        in: query
+        description: Exclusive end of the created date range.
+        schema:
+          type: string
+          format: date-time
+      requestBody:
+        description: Request data options for pagination, filtering, and sorting.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+        required: true
+      responses:
+        '200':
+          description: Returns the paged notification table row.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/PagedResultOfNotificationTableRow'
+                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '500':
+          description: An unexpected server error occurred.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /notifications/unread-count:
+    get:
+      tags:
+      - Notifications
+      summary: Get unread notifications for current user
+      description: Returns the current user's unread notification count for badge updates and notification center state.
+      operationId: Notifications_GetUnreadCount
+      responses:
+        '200':
+          description: Returns the int.
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int32
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '500':
+          description: An unexpected server error occurred.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /notifications/{id}/mark-read:
+    post:
+      tags:
+      - Notifications
+      summary: Mark a current-user notification as read
+      description: Marks one current-user notification as read so it no longer contributes to unread counts or active notification lists.
+      operationId: Notifications_MarkAsRead
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the notification to mark as read.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns the bool.
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '404':
+          description: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '500':
+          description: An unexpected server error occurred.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /notifications/mark-all-read:
+    post:
+      tags:
+      - Notifications
+      summary: Mark all current-user notifications as read
+      description: Marks all notifications for the current user as read and returns the number updated for notification center refreshes.
+      operationId: Notifications_MarkAllAsRead
+      responses:
+        '200':
+          description: Returns the int.
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int32
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '500':
+          description: An unexpected server error occurred.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /notifications/announcements:
+    post:
+      tags:
+      - Notifications
+      summary: List announcements for current user
+      description: Lists announcement notifications for the current user with paging and filters for release notes, notices, and operational updates.
+      operationId: Notifications_GetAnnouncements
+      requestBody:
+        description: Request data options for pagination, filtering, and sorting.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+        required: true
+      responses:
+        '200':
+          description: Returns the paged notification table row.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/PagedResultOfNotificationTableRow'
+                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '500':
+          description: An unexpected server error occurred.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /notifications/push/installations/current:
+    put:
+      tags:
+      - Notifications
+      summary: Register a current-user mobile push installation
+      description: Registers or refreshes the authenticated user's mobile push installation so Leadping can deliver account and workflow notifications to the device.
+      operationId: Notifications_RegisterPushInstallation
+      requestBody:
+        description: The application, device, platform, and provider push-channel details to register.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PushInstallationRequest'
+              description: Describes a mobile push installation. Identity and Azure tags are derived by the API.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PushInstallationRequest'
+              description: Describes a mobile push installation. Identity and Azure tags are derived by the API.
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: boolean
+            application/json:
+              schema:
+                type: boolean
+            text/json:
+              schema:
+                type: boolean
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            text/plain:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            text/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            text/plain:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            text/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /notifications/push/installations/{installationId}:
+    delete:
+      tags:
+      - Notifications
+      summary: Unregister a current-user mobile push installation
+      description: Removes a mobile push installation from the authenticated user's account so Leadping no longer sends notifications to that device.
+      operationId: Notifications_UnregisterPushInstallation
+      parameters:
+      - name: installationId
+        in: path
+        description: The stable mobile installation identifier to unregister.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: boolean
+            application/json:
+              schema:
+                type: boolean
+            text/json:
+              schema:
+                type: boolean
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            text/plain:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            text/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+components:
+  schemas:
+    NotificationResponse:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/NotificationType'
+          description: The type classification for this notification.
+        priority:
+          allOf:
+          - $ref: '#/components/schemas/NotificationPriority'
+          description: Priority for this notification.
+        userId:
+          type: string
+          description: The user ID associated with this notification.
+        message:
+          type: string
+          description: Message for this notification.
+        details:
+          type:
+          - 'null'
+          - string
+          description: Optional supporting details displayed beneath the notification message.
+        readAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for read at on this notification.
+          format: date-time
+        isRead:
+          type: boolean
+          description: Whether this notification is read.
+        pushEnabled:
+          type: boolean
+          description: Whether this notification should also be delivered as a device push notification.
+        actionUrl:
+          type:
+          - 'null'
+          - string
+          description: The URL associated with this notification.
+        actionButtonText:
+          type:
+          - 'null'
+          - string
+          description: Action button text for this notification.
+        relatedEntityId:
+          type:
+          - 'null'
+          - string
+          description: The related entity ID associated with this notification.
+        relatedEntityType:
+          type:
+          - 'null'
+          - string
+          description: The related entity type classification for this notification.
+        name:
+          type: string
+          description: Human-readable display name of the resource.
+        id:
+          type: string
+          description: Stable unique identifier of the resource.
+        createdAt:
+          type: string
+          description: UTC timestamp when the resource was created.
+          format: date-time
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
+          format: date-time
+      description: Describes notification data used in Leadping API requests and responses.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/OrderByOption'
+            description: Defines one field and direction used to order an API query result set.
+          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
+        search:
+          type:
+          - 'null'
+          - string
+          description: Free-text search term applied to the configured SearchFields.
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ExactMatchFilter'
+            description: Selects records whose named field equals a supplied scalar value.
+          description: Exact-match conditions that require each named field to equal its supplied value.
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/RangeFilter'
+            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
+      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+    NotificationTableRow:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/NotificationType'
+          description: The type classification for this notification.
+        priority:
+          allOf:
+          - $ref: '#/components/schemas/NotificationPriority'
+          description: Priority for this notification.
+        message:
+          type: string
+          description: Message for this notification.
+        details:
+          type:
+          - 'null'
+          - string
+          description: Optional supporting details displayed beneath the notification message.
+        isRead:
+          type: boolean
+          description: Whether this notification is read.
+        readAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for read at on this notification.
+          format: date-time
+        actionUrl:
+          type:
+          - 'null'
+          - string
+          description: The URL associated with this notification.
+        actionButtonText:
+          type:
+          - 'null'
+          - string
+          description: Action button text for this notification.
+        relatedEntityId:
+          type:
+          - 'null'
+          - string
+          description: The related entity ID associated with this notification.
+        relatedEntityType:
+          type:
+          - 'null'
+          - string
+          description: The related entity type classification for this notification.
+        name:
+          type: string
+          description: Human-readable display name of the resource.
+        id:
+          type: string
+          description: Stable unique identifier of the resource.
+        createdAt:
+          type: string
+          description: UTC timestamp when the resource was created.
+          format: date-time
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
+          format: date-time
+      description: Describes notification data returned by Leadping.
+    NotificationPriority:
+      enum:
+      - Low
+      - Medium
+      - High
+      - Critical
+      type: string
+      description: Ranks the urgency and presentation importance of a Leadping user notification.
+    PushInstallationRequest:
+      type: object
+      properties:
+        installationId:
+          type: string
+          description: The stable installation identifier assigned by the mobile client.
+        platform:
+          type: string
+          description: The Azure Notification Hubs platform name, such as apns or fcmv1.
+        pushChannel:
+          type: string
+          description: The provider-issued push token or channel used to deliver notifications.
+        appIdentifier:
+          type: string
+          description: The application bundle identifier or package name.
+        appName:
+          type:
+          - 'null'
+          - string
+          description: The human-readable application name reported by the client.
+        appVersion:
+          type:
+          - 'null'
+          - string
+          description: The semantic application version reported by the client.
+        appBuild:
+          type:
+          - 'null'
+          - string
+          description: The application build number reported by the client.
+        devicePlatform:
+          type:
+          - 'null'
+          - string
+          description: The mobile operating-system platform reported by the device.
+        deviceVersion:
+          type:
+          - 'null'
+          - string
+          description: The mobile operating-system version reported by the device.
+        deviceModel:
+          type:
+          - 'null'
+          - string
+          description: The device model reported by the client.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: Optional client metadata stored with the push installation.
+      description: Describes a mobile push installation. Identity and Azure tags are derived by the API.
+    PagedResultOfNotificationTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/NotificationTableRow'
+            description: Describes notification data returned by Leadping.
+          description: Items included in the current page, in the order determined by the query.
+        pageSize:
+          type: integer
+          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
+      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+    OrderByOption:
+      type: object
+      properties:
+        field:
+          type: string
+          description: Serializable field name used for sorting; supported names are determined by the queried resource.
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
+          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
+      description: Defines one field and direction used to order an API query result set.
+    ExactMatchFilter:
+      type: object
+      properties:
+        value:
+          description: Scalar value the target field must equal; its JSON type should match the field being queried.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records whose named field equals a supplied scalar value.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
+    RangeFilter:
+      type: object
+      properties:
+        greaterThan:
+          description: Exclusive lower bound; matching field values must be greater than this value.
+        greaterThanOrEqual:
+          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
+        lessThan:
+          description: Exclusive upper bound; matching field values must be less than this value.
+        lessThanOrEqual:
+          description: Inclusive upper bound; matching field values must be less than or equal to this value.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+    NotificationType:
+      enum:
+      - General
+      - Lead
+      - Call
+      - Sms
+      - Billing
+      - System
+      - Success
+      - Warning
+      - Error
+      - Info
+      - Announcement
+      - Activation
+      type: string
+      description: Identifies the Leadping workflow or account event communicated by a user notification.
+  securitySchemes:
+    Bearer:
+      type: http
+      description: Authorization header using the Bearer scheme. Accepted values are Leadping user JWT access tokens and WorkOS organization API keys beginning with sk_.
+      scheme: bearer
+      bearerFormat: JWT or organization API key
+    SourceKey:
+      type: http
+      description: 'Leadping source key for lead ingestion endpoints only using the Authorization header. Example: "Authorization: Bearer lp_src_...".'
+      scheme: bearer
+      bearerFormat: Leadping source key
+externalDocs:
+  description: Leadping API documentation, authentication guide, concepts, and integration guidance.
+  url: https://leadping.ai/docs/api-reference

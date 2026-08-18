@@ -1,0 +1,53 @@
+generated: '2026-08-18'
+method: searched
+source: https://leadping.ai/docs/api-reference
+derived_from: openapi/leadping-openapi.json
+versioning:
+  scheme: single unversioned base host; version carried in the document, not the path
+  current_version: v1
+  spec_url: https://api.leadping.ai/openapi/v1.json
+  base_url: https://api.leadping.ai
+  policy_published: false
+  note: >-
+    Paths are unversioned. info.version is "v1" and the document is served at /openapi/v1.json, so a
+    future v2 has a place to live, but Leadping publishes no written versioning policy.
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  note: >-
+    Zero of 137 operations carry "deprecated: true" in the OpenAPI document, and no Sunset or Deprecation
+    response header is declared anywhere in the contract. There is no deprecation policy page. The
+    contract is nine days old (published 2026-08-17), so an absent deprecation record is expected rather
+    than a signal of neglect — but a consumer has nothing to plan against.
+status_page:
+  url: https://status.leadping.ai
+  status: 200
+  verified: '2026-08-18'
+  declared_in:
+    - https://api.leadping.ai/apis.json
+    - https://leadping.ai/llms.txt
+  health_endpoint:
+    url: https://api.leadping.ai/
+    status: 200
+    body: '{"status":"ok","service":"leadping-api"}'
+    note: >-
+      The API host root is an unauthenticated JSON health check, and the provider's own RFC 9727 API
+      catalog links it as the "status" relation for the API.
+sla:
+  published: false
+  note: No published uptime commitment or support-response SLA.
+changelog:
+  url: https://api.leadping.ai/changelog.json
+  artifact: changelog/leadping-changelog.yml
+  human_page: false
+  note: '/docs/changelog returns 404; the JSON document is the only changelog.'
+sdk_lifecycle:
+  scheme: 'vX.Y.Z tags, auto-incremented patch from the latest git tag and registry version'
+  source: https://leadping.ai/docs/sdks/overview
+  artifact: packages/leadping-packages.yml
+support:
+  contact: support@leadping.ai
+  page: https://leadping.ai/contact

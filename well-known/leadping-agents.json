@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0.0",
+  "name": "Leadping Agent Discovery",
+  "description": "Public index of Leadping documentation, API, authentication, compliance, legal, contact, and automation resources.",
+  "url": "https://leadping.ai/.well-known/agents.json",
+  "publisher": {
+    "name": "Leadping",
+    "url": "https://leadping.ai/"
+  },
+  "contact": {
+    "support": "support@leadping.ai",
+    "security": "security@leadping.ai",
+    "legal": "legal@leadping.ai",
+    "url": "https://leadping.ai/contact"
+  },
+  "agents": [
+    {
+      "id": "leadping-public-discovery",
+      "name": "Leadping Public Discovery Agent",
+      "description": "Helps agents discover public Leadping product, docs, API, OAuth, compliance, legal, contact, LLM, and browser WebMCP resources.",
+      "requiresAuthentication": false,
+      "skills": [
+        {
+          "id": "discover_public_resources",
+          "name": "Discover public Leadping resources",
+          "tags": [
+            "leadping",
+            "discovery",
+            "documentation",
+            "metadata"
+          ]
+        },
+        {
+          "id": "inspect_api_contract",
+          "name": "Inspect Leadping API contract",
+          "tags": [
+            "leadping",
+            "api",
+            "openapi",
+            "lead-intake"
+          ]
+        },
+        {
+          "id": "route_contact_request",
+          "name": "Route public contact requests",
+          "tags": [
+            "leadping",
+            "contact",
+            "support"
+          ]
+        }
+      ],
+      "interfaces": [
+        {
+          "type": "webmcp-server-card",
+          "url": "https://leadping.ai/.well-known/mcp/server-card.json",
+          "contentType": "application/json"
+        },
+        {
+          "type": "agent-skill-index",
+          "url": "https://leadping.ai/.well-known/agent-skills/index.json",
+          "contentType": "application/json"
+        },
+        {
+          "type": "openapi",
+          "url": "https://leadping.ai/docs/openapi.json",
+          "contentType": "application/vnd.oai.openapi+json"
+        },
+        {
+          "type": "api-catalog",
+          "url": "https://leadping.ai/.well-known/api-catalog",
+          "contentType": "application/linkset+json"
+        }
+      ]
+    }
+  ],
+  "resources": {
+    "website": "https://leadping.ai/",
+    "platform": "https://leadping.ai/platform",
+    "pricing": "https://leadping.ai/pricing",
+    "documentation": "https://leadping.ai/docs",
+    "apiReference": "https://leadping.ai/docs/api-reference",
+    "leadIntakeGuide": "https://leadping.ai/docs/sending-leads-to-leadping",
+    "openApi": "https://leadping.ai/docs/openapi.json",
+    "apiCatalog": "https://leadping.ai/.well-known/api-catalog",
+    "authMd": "https://leadping.ai/auth.md",
+    "openIdConfiguration": "https://leadping.ai/.well-known/openid-configuration",
+    "oauthAuthorizationServer": "https://leadping.ai/.well-known/oauth-authorization-server",
+    "oauthProtectedResource": "https://leadping.ai/.well-known/oauth-protected-resource",
+    "apiOauthProtectedResource": "https://api.leadping.ai/.well-known/oauth-protected-resource",
+    "mcpServerCard": "https://leadping.ai/.well-known/mcp/server-card.json",
+    "agentSkillIndex": "https://leadping.ai/.well-known/agent-skills/index.json",
+    "llmsTxt": "https://leadping.ai/llms.txt",
+    "llmsFullTxt": "https://leadping.ai/llms-full.txt",
+    "sitemap": "https://leadping.ai/sitemap.xml",
+    "robots": "https://leadping.ai/robots.txt",
+    "status": "https://status.leadping.ai"
+  },
+  "policies": {
+    "crawlerDirectives": "https://leadping.ai/robots.txt",
+    "contentSignal": "ai-train=yes, search=yes, ai-input=yes",
+    "acceptableUse": "https://leadping.ai/docs/acceptable-use",
+    "privacy": "https://leadping.ai/docs/privacy-policy",
+    "terms": "https://leadping.ai/docs/terms-of-service",
+    "security": "https://leadping.ai/.well-known/security.txt"
+  }
+}

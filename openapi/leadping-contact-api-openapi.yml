@@ -1,0 +1,229 @@
+openapi: 3.2.0
+info:
+  title: Leadping Contact API
+  description: The Leadping API helps businesses capture and manage leads, automate follow-up, send SMS and MMS messages, place calls, track conversations, enforce contact suppression, and analyze communication workflows. Use this OpenAPI 3.1 contract to integrate lead sources, build organization tools, or generate a typed API client. Authenticate protected operations with a Leadping user access token or WorkOS organization API key. Lead intake operations also accept a Leadping source key.
+  termsOfService: https://leadping.ai/docs/terms-of-service
+  contact:
+    name: Leadping Support
+    url: https://leadping.ai/contact
+    email: support@leadping.ai
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: v1
+  summary: Lead management, messaging, calling, and automation API
+servers:
+- url: https://api.leadping.ai
+  description: Production
+tags:
+- name: Contact
+  description: Accepts public contact and website inquiry submissions for Leadping. Use these endpoints to send a structured support or sales inquiry from an application or submit the Leadping website contact form.
+paths:
+  /contact:
+    post:
+      tags:
+      - Contact
+      summary: Submit a public contact request to support
+      description: Submits a public contact request to Leadping support, capturing sender details and message content without requiring authentication.
+      operationId: Contact_Submit
+      requestBody:
+        description: The contact form data to submit.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ContactRequest'
+              description: Defines the fields clients can send when working with contact form.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ContactRequest'
+              description: Defines the fields clients can send when working with contact form.
+        required: true
+      responses:
+        '200':
+          description: Contact form was successfully submitted.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ContactResponse'
+                description: Describes contact form data returned by Leadping.
+        '400':
+          description: The request was invalid or malformed.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security: []
+  /contact/website:
+    post:
+      tags:
+      - Contact
+      summary: Submit a generated-website contact request
+      description: Delivers the inquiry to the generated website's provisioned support address, then redirects the visitor to the site's confirmation state.
+      operationId: Contact_SubmitWebsite
+      requestBody:
+        description: Honeypot field that must remain empty for legitimate submissions.
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                Name:
+                  maxLength: 200
+                  type: string
+                Email:
+                  maxLength: 320
+                  type: string
+                Phone:
+                  maxLength: 50
+                  type: string
+                Message:
+                  maxLength: 10000
+                  type: string
+                SmsConsent:
+                  type: boolean
+                ReturnUrl:
+                  maxLength: 2048
+                  type: string
+                CompanyWebsite:
+                  maxLength: 500
+                  type: string
+        required: true
+      responses:
+        '303':
+          description: See Other
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            text/plain:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            text/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security: []
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
+    ContactResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Message text supplied by the user or returned by the Leadping API for this contact form response.
+      description: Describes contact form data returned by Leadping.
+    ContactRequest:
+      required:
+      - email
+      - message
+      - token
+      type: object
+      properties:
+        name:
+          type:
+          - 'null'
+          - string
+          description: Display name for this contact form request in the Leadping API.
+        email:
+          type: string
+          description: Email address for the person represented by this contact form request.
+          format: email
+        message:
+          type: string
+          description: Message text supplied by the user or returned by the Leadping API for this contact form request.
+        token:
+          type: string
+          description: Invitation or workflow token used to authorize this request.
+      description: Defines the fields clients can send when working with contact form.
+  securitySchemes:
+    Bearer:
+      type: http
+      description: Authorization header using the Bearer scheme. Accepted values are Leadping user JWT access tokens and WorkOS organization API keys beginning with sk_.
+      scheme: bearer
+      bearerFormat: JWT or organization API key
+    SourceKey:
+      type: http
+      description: 'Leadping source key for lead ingestion endpoints only using the Authorization header. Example: "Authorization: Bearer lp_src_...".'
+      scheme: bearer
+      bearerFormat: Leadping source key
+externalDocs:
+  description: Leadping API documentation, authentication guide, concepts, and integration guidance.
+  url: https://leadping.ai/docs/api-reference

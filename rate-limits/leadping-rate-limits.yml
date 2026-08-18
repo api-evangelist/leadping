@@ -1,0 +1,80 @@
+generated: '2026-08-18'
+method: probed
+source: https://api.leadping.ai/rate-limits.json
+docs: https://leadping.ai/docs/rate-limits
+limit_count: 4
+summary: >-
+  A single flat ceiling of 300 requests per 60 seconds applied against four different partitions.
+  Leadping does not queue excess requests.
+rate_limits:
+  - name: Authenticated organization requests
+    scope: per-organization
+    partition: Organization
+    limit: 300
+    window: 60s
+    metric: request
+    burst: null
+    domains:
+      - api.leadping.ai
+  - name: Organization lead-intake requests
+    scope: per-organization
+    partition: Organization intake
+    limit: 300
+    window: 60s
+    metric: request
+    burst: null
+    applies_to:
+      - 'POST /leads'
+      - 'POST /leads/intake'
+      - 'GET /leads/intake'
+    condition: >-
+      Only when Leadping resolves a valid, enabled "Authorization: Bearer lp_src_..." source key;
+      otherwise the request falls to the IP partition.
+    domains:
+      - api.leadping.ai
+  - name: Authenticated user fallback requests
+    scope: per-user
+    partition: User
+    limit: 300
+    window: 60s
+    metric: request
+    burst: null
+    domains:
+      - api.leadping.ai
+  - name: Unauthenticated IP requests
+    scope: per-ip
+    partition: IP address
+    limit: 300
+    window: 60s
+    metric: request
+    burst: null
+    condition: Unauthenticated traffic, or requests with missing/invalid/disabled/mismatched source credentials.
+    domains:
+      - api.leadping.ai
+exhaustion:
+  status: 429
+  media_type: application/problem+json
+  body_example:
+    status: 429
+    title: Too many requests.
+    detail: The API rate limit for this account has been exceeded.
+headers:
+  response:
+    - name: Retry-After
+      units: seconds
+      guaranteed: false
+      note: >-
+        Declared on 429 responses in the OpenAPI document and shown in the docs example. The docs state
+        that when the header is absent, clients should retry with exponential backoff and jitter.
+  note: >-
+    Leadping publishes NO RateLimit-* / X-RateLimit-* quota headers — an agent cannot read remaining
+    quota before exhaustion, only Retry-After after it. Retry-After is the only runtime signal.
+higher_throughput:
+  process: Email support@leadping.ai
+  requires:
+    - organization
+    - endpoints
+    - source keys
+    - expected sustained and burst volume
+    - use case
+    - launch date

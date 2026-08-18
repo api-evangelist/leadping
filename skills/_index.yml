@@ -1,0 +1,43 @@
+generated: '2026-08-18'
+method: generated
+source: >-
+  openapi/leadping-openapi.json (all operationIds verified against the spec) plus the Leadping docs;
+  the two provider-published files below were searched and saved verbatim.
+skills:
+  - file: leadping-lead-intake.md
+    name: leadping-lead-intake
+    method: generated
+    description: >-
+      Submit an external lead into a Leadping organization using an approved source key, and confirm it
+      landed.
+    operations: 6
+  - file: leadping-first-response-sms.md
+    name: leadping-first-response-sms
+    method: generated
+    description: >-
+      Send a compliant first-touch SMS or MMS to a new lead, checking suppression and sender readiness
+      first, with duplicate-send protection.
+    operations: 8
+  - file: leadping-suppression-optout.md
+    name: leadping-suppression-optout
+    method: generated
+    description: Honour an opt-out, check suppression before contact, and audit the suppression list.
+    operations: 5
+  - file: leadping-lead-lifecycle.md
+    name: leadping-lead-lifecycle
+    method: generated
+    description: Page the lead list, read a lead, move its status, tag it, and archive or delete it.
+    operations: 13
+provider_published:
+  - file: leadping-public-website.md
+    method: searched
+    source: https://leadping.ai/.well-known/agent-skills/leadping-website/SKILL.md
+    discovery: https://leadping.ai/.well-known/agent-skills/index.json
+    digest: sha256:0dd4352132ee0efbe75d6a6e5804faa4f1e98ff611661bde35cf00bc04dac115
+    scope: Public resource discovery and page routing. Does not cover API operations.
+  - file: leadping-AGENTS.md
+    method: searched
+    source: https://raw.githubusercontent.com/leadpingai/openapi/HEAD/AGENTS.md
+    scope: >-
+      Repository hygiene instruction for the leadpingai/openapi mirror — "this repository is
+      auto-generated, do not hand-edit". Not an operating skill for the API.

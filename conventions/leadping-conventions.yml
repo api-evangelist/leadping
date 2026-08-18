@@ -1,0 +1,123 @@
+generated: '2026-08-18'
+method: searched
+source: https://leadping.ai/docs/api-authentication
+derived_from: openapi/leadping-openapi.json
+docs:
+  - https://leadping.ai/docs/api-authentication
+  - https://leadping.ai/docs/rate-limits
+  - https://leadping.ai/docs/validating-webhooks
+  - https://leadping.ai/docs/sending-leads-to-leadping
+base_url: https://api.leadping.ai
+media_type: application/json
+auth:
+  style: 'HTTP Bearer in the Authorization header, four credential classes'
+  detail: authentication/leadping-authentication.yml
+idempotency:
+  supported: true
+  mechanism: request-body field
+  field: outboundIdempotencyKey
+  scope:
+    - operation: Sms_Send
+      path: 'POST /sms/send'
+      schema: SendSmsRequest
+      note: SMS/MMS send request
+    - operation: Calls_InitiateCall
+      path: 'POST /phone-call/initiate'
+      schema: InitiateCallRequest
+      note: Phone call initiation request
+  header: null
+  retention: undocumented
+  description: >-
+    Idempotency is scoped to outbound delivery, not to the whole API. The SendSmsRequest and
+    InitiateCallRequest schemas both carry an optional "outboundIdempotencyKey" string described
+    as an "Idempotency key used to prevent duplicate outbound delivery". There is no Idempotency-Key
+    header, no idempotent replay of arbitrary POSTs, and no documented key retention window.
+  gaps:
+    - No Idempotency-Key request header on any operation.
+    - Lead intake (POST /leads, POST /leads/intake) has no idempotency key.
+    - >-
+      For intake, the docs recommend stable externalId / sellerLeadId values so duplicates can be traced
+      and reconciled after the fact — reconciliation, not idempotency.
+    - Key retention window is not published.
+  webhook_side:
+    inbound_dedupe: >-
+      Leadping signs webhook deliveries with Standard Webhooks. Retries reuse the same webhook-id, and
+      Leadping instructs consumers to deduplicate by webhook-id and make processing idempotent.
+pagination:
+  style: opaque cursor (continuation token) with optional total count
+  request:
+    transport: JSON request body on POST list operations (RequestDataOptions)
+    fields:
+      - name: pageSize
+        type: integer
+        note: Server may enforce a lower maximum or apply a default.
+      - name: continuationToken
+        type: string
+        note: Opaque cursor from the previous response. Omit for the first page; do not parse or modify.
+      - name: includeCount
+        type: boolean
+        note: Counting may increase query cost or latency.
+  response:
+    schema_family: 'PagedResultOf* (14 paged result schemas)'
+    fields:
+      - items
+      - pageSize
+      - continuationToken
+      - totalCount
+  note: >-
+    Leadping's list endpoints are POST-with-body, not GET-with-query. Filtering, sorting and free-text
+    search all travel in the same RequestDataOptions envelope. This is unusual and worth knowing before
+    writing a client: an agent cannot page a Leadping collection with a plain GET.
+filtering_and_sorting:
+  search:
+    fields:
+      - search
+      - searchFields
+    note: Free-text term applied to caller-nominated searchable fields; supported names are per-resource.
+  ordering:
+    field: orderBy
+    shape: 'array of OrderByOption, applied in priority order (first entry is the primary sort)'
+  filters:
+    field: filters
+    note: Exact-match filters plus range filters.
+field_expansion:
+  supported: false
+sparse_fieldsets:
+  supported: false
+metadata:
+  supported: false
+  note: No generic metadata/custom-field bag on Leadping resources; segmentation is done with Tags.
+request_id_tracing:
+  supported: false
+  note: >-
+    No request-id or correlation-id response header is declared anywhere in the OpenAPI document. The
+    only declared response headers across all 137 operations are Retry-After and WWW-Authenticate. The
+    responsible-disclosure page asks reporters to include "request IDs", implying they exist internally,
+    but no header exposes one to the caller.
+versioning:
+  scheme: single unversioned base host with a versioned document
+  api_version: v1
+  base_url: https://api.leadping.ai
+  spec_url: https://api.leadping.ai/openapi/v1.json
+  note: >-
+    Paths are unversioned (/leads, not /v1/leads). The version appears only in info.version ("v1") and
+    in the OpenAPI document URL. There is no documented policy for how a v2 would be introduced.
+  detail: lifecycle/leadping-lifecycle.yml
+errors:
+  envelope: RFC 9457 Problem Details (ProblemDetails schema)
+  media_type: application/problem+json
+  detail: errors/leadping-problem-types.yml
+rate_limit_signaling:
+  limit: 300 requests / 60 seconds per partition
+  exhaustion_status: 429
+  headers:
+    - 'Retry-After (seconds, on 429, not guaranteed)'
+  quota_headers: none
+  detail: rate-limits/leadping-rate-limits.yml
+webhooks:
+  signing: Standard Webhooks (HMAC-SHA256)
+  headers:
+    - webhook-id
+    - webhook-timestamp
+    - webhook-signature
+  detail: asyncapi/leadping-webhooks.yml

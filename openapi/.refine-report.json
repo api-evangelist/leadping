@@ -1,0 +1,45 @@
+{
+  "provider": "leadping",
+  "sources": [
+    "leadping-openapi.json"
+  ],
+  "outputs": [
+    "leadping-analytics-api-openapi.yml",
+    "leadping-automations-api-openapi.yml",
+    "leadping-callevents-api-openapi.yml",
+    "leadping-calls-api-openapi.yml",
+    "leadping-contact-api-openapi.yml",
+    "leadping-conversations-api-openapi.yml",
+    "leadping-events-api-openapi.yml",
+    "leadping-feedback-api-openapi.yml",
+    "leadping-leadstatuschanges-api-openapi.yml",
+    "leadping-leadstatuses-api-openapi.yml",
+    "leadping-leads-api-openapi.yml",
+    "leadping-notifications-api-openapi.yml",
+    "leadping-organizations-api-openapi.yml",
+    "leadping-outbounddelivery-api-openapi.yml",
+    "leadping-paymentmethods-api-openapi.yml",
+    "leadping-phonenumbers-api-openapi.yml",
+    "leadping-sms-api-openapi.yml",
+    "leadping-smsevents-api-openapi.yml",
+    "leadping-sources-api-openapi.yml",
+    "leadping-suppressions-api-openapi.yml",
+    "leadping-tags-api-openapi.yml",
+    "leadping-telephony-api-openapi.yml",
+    "leadping-transactions-api-openapi.yml",
+    "leadping-usage-api-openapi.yml",
+    "leadping-userdataexports-api-openapi.yml",
+    "leadping-users-api-openapi.yml",
+    "leadping-wallets-api-openapi.yml"
+  ],
+  "archived": [
+    "archived openapi/leadping-openapi.json"
+  ],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "leadping-openapi.json: upgraded openapi 3.1.1 -> OpenAPI 3.2.0",
+    "apis.yml register: written (+27 apis, 29 total)"
+  ],
+  "skipped": []
+}

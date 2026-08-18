@@ -1,0 +1,1269 @@
+openapi: 3.2.0
+info:
+  title: Leadping Events API
+  description: The Leadping API helps businesses capture and manage leads, automate follow-up, send SMS and MMS messages, place calls, track conversations, enforce contact suppression, and analyze communication workflows. Use this OpenAPI 3.1 contract to integrate lead sources, build organization tools, or generate a typed API client. Authenticate protected operations with a Leadping user access token or WorkOS organization API key. Lead intake operations also accept a Leadping source key.
+  termsOfService: https://leadping.ai/docs/terms-of-service
+  contact:
+    name: Leadping Support
+    url: https://leadping.ai/contact
+    email: support@leadping.ai
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: v1
+  summary: Lead management, messaging, calling, and automation API
+servers:
+- url: https://api.leadping.ai
+  description: Production
+tags:
+- name: Events
+  description: Provides a unified record of Leadping activity across communication channels. Use these endpoints to retrieve event timelines, search event history, inspect event details, and record supported application events.
+paths:
+  /events/all/my:
+    post:
+      tags:
+      - Events
+      summary: List current-user lead events
+      description: Lists event records visible to the current user with paging, sorting, and filters across lead, SMS, call, and automation events.
+      operationId: Events_GetAllForCurrentUser
+      parameters:
+      - name: category
+        in: query
+        description: Optional event category used to narrow the results.
+        schema:
+          type: string
+      - name: startAt
+        in: query
+        description: Optional inclusive start timestamp for event occurrence.
+        schema:
+          type: string
+          format: date-time
+      - name: endAt
+        in: query
+        description: Optional exclusive end timestamp for event occurrence.
+        schema:
+          type: string
+          format: date-time
+      requestBody:
+        description: Pagination, filtering, and sorting options.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+        required: true
+      responses:
+        '200':
+          description: Events were successfully retrieved.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/PagedResultOfEventTableRow'
+                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+        '400':
+          description: The request was invalid or malformed.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /events/organizations/{organizationId}:
+    post:
+      tags:
+      - Events
+      summary: List organization lead event history
+      description: Lists event records for an organization with paging and filters so admins can review lead communication and automation events.
+      operationId: Events_GetAllForOrganization
+      parameters:
+      - name: organizationId
+        in: path
+        description: The organization identifier.
+        required: true
+        schema:
+          type: string
+      - name: startAt
+        in: query
+        description: Optional inclusive start timestamp for event occurrence.
+        schema:
+          type: string
+          format: date-time
+      - name: endAt
+        in: query
+        description: Optional exclusive end timestamp for event occurrence.
+        schema:
+          type: string
+          format: date-time
+      requestBody:
+        description: The filtering, sorting, and pagination options.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+        required: true
+      responses:
+        '200':
+          description: Returns the paged event table row.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/PagedResultOfEventTableRow'
+                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /events/conversations/{conversationId}:
+    post:
+      tags:
+      - Events
+      summary: List a conversation's event history
+      description: Lists event records for one conversation with paging, including notes, messages, calls, and follow-up history.
+      operationId: Events_GetAllForConversation
+      parameters:
+      - name: conversationId
+        in: path
+        description: The ID of the conversation.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Pagination, filtering, and sorting options.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+        required: true
+      responses:
+        '200':
+          description: Events for the conversation were successfully retrieved.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/PagedResultOfEventTableRow'
+                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+        '400':
+          description: The request was invalid or malformed.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /events/leads/{leadId}:
+    post:
+      tags:
+      - Events
+      summary: List event history for a lead
+      description: Lists event records for one lead with paging, covering communication, routing, automation, and event changes.
+      operationId: Events_GetAllForLead
+      parameters:
+      - name: leadId
+        in: path
+        description: The ID of the lead.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Pagination, filtering, and sorting options.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+        required: true
+      responses:
+        '200':
+          description: Events for the lead were successfully retrieved.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/PagedResultOfEventTableRow'
+                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+        '400':
+          description: The request was invalid or malformed.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /events/{eventId}:
+    get:
+      tags:
+      - Events
+      summary: Get lead event details by ID
+      description: Returns one event record by ID, including event type, timestamps, related entities, and summary payload data.
+      operationId: Events_GetById
+      parameters:
+      - name: eventId
+        in: path
+        description: The ID of the event.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Event was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/EventTableRow'
+                description: Summarizes event timeline data in paginated and searchable results.
+        '404':
+          description: Event was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /events/detail/{eventId}:
+    get:
+      tags:
+      - Events
+      summary: Get full lead event payload by ID
+      description: Returns detailed event data by ID, including the full JSON payload for debugging, audit review, and workflow inspection.
+      operationId: Events_GetDetailById
+      parameters:
+      - name: eventId
+        in: path
+        description: The ID of the event.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Event details were successfully retrieved.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/EventDetailResponse'
+                description: Describes event detail data returned by Leadping.
+        '404':
+          description: Event was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /events/conversations/{conversationId}/notes:
+    post:
+      tags:
+      - Events
+      summary: Add a note to a conversation
+      description: Creates a note event on a conversation so users can document lead context, handoffs, and follow-up details.
+      operationId: Events_CreateNote
+      parameters:
+      - name: conversationId
+        in: path
+        description: The conversation identifier.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The create note request payload for the operation.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CreateNoteRequest'
+              description: Defines the input used for create note.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CreateNoteRequest'
+              description: Defines the input used for create note.
+        required: true
+      responses:
+        '200':
+          description: Returns the event table row.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/EventTableRow'
+                description: Summarizes event timeline data in paginated and searchable results.
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+components:
+  schemas:
+    PagedResultOfEventTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/EventTableRow'
+            description: Summarizes event timeline data in paginated and searchable results.
+          description: Items included in the current page, in the order determined by the query.
+        pageSize:
+          type: integer
+          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
+      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+    EventDetailResponse:
+      type: object
+      properties:
+        eventType:
+          type: string
+          description: Event type used to classify this timeline, SMS, call, or automation event.
+        secondaryEventType:
+          type:
+          - 'null'
+          - string
+          description: Secondary event type used for additional event classification.
+        description:
+          type:
+          - 'null'
+          - string
+          description: Human-readable description that explains this event detail response to API users.
+        eventCategory:
+          type:
+          - 'null'
+          - string
+          description: High-level category used to group this Leadping event.
+        timelineType:
+          enum:
+          - Message
+          - Sms
+          - Mms
+          - Call
+          - Voicemail
+          - Note
+          - LeadStatusChange
+          - LeadCreated
+          - LeadUpdated
+          - Notification
+          - Payment
+          - Warmup
+          type:
+          - 'null'
+          - string
+          description: Classifies the kind of activity displayed in a lead or conversation event timeline.
+        timelineCategory:
+          type:
+          - 'null'
+          - string
+          description: Timeline category used to group events for display and filtering.
+        conversationId:
+          type:
+          - 'null'
+          - string
+          description: Conversation ID that links this event detail response to the Leadping inbox thread.
+        summary:
+          type:
+          - 'null'
+          - string
+          description: Short human-readable summary of this event detail response for lists, timelines, and notifications.
+        direction:
+          type:
+          - 'null'
+          - string
+          description: Communication direction for this event detail response, such as inbound or outbound.
+        status:
+          enum:
+          - Pending
+          - InProgress
+          - Completed
+          - Failed
+          - Cancelled
+          type:
+          - 'null'
+          - string
+          description: Describes whether a Leadping event is pending, processing, completed, failed, or otherwise resolved.
+        statusReason:
+          type:
+          - 'null'
+          - string
+          description: Human-readable reason explaining the current status of this event detail response.
+        fromPhoneNumberId:
+          type:
+          - 'null'
+          - string
+          description: Sender phone number ID used for this outbound SMS or call.
+        outboundPhoneNumberId:
+          type:
+          - 'null'
+          - string
+          description: Phone number ID selected for outbound delivery.
+        fromPhoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Sender phone number used for this communication.
+        toPhoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Recipient phone number used for this communication.
+        queuedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping queued this event detail response for processing.
+          format: date-time
+        scheduledFor:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the related delivery or workflow action is scheduled to run.
+          format: date-time
+        sendingStartedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping began sending this message.
+          format: date-time
+        sentAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping sent this message to the provider.
+          format: date-time
+        deliveredAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the provider confirmed delivery.
+          format: date-time
+        receivedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping received this inbound event or message.
+          format: date-time
+        failedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when processing failed for this event detail response.
+          format: date-time
+        undeliverableAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the provider marked the message undeliverable.
+          format: date-time
+        blockedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping blocked this communication.
+          format: date-time
+        canceledAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when this delivery or workflow was canceled.
+          format: date-time
+        user:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: User summary connected to this event detail response.
+        userEmail:
+          type:
+          - 'null'
+          - string
+          description: Email address for the user connected to this event detail response.
+          format: email
+        userId:
+          type: string
+          description: User ID associated with the activity that created this event.
+        leadId:
+          type:
+          - 'null'
+          - string
+          description: Lead ID associated with this event detail record.
+        id:
+          type: string
+          description: Stable unique identifier of the resource.
+        createdAt:
+          type: string
+          description: UTC timestamp when the resource was created.
+          format: date-time
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
+          format: date-time
+      description: Describes event detail data returned by Leadping.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/OrderByOption'
+            description: Defines one field and direction used to order an API query result set.
+          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
+        search:
+          type:
+          - 'null'
+          - string
+          description: Free-text search term applied to the configured SearchFields.
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ExactMatchFilter'
+            description: Selects records whose named field equals a supplied scalar value.
+          description: Exact-match conditions that require each named field to equal its supplied value.
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/RangeFilter'
+            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
+      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+    EventTableRow:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this event timeline table row.
+        eventType:
+          type: string
+          description: Event type used to classify this timeline, SMS, call, or automation event.
+        eventCategory:
+          type:
+          - 'null'
+          - string
+          description: High-level category used to group this Leadping event.
+        timelineType:
+          allOf:
+          - $ref: '#/components/schemas/EventTimelineType'
+          description: Timeline type used to render this event in Leadping activity feeds.
+        timelineCategory:
+          type: string
+          description: Timeline category used to group events for display and filtering.
+        description:
+          type: string
+          description: Human-readable description that explains this event timeline table row to API users.
+        conversationId:
+          type:
+          - 'null'
+          - string
+          description: Conversation ID that links this event timeline table row to the Leadping inbox thread.
+        leadId:
+          type:
+          - 'null'
+          - string
+          description: Lead ID associated with this timeline event.
+        relatedEntityType:
+          type:
+          - 'null'
+          - string
+          description: Related entity type connected to this event or notification.
+        relatedEntityId:
+          type:
+          - 'null'
+          - string
+          description: Related entity ID connected to this event or notification.
+        summary:
+          type:
+          - 'null'
+          - string
+          description: Short human-readable summary of this event timeline table row for lists, timelines, and notifications.
+        media:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/MessageMediaAttachment'
+            description: Media attached to an SMS/MMS conversation event.
+          description: Media attached to an MMS timeline event.
+        direction:
+          type:
+          - 'null'
+          - string
+          description: Communication direction for this event timeline table row, such as inbound or outbound.
+        status:
+          enum:
+          - Pending
+          - InProgress
+          - Completed
+          - Cancelled
+          - Scheduled
+          - Queued
+          - Sending
+          - Sent
+          - Received
+          - Delivered
+          - Undeliverable
+          - Opted out
+          - Blocked
+          - Initiated
+          - Ringing
+          - Active
+          - Ended
+          - Missed
+          - Voicemail
+          - Failed
+          - Canceled
+          type:
+          - 'null'
+          - string
+          description: Provides the customer-facing outcome shown for an item in a lead or conversation timeline.
+        statusReason:
+          type:
+          - 'null'
+          - string
+          description: Human-readable reason explaining the current status of this event timeline table row.
+        trafficType:
+          enum:
+          - RealLead
+          - Warmup
+          - Test
+          - SystemInternal
+          - FailedAttempt
+          type:
+          - 'null'
+          - string
+          description: Classifies messaging traffic by conversational, informational, marketing, or other compliance-relevant purpose.
+        fromPhoneNumberId:
+          type:
+          - 'null'
+          - string
+          description: Sender phone number ID used for this outbound SMS or call.
+        outboundPhoneNumberId:
+          type:
+          - 'null'
+          - string
+          description: Phone number ID selected for outbound delivery.
+        fromPhoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Sender phone number used for this communication.
+        toPhoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Recipient phone number used for this communication.
+        selectionReason:
+          enum:
+          - StickyConversation
+          - LeadAssigned
+          - CampaignOrSource
+          - Preferred
+          - LocalArea
+          - HealthyPool
+          - FallbackDefault
+          - ManualOverride
+          type:
+          - 'null'
+          - string
+          description: Explains why Leadping selected, rejected, or substituted an outgoing caller or messaging number.
+        wasManuallyOverridden:
+          type: boolean
+          description: Indicates whether a user manually overrode Leadping's automatic number selection for this event timeline table row.
+        campaignId:
+          type:
+          - 'null'
+          - string
+          description: Messaging campaign identifier associated with this event timeline table row.
+        sourceId:
+          type:
+          - 'null'
+          - string
+          description: Lead source ID used for event attribution.
+        complianceAction:
+          type:
+          - 'null'
+          - string
+          description: Compliance action applied to this message, lead, or sender.
+        billingStatus:
+          type:
+          - 'null'
+          - string
+          description: Billing state for this communication, charge, or transaction.
+        billableAmount:
+          type:
+          - 'null'
+          - number
+          description: Monetary amount billed for this Leadping communication or transaction.
+          format: double
+        errorCode:
+          type:
+          - 'null'
+          - string
+          description: Machine-readable error code returned while processing this event timeline table row.
+        retryCount:
+          type: integer
+          description: Number of retry attempts already made for this event timeline table row.
+          format: int32
+        queuedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping queued this event timeline table row for processing.
+          format: date-time
+        sendingStartedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping began sending this message.
+          format: date-time
+        sentAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping sent this message to the provider.
+          format: date-time
+        deliveredAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the provider confirmed delivery.
+          format: date-time
+        receivedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping received this inbound event or message.
+          format: date-time
+        failedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when processing failed for this event timeline table row.
+          format: date-time
+        undeliverableAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the provider marked the message undeliverable.
+          format: date-time
+        blockedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping blocked this communication.
+          format: date-time
+        nextRetryAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping will retry this event timeline table row.
+          format: date-time
+        scheduledFor:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the related delivery or workflow action is scheduled to run.
+          format: date-time
+        scheduledReason:
+          type:
+          - 'null'
+          - string
+          description: Reason Leadping scheduled this delivery for a later time.
+        canceledAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when this delivery or workflow was canceled.
+          format: date-time
+        cancelReason:
+          type:
+          - 'null'
+          - string
+          description: Reason this delivery, run, or request was canceled.
+        createdAt:
+          type: string
+          description: UTC timestamp when this event timeline table row was created.
+          format: date-time
+        createdBy:
+          type: string
+          description: Display name or identifier for the person or system that created this event timeline table row.
+        actorUserId:
+          type:
+          - 'null'
+          - string
+          description: User ID for the person or system that created this event timeline table row.
+        actorDisplayName:
+          type:
+          - 'null'
+          - string
+          description: Display name for the person or system that created this event timeline table row.
+        actorEmail:
+          type:
+          - 'null'
+          - string
+          description: Email address for the person who created this event timeline table row.
+          format: email
+      description: Summarizes event timeline data in paginated and searchable results.
+    CreateNoteRequest:
+      required:
+      - text
+      type: object
+      properties:
+        text:
+          type: string
+          description: Plain-text note content to add to the conversation timeline.
+      description: Defines the input used for create note.
+    MessageMediaAttachment:
+      type: object
+      properties:
+        url:
+          type: string
+          description: URL from which the media attachment can be retrieved.
+          format: uri
+        contentType:
+          type:
+          - 'null'
+          - string
+          description: MIME content type of the media attachment.
+        size:
+          type:
+          - 'null'
+          - integer
+          description: Size of the media attachment in bytes.
+          format: int64
+        sha256:
+          type:
+          - 'null'
+          - string
+          description: SHA-256 digest of the media content, when available.
+        fileName:
+          type:
+          - 'null'
+          - string
+          description: Original file name of the media attachment, when available.
+      description: Media attached to an SMS/MMS conversation event.
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable unique identifier of the referenced resource.
+        name:
+          type: string
+          description: Human-readable display name of the referenced resource.
+      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
+    OrderByOption:
+      type: object
+      properties:
+        field:
+          type: string
+          description: Serializable field name used for sorting; supported names are determined by the queried resource.
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
+          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
+      description: Defines one field and direction used to order an API query result set.
+    ExactMatchFilter:
+      type: object
+      properties:
+        value:
+          description: Scalar value the target field must equal; its JSON type should match the field being queried.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records whose named field equals a supplied scalar value.
+    RangeFilter:
+      type: object
+      properties:
+        greaterThan:
+          description: Exclusive lower bound; matching field values must be greater than this value.
+        greaterThanOrEqual:
+          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
+        lessThan:
+          description: Exclusive upper bound; matching field values must be less than this value.
+        lessThanOrEqual:
+          description: Inclusive upper bound; matching field values must be less than or equal to this value.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
+    EventTimelineType:
+      enum:
+      - Message
+      - Sms
+      - Mms
+      - Call
+      - Voicemail
+      - Note
+      - LeadStatusChange
+      - LeadCreated
+      - LeadUpdated
+      - Notification
+      - Payment
+      - Warmup
+      type: string
+      description: Classifies the kind of activity displayed in a lead or conversation event timeline.
+  securitySchemes:
+    Bearer:
+      type: http
+      description: Authorization header using the Bearer scheme. Accepted values are Leadping user JWT access tokens and WorkOS organization API keys beginning with sk_.
+      scheme: bearer
+      bearerFormat: JWT or organization API key
+    SourceKey:
+      type: http
+      description: 'Leadping source key for lead ingestion endpoints only using the Authorization header. Example: "Authorization: Bearer lp_src_...".'
+      scheme: bearer
+      bearerFormat: Leadping source key
+externalDocs:
+  description: Leadping API documentation, authentication guide, concepts, and integration guidance.
+  url: https://leadping.ai/docs/api-reference

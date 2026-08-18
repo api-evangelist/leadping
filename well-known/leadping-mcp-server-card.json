@@ -1,0 +1,108 @@
+{
+  "serverInfo": {
+    "name": "leadping-public-webmcp",
+    "version": "1.0.0"
+  },
+  "transport": {
+    "type": "webmcp",
+    "endpoint": "https://leadping.ai/",
+    "description": "Browser WebMCP tools are registered on the Leadping homepage."
+  },
+  "capabilities": {
+    "tools": true,
+    "resources": false,
+    "prompts": false
+  },
+  "tools": [
+    {
+      "name": "leadping.get_public_resources",
+      "description": "Return public Leadping URLs for product, pricing, docs, contact, automation discovery, API catalog, OpenAPI, and OAuth metadata.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "readOnlyHint": true
+    },
+    {
+      "name": "leadping.get_authentication_guidance",
+      "description": "Return concise public guidance for Leadping user tokens, agent access tokens, organization API keys, and source keys.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "readOnlyHint": true
+    },
+    {
+      "name": "leadping.open_public_page",
+      "description": "Open a public Leadping page in the current browser tab.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "page": {
+            "type": "string",
+            "enum": [
+              "home",
+              "platform",
+              "pricing",
+              "docs",
+              "apiReference",
+              "apiAuthentication",
+              "mcpDocs",
+              "about",
+              "contact"
+            ]
+          }
+        },
+        "required": [
+          "page"
+        ]
+      },
+      "readOnlyHint": false
+    },
+    {
+      "name": "leadping.open_agent_resource",
+      "description": "Open or return a public Leadping agent, API, MCP, or authentication discovery resource.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "resource": {
+            "type": "string",
+            "enum": [
+              "website",
+              "platform",
+              "pricing",
+              "docs",
+              "apiReference",
+              "apiAuthentication",
+              "mcpDocs",
+              "about",
+              "contact",
+              "agentsIndex",
+              "apiCatalog",
+              "authMd",
+              "openIdConfiguration",
+              "oauthAuthorizationServer",
+              "oauthProtectedResource",
+              "apiOauthProtectedResource",
+              "openApi",
+              "mcpServerCard",
+              "agentSkills"
+            ]
+          },
+          "open": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "resource"
+        ]
+      },
+      "readOnlyHint": true
+    }
+  ]
+}

@@ -1,0 +1,613 @@
+openapi: 3.2.0
+info:
+  title: Leadping Transactions API
+  description: The Leadping API helps businesses capture and manage leads, automate follow-up, send SMS and MMS messages, place calls, track conversations, enforce contact suppression, and analyze communication workflows. Use this OpenAPI 3.1 contract to integrate lead sources, build organization tools, or generate a typed API client. Authenticate protected operations with a Leadping user access token or WorkOS organization API key. Lead intake operations also accept a Leadping source key.
+  termsOfService: https://leadping.ai/docs/terms-of-service
+  contact:
+    name: Leadping Support
+    url: https://leadping.ai/contact
+    email: support@leadping.ai
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: v1
+  summary: Lead management, messaging, calling, and automation API
+servers:
+- url: https://api.leadping.ai
+  description: Production
+tags:
+- name: Transactions
+  description: Provides organization wallet and billing transaction records. Use these endpoints to search transaction history, inspect individual charges or credits, review transaction summaries, and issue administrative credits.
+paths:
+  /transactions/{id}:
+    get:
+      tags:
+      - Transactions
+      summary: Get a current-user billing transaction
+      description: Returns one transaction visible to the current user, including amount, status, wallet context, and billing metadata.
+      operationId: Transactions_GetForCurrentUser
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the transaction to retrieve.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Transaction was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/TransactionResponse'
+                description: Describes billing transaction data returned by Leadping.
+        '404':
+          description: The specified transaction was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: The user does not own this transaction.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /transactions/all/my:
+    post:
+      tags:
+      - Transactions
+      summary: List current-user billing transactions
+      description: Lists current-user transactions with paging, sorting, and filters for wallet events, billing history, and reconciliation.
+      operationId: Transactions_GetAllForCurrentUser
+      parameters:
+      - name: startAt
+        in: query
+        description: Optional inclusive start timestamp for transaction creation.
+        schema:
+          type: string
+          format: date-time
+      - name: endAt
+        in: query
+        description: Optional exclusive end timestamp for transaction creation.
+        schema:
+          type: string
+          format: date-time
+      requestBody:
+        description: Pagination, filtering, and sorting options.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+        required: true
+      responses:
+        '200':
+          description: Transactions were successfully retrieved.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/PagedResultOfTransactionTableRow'
+                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+components:
+  schemas:
+    TransactionType:
+      enum:
+      - Debit
+      - Adjustment
+      - Deposit
+      type: string
+      description: Classifies a wallet transaction as a debit, credit, refund, adjustment, deposit, or other balance movement.
+    TransactionTableRow:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this billing transaction table row.
+        organization:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related organization.
+        lead:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related lead.
+        amount:
+          type: number
+          description: Monetary amount for this billing transaction or wallet operation.
+          format: double
+        netAmount:
+          type: number
+          description: Net monetary amount after fees, credits, or adjustments.
+          format: double
+        billedAmount:
+          type: number
+          description: Customer-facing amount billed for the metered usage or wallet transaction.
+          format: double
+        quantity:
+          type:
+          - 'null'
+          - number
+          description: Number of billable units measured for this transaction, when usage-based pricing applies.
+          format: double
+        unitPrice:
+          type:
+          - 'null'
+          - number
+          description: Price charged per billable unit when usage-based pricing applies.
+          format: double
+        billingChannel:
+          enum:
+          - lead
+          - sms
+          - mms
+          - email
+          - voice
+          - phone_number
+          - warmup
+          - website
+          - openai
+          - domain
+          - 10dlc
+          - payment
+          - connection
+          - automation
+          type:
+          - 'null'
+          - string
+          description: Identifies the messaging, calling, phone-number, lookup, or platform channel that generated billable usage.
+        billableUnit:
+          enum:
+          - lead_received
+          - phone_identity_lookup
+          - sms_segment
+          - mms_message
+          - email_message
+          - voice_minute
+          - phone_number_month
+          - warmup_sms_segment
+          - warmup_voice_minute
+          - website_setup
+          - openai_operation
+          - domain_registration
+          - 10dlc_application
+          - 10dlc_campaign_month
+          - payment_processing_fee
+          - connection_action
+          - automation_run
+          type:
+          - 'null'
+          - string
+          description: Identifies the metered unit used to price Leadping usage, such as a message, call minute, lookup, or phone number.
+        sourceEventId:
+          type:
+          - 'null'
+          - string
+          description: Identifier of the event that created this billing transaction, when available.
+        sourceEventType:
+          type:
+          - 'null'
+          - string
+          description: Event type that created this billing transaction, when available.
+        pricingVersion:
+          type:
+          - 'null'
+          - string
+          description: Version of the pricing rules used to calculate the billed amount.
+        transactionType:
+          allOf:
+          - $ref: '#/components/schemas/TransactionType'
+          description: Debit or credit classification for this wallet transaction.
+        transactionStatus:
+          allOf:
+          - $ref: '#/components/schemas/TransactionStatus'
+          description: Processing status for this wallet transaction.
+        paymentMethodDisplay:
+          type:
+          - 'null'
+          - string
+          description: Masked or human-readable payment method shown for this transaction.
+        description:
+          type:
+          - 'null'
+          - string
+          description: Human-readable description that explains this billing transaction table row to API users.
+        createdAt:
+          type: string
+          description: UTC timestamp when this billing transaction table row was created.
+          format: date-time
+      description: Summarizes billing transaction data in paginated and searchable results.
+    TransactionStatus:
+      enum:
+      - Pending
+      - Confirmed
+      - Failed
+      type: string
+      description: Describes the processing and settlement lifecycle of a Leadping wallet or billing transaction.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/OrderByOption'
+            description: Defines one field and direction used to order an API query result set.
+          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
+        search:
+          type:
+          - 'null'
+          - string
+          description: Free-text search term applied to the configured SearchFields.
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ExactMatchFilter'
+            description: Selects records whose named field equals a supplied scalar value.
+          description: Exact-match conditions that require each named field to equal its supplied value.
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/RangeFilter'
+            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
+      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+    PagedResultOfTransactionTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/TransactionTableRow'
+            description: Summarizes billing transaction data in paginated and searchable results.
+          description: Items included in the current page, in the order determined by the query.
+        pageSize:
+          type: integer
+          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
+      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable unique identifier of the referenced resource.
+        name:
+          type: string
+          description: Human-readable display name of the referenced resource.
+      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
+    OrderByOption:
+      type: object
+      properties:
+        field:
+          type: string
+          description: Serializable field name used for sorting; supported names are determined by the queried resource.
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
+          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
+      description: Defines one field and direction used to order an API query result set.
+    ExactMatchFilter:
+      type: object
+      properties:
+        value:
+          description: Scalar value the target field must equal; its JSON type should match the field being queried.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records whose named field equals a supplied scalar value.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
+    RangeFilter:
+      type: object
+      properties:
+        greaterThan:
+          description: Exclusive lower bound; matching field values must be greater than this value.
+        greaterThanOrEqual:
+          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
+        lessThan:
+          description: Exclusive upper bound; matching field values must be less than this value.
+        lessThanOrEqual:
+          description: Inclusive upper bound; matching field values must be less than or equal to this value.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+    TransactionResponse:
+      type: object
+      properties:
+        organization:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related organization.
+        lead:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related lead.
+        amount:
+          type: number
+          description: Monetary amount for this billing transaction or wallet operation.
+          format: double
+        netAmount:
+          type: number
+          description: Net monetary amount after fees, credits, or adjustments.
+          format: double
+        billedAmount:
+          type: number
+          description: Customer-facing amount billed for the transaction.
+          format: double
+        billingChannel:
+          enum:
+          - lead
+          - sms
+          - mms
+          - email
+          - voice
+          - phone_number
+          - warmup
+          - website
+          - openai
+          - domain
+          - 10dlc
+          - payment
+          - connection
+          - automation
+          type:
+          - 'null'
+          - string
+          description: Identifies the messaging, calling, phone-number, lookup, or platform channel that generated billable usage.
+        billableUnit:
+          enum:
+          - lead_received
+          - phone_identity_lookup
+          - sms_segment
+          - mms_message
+          - email_message
+          - voice_minute
+          - phone_number_month
+          - warmup_sms_segment
+          - warmup_voice_minute
+          - website_setup
+          - openai_operation
+          - domain_registration
+          - 10dlc_application
+          - 10dlc_campaign_month
+          - payment_processing_fee
+          - connection_action
+          - automation_run
+          type:
+          - 'null'
+          - string
+          description: Identifies the metered unit used to price Leadping usage, such as a message, call minute, lookup, or phone number.
+        gatewayFeeAmount:
+          type:
+          - 'null'
+          - number
+          description: Payment gateway fee amount charged for the wallet transaction.
+          format: double
+        gatewayStatus:
+          type:
+          - 'null'
+          - string
+          description: Payment gateway status returned for this transaction.
+        platformFeeAmount:
+          type:
+          - 'null'
+          - number
+          description: Leadping platform fee amount included in the transaction.
+          format: double
+        notes:
+          type:
+          - 'null'
+          - string
+          description: Additional billing notes that explain the transaction for admins or customers.
+        description:
+          type:
+          - 'null'
+          - string
+          description: Human-readable description that explains this billing transaction response to API users.
+        paymentMethodDisplay:
+          type:
+          - 'null'
+          - string
+          description: Masked or human-readable payment method shown for this transaction.
+        transactionType:
+          allOf:
+          - $ref: '#/components/schemas/TransactionType'
+          description: Debit or credit classification for this wallet transaction.
+        transactionStatus:
+          allOf:
+          - $ref: '#/components/schemas/TransactionStatus'
+          description: Processing status for this wallet transaction.
+        id:
+          type: string
+          description: Stable unique identifier of the resource.
+        createdAt:
+          type: string
+          description: UTC timestamp when the resource was created.
+          format: date-time
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
+          format: date-time
+      description: Describes billing transaction data returned by Leadping.
+  securitySchemes:
+    Bearer:
+      type: http
+      description: Authorization header using the Bearer scheme. Accepted values are Leadping user JWT access tokens and WorkOS organization API keys beginning with sk_.
+      scheme: bearer
+      bearerFormat: JWT or organization API key
+    SourceKey:
+      type: http
+      description: 'Leadping source key for lead ingestion endpoints only using the Authorization header. Example: "Authorization: Bearer lp_src_...".'
+      scheme: bearer
+      bearerFormat: Leadping source key
+externalDocs:
+  description: Leadping API documentation, authentication guide, concepts, and integration guidance.
+  url: https://leadping.ai/docs/api-reference

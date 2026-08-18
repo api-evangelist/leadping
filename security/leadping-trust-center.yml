@@ -1,0 +1,54 @@
+generated: '2026-08-18'
+method: searched
+source: https://leadping.ai/docs/trust/overview
+url: https://leadping.ai/docs/trust/overview
+name: Leadping Trust Center
+sections:
+  - name: Security
+    url: https://leadping.ai/docs/trust/security
+  - name: Privacy
+    url: https://leadping.ai/docs/privacy-policy
+  - name: Data deletion
+    url: https://leadping.ai/docs/data-deletion
+  - name: Responsible disclosure
+    url: https://leadping.ai/docs/trust/responsible-disclosure
+  - name: Subprocessors
+    url: https://leadping.ai/docs/subprocessors
+  - name: Business Associate Agreement
+    url: https://leadping.ai/docs/business-associate-agreement
+  - name: Acceptable Use Policy
+    url: https://leadping.ai/docs/acceptable-use
+  - name: Forbidden Message Categories
+    url: https://leadping.ai/docs/forbidden-message-categories
+certifications: []
+certifications_note: >-
+  Leadping names NO third-party certification or attestation. There is no SOC 2, ISO 27001, PCI DSS,
+  HIPAA attestation, FedRAMP authorization, or audit report referenced anywhere in the Trust Center,
+  and no certificate-request or NDA-gated evidence flow. The Trust Center describes controls in prose
+  and is explicit about the shared-responsibility split; it does not claim an audited program.
+controls_described:
+  encryption_in_transit: HTTPS/TLS
+  encryption_at_rest: managed storage protections
+  access_control: authenticated and scoped by organization membership, role, and credential
+  production_access: restricted to authorized people and service providers
+  monitoring: security-relevant activity, service health, delivery/provider signals, abuse indicators
+  tenant_separation: stated
+  backups: stated
+  incident_handling: stated
+regulatory_posture:
+  hipaa:
+    baa_available: true
+    url: https://leadping.ai/docs/business-associate-agreement
+    note: BAA terms for expressly approved protected health information use. Not an attestation.
+  telecom:
+    - A2P 10DLC carrier registration workflow
+    - TCPA-shaped consent, suppression and DNC controls (described operationally, not as certification)
+    - TrustedForm consent-evidence requirement for sources that need it
+  data_subject_rights:
+    - https://leadping.ai/docs/data-deletion
+    - https://leadping.ai/docs/account-deletion
+    - 'REST: UserDataExports operations (request, get, download a user data export report)'
+contacts:
+  security: security@leadping.ai
+  legal: legal@leadping.ai
+  support: support@leadping.ai

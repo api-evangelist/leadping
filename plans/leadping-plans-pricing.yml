@@ -1,0 +1,68 @@
+generated: '2026-08-18'
+method: probed
+source: https://api.leadping.ai/plans.json
+docs: https://leadping.ai/pricing
+plan_count: 2
+currency: USD
+model: Subscription plus metered provider usage and prepaid credits
+plans:
+  - id: monthly
+    name: Monthly
+    price: 60.00
+    currency: USD
+    period: month
+    geo: United States
+    description: >-
+      Monthly Leadping organization subscription with the workspace, inbox, lead routing, automations,
+      connections, compliance workflows, and API access.
+    included:
+      - REST API and MCP access
+      - Workspace and shared lead inbox
+      - Lead routing and automations
+      - 5.00 USD starting usage credit
+    unit: 1 organization subscription
+    note: Provider usage and additional seats billed separately.
+  - id: annual
+    name: Annual
+    price: 600.00
+    currency: USD
+    period: year
+    geo: United States
+    description: >-
+      Annual Leadping organization subscription with the same product and API access as Monthly at a
+      lower effective monthly price.
+    included:
+      - REST API and MCP access
+      - Workspace and shared lead inbox
+      - Lead routing and automations
+      - 20.00 USD starting usage credit
+    unit: 1 organization subscription
+    note: Provider usage and additional seats billed separately.
+metered_usage:
+  source: https://api.leadping.ai/finops.json
+  meters:
+    - name: sms_segments
+      unit: segment
+      unit_price: 0.02 USD
+    - name: outbound_mms_messages
+      unit: message
+      unit_price: 0.06 USD
+    - name: voice_minutes
+      unit: minute
+      unit_price: 0.021 USD
+    - name: phone_numbers
+      unit: number-month
+      unit_price: 2.00 USD
+    - name: new_leads
+      unit: lead
+      unit_price: 0.01 USD
+credits:
+  model: prepaid usage credits
+  expiry: 12 months after purchase
+  refundable: false
+  note: >-
+    Credits have no cash value, are not deposits, gift cards, escrow, or stored-value accounts, and are
+    non-refundable except where required by law. Carrier, registration, telecom, phone-number,
+    pass-through, subscription and consumed usage charges are generally non-refundable after use.
+free_tier: false
+enterprise_contact: Higher sustained API throughput is negotiated at support@leadping.ai.

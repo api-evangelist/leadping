@@ -1,0 +1,69 @@
+generated: '2026-08-18'
+method: searched
+source: https://leadping.ai/docs/validating-webhooks
+docs: https://leadping.ai/docs/validating-webhooks
+asyncapi_published: false
+asyncapi_note: >-
+  Leadping publishes NO AsyncAPI document. /asyncapi.json and /asyncapi.yaml return 404 on
+  api.leadping.ai, /docs/asyncapi.json returns "Asset not found", and the OpenAPI document declares no
+  top-level "webhooks" object and no operation callbacks. The event surface below is documented in prose
+  only. Nothing was fabricated; this artifact captures the webhook catalog as published.
+surface: Outbound HTTPS webhook deliveries fired by Leadping automations
+standard:
+  name: Standard Webhooks
+  url: https://www.standardwebhooks.com/
+  signing: HMAC-SHA256
+  signed_content: '{webhook-id}.{webhook-timestamp}.{raw request body}'
+  key_format: 'whsec_<base64-encoded secret>, decoded key 24-64 bytes'
+  note: >-
+    Because Leadping uses Standard Webhooks rather than a bespoke scheme, consumers can verify with any
+    off-the-shelf Standard Webhooks library instead of a Leadping-specific verifier.
+headers:
+  - name: webhook-id
+    description: Stable identifier for the automation action run. Retries reuse the same value.
+  - name: webhook-timestamp
+    description: Unix timestamp in seconds for this delivery attempt.
+  - name: webhook-signature
+    description: 'Signature in "v1,<base64 signature>" format; multiple space-separated signatures supported.'
+authentication_modes:
+  - id: signature
+    description: Standard Webhooks signing. The only mode that adds the signature headers above.
+    recommended: true
+  - id: bearer
+    description: Static bearer token on the delivery. No signature headers are added.
+  - id: header
+    description: Static custom header on the delivery. No signature headers are added.
+  - id: none
+    description: Unauthenticated delivery. Explicitly warned against for sensitive workflows.
+authentication_modes_note: >-
+  Signature authentication is optional to configure. Leadping recommends it for any endpoint with side
+  effects.
+verification_steps:
+  - Read the three signature headers.
+  - Reject a timestamp outside a short tolerance, such as five minutes.
+  - Build signed content from the header values and the exact raw request-body bytes.
+  - Base64-decode the key after removing the whsec_ prefix.
+  - Calculate HMAC-SHA256 and compare against every supported v1 signature with a constant-time compare.
+  - Reject unless at least one signature matches.
+  - Deduplicate successful deliveries by webhook-id before performing side effects.
+retries:
+  behavior: Leadping may retry a failed delivery.
+  webhook_id: stable across retries
+  timestamp: fresh per attempt
+  signature: recomputed per attempt
+  consumer_requirement: Store processed webhook-id values and make processing idempotent.
+expected_response:
+  success: '2xx, only after the delivery has been accepted for processing'
+  failure: 401 or 400 without processing the payload when verification fails
+event_catalog:
+  published: false
+  note: >-
+    Leadping documents HOW to verify a webhook but publishes no catalog of event types or payload
+    schemas. The trigger surface is configured per automation inside the product. A consumer cannot know
+    the set of events, or their payload shapes, from public documentation. This is the single largest
+    machine-readability gap in an otherwise unusually complete discovery surface.
+related_rest:
+  note: >-
+    The REST contract exposes event history as a queryable resource rather than a push catalog — the
+    Events, CallEvents and SmsEvents tags (13 operations) read durable event records for an
+    organization, lead, conversation or phone number.

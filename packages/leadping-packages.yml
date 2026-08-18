@@ -1,0 +1,92 @@
+generated: '2026-08-18'
+method: searched
+source: https://leadping.ai/docs/sdks/overview
+docs: https://leadping.ai/docs/sdks/overview
+note: >-
+  Six first-party SDKs, all generated from the Leadping OpenAPI document with Microsoft Kiota and
+  published from the leadpingai GitHub organization. Every version/published pair below was read from
+  the registry metadata endpoint on 2026-08-18. Publish workflows auto-increment the patch version from
+  the latest git tag, so the six packages sit at slightly different patch levels by design.
+packages:
+  - language: javascript
+    name: '@leadping/sdk'
+    registry: npm
+    official: true
+    url: https://www.npmjs.com/package/@leadping/sdk
+    install: npm install @leadping/sdk
+    repository: https://github.com/leadpingai/leadping-typescript
+    version: 1.0.44
+    published: '2026-08-18'
+    entry_point: createLeadpingOpenApiClient(requestAdapter)
+    generator: microsoft-kiota
+  - language: python
+    name: leadping
+    registry: pypi
+    official: true
+    url: https://pypi.org/project/leadping/
+    install: pip install leadping
+    repository: https://github.com/leadpingai/leadping-python
+    version: 1.0.42
+    published: '2026-08-18'
+    entry_point: LeadpingOpenApiClient(request_adapter)
+    generator: microsoft-kiota
+  - language: dotnet
+    name: Leadping.OpenApiClient
+    registry: nuget
+    official: true
+    url: https://www.nuget.org/packages/Leadping.OpenApiClient
+    install: dotnet add package Leadping.OpenApiClient
+    repository: https://github.com/leadpingai/leadping-dotnet
+    version: 1.0.44
+    published: '2026-08-18'
+    entry_point: new LeadpingOpenApiClient(requestAdapter)
+    generator: microsoft-kiota
+  - language: go
+    name: github.com/leadpingai/leadping-go
+    registry: go-proxy
+    official: true
+    url: https://pkg.go.dev/github.com/leadpingai/leadping-go
+    install: go get github.com/leadpingai/leadping-go
+    repository: https://github.com/leadpingai/leadping-go
+    version: v1.0.43
+    published: '2026-08-18'
+    entry_point: leadping.NewLeadpingOpenApiClient(requestAdapter)
+    generator: microsoft-kiota
+  - language: php
+    name: leadpingai/sdk
+    registry: packagist
+    official: true
+    url: https://packagist.org/packages/leadpingai/sdk
+    install: composer require leadpingai/sdk
+    repository: https://github.com/leadpingai/leadping-php
+    version: v1.0.40
+    published: '2026-08-18'
+    entry_point: new LeadpingOpenApiClient($requestAdapter)
+    generator: microsoft-kiota
+  - language: java
+    name: 'ai.leadping:leadping'
+    registry: maven-central
+    official: true
+    url: https://repo1.maven.org/maven2/ai/leadping/leadping/
+    install: 'implementation "ai.leadping:leadping:1.0.41"'
+    repository: https://github.com/leadpingai/leadping-java
+    version: 1.0.41
+    published: null
+    published_note: >-
+      Maven Central's solrsearch index returns zero documents for g:ai.leadping, so no publish timestamp
+      is available from the registry. The artifact itself is present — repo1.maven.org
+      /maven2/ai/leadping/leadping/maven-metadata.xml returned HTTP 200 with latest/release 1.0.41.
+    generator: microsoft-kiota
+source_repositories:
+  - https://github.com/leadpingai/openapi
+  - https://github.com/leadpingai/leadping-typescript
+  - https://github.com/leadpingai/leadping-python
+  - https://github.com/leadpingai/leadping-dotnet
+  - https://github.com/leadpingai/leadping-go
+  - https://github.com/leadpingai/leadping-php
+  - https://github.com/leadpingai/leadping-java
+currency:
+  assessment: current
+  detail: >-
+    All six SDK repositories were last pushed on 2026-08-18 and five of six registries report a release
+    the same day, matching the OpenAPI contract's own 2026-08-17 publication date. No abandonment signal.

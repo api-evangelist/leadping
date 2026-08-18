@@ -1,0 +1,1109 @@
+openapi: 3.2.0
+info:
+  title: Leadping Lead Status Changes API
+  description: The Leadping API helps businesses capture and manage leads, automate follow-up, send SMS and MMS messages, place calls, track conversations, enforce contact suppression, and analyze communication workflows. Use this OpenAPI 3.1 contract to integrate lead sources, build organization tools, or generate a typed API client. Authenticate protected operations with a Leadping user access token or WorkOS organization API key. Lead intake operations also accept a Leadping source key.
+  termsOfService: https://leadping.ai/docs/terms-of-service
+  contact:
+    name: Leadping Support
+    url: https://leadping.ai/contact
+    email: support@leadping.ai
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: v1
+  summary: Lead management, messaging, calling, and automation API
+servers:
+- url: https://api.leadping.ai
+  description: Production
+tags:
+- name: LeadStatusChanges
+  description: Manages the auditable history of lead status transitions. Use these endpoints to change a lead's status, correct transition records, search status history, and export status activity for reporting.
+paths:
+  /leads/{leadId}/status:
+    put:
+      tags:
+      - LeadStatusChanges
+      summary: Set a lead's current status
+      description: Sets the lead's current structured status and records the change for audit, automation, and reporting.
+      operationId: LeadStatusChanges_SetCurrent
+      parameters:
+      - name: leadId
+        in: path
+        description: The lead identifier.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The new status and related workflow data.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadStatusChangeRequest'
+              description: Defines a lead status transition or correction, including its target status, effective time, source, and explanatory context.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadStatusChangeRequest'
+              description: Defines a lead status transition or correction, including its target status, effective time, source, and explanatory context.
+        required: true
+      responses:
+        '200':
+          description: The lead status was successfully updated and recorded.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadStatusChangeResponse'
+                description: Describes an auditable lead status transition, including the previous and new status, source, actor, and effective time.
+        '404':
+          description: A related resource was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '400':
+          description: The request was invalid or malformed.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /lead-status-changes/{id}:
+    put:
+      tags:
+      - LeadStatusChanges
+      summary: Update a lead status history entry
+      description: Updates a lead status history entry and, when it is current, updates the lead's current status.
+      operationId: LeadStatusChanges_Update
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the lead status change.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The lead status change request payload for the operation.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadStatusChangeRequest'
+              description: Defines a lead status transition or correction, including its target status, effective time, source, and explanatory context.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadStatusChangeRequest'
+              description: Defines a lead status transition or correction, including its target status, effective time, source, and explanatory context.
+        required: true
+      responses:
+        '200':
+          description: Returns the lead status change response.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadStatusChangeResponse'
+                description: Describes an auditable lead status transition, including the previous and new status, source, actor, and effective time.
+        '404':
+          description: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+    get:
+      tags:
+      - LeadStatusChanges
+      summary: Get a lead status history entry
+      description: Returns one lead status change record so users can review a lead outcome, related notes, and follow-up context.
+      operationId: LeadStatusChanges_Get
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the lead status change to retrieve.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The lead status change was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadStatusChangeResponse'
+                description: Describes an auditable lead status transition, including the previous and new status, source, actor, and effective time.
+        '404':
+          description: The specified lead status change was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+    delete:
+      tags:
+      - LeadStatusChanges
+      summary: Delete a lead status history entry
+      description: Deletes a lead status change from a lead when the outcome record should no longer appear in event or reporting views.
+      operationId: LeadStatusChanges_Delete
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the lead status change to delete.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: The lead status change was successfully deleted.
+          content:
+            application/json: {}
+        '404':
+          description: The specified lead status change was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /lead-status-changes/all/my:
+    post:
+      tags:
+      - LeadStatusChanges
+      summary: List current-organization lead status history
+      description: Returns a filtered, paginated history of lead status changes for the current organization for workflow analysis, reporting, and audit review.
+      operationId: LeadStatusChanges_GetAllForCurrentOrganization
+      requestBody:
+        description: Pagination, filtering, and sorting options for the lead status history.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/PagedResultOfLeadStatusChangeResponse'
+                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /leads/{leadId}/status-history:
+    get:
+      tags:
+      - LeadStatusChanges
+      summary: List a lead's status history
+      description: Lists lead status change outcome history for one lead, including prior outcomes, notes, follow-up context, timestamps, and actor details used for audit review.
+      operationId: LeadStatusChanges_GetByLeadId
+      parameters:
+      - name: leadId
+        in: path
+        description: The ID of the lead to get lead status changes for.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The lead status history was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                  - $ref: '#/components/schemas/LeadStatusChangeResponse'
+                  description: Describes an auditable lead status transition, including the previous and new status, source, actor, and effective time.
+        '404':
+          description: The specified lead was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /leads/{leadId}/status-history/export:
+    get:
+      tags:
+      - LeadStatusChanges
+      summary: Export a lead's status history
+      description: Exports lead status change data for one lead, packaging outcome history for reporting, audit review, or handoff workflows.
+      operationId: LeadStatusChanges_ExportByLeadId
+      parameters:
+      - name: leadId
+        in: path
+        description: The lead identifier.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns the lead status change export response.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadStatusChangeExportResponse'
+                description: Describes lead status change export data returned by Leadping.
+        '404':
+          description: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+components:
+  schemas:
+    LeadStatusChangeResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this lead status change.
+        leadId:
+          type: string
+          description: The lead ID associated with this lead status change.
+        leadName:
+          type:
+          - 'null'
+          - string
+          description: The display name of the lead associated with this lead status change.
+        type:
+          type: string
+          description: Category of status change recorded for the lead.
+        outcome:
+          type: string
+          description: Result of the interaction or workflow step that caused the status change.
+        category:
+          enum:
+          - Open
+          - Qualified
+          - Converted
+          - Lost
+          - Invalid
+          - Duplicate
+          type:
+          - 'null'
+          - string
+          description: Controlled lead status change categories used for reporting, automation, and analytics.
+        oldLeadStatusChangeId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the old lead status change associated with this Leadping lead status change.
+        oldLeadStatusChangeType:
+          type:
+          - 'null'
+          - string
+          description: Old lead status change type classification for this Leadping lead status change.
+        oldLeadStatusChangeOutcome:
+          type:
+          - 'null'
+          - string
+          description: Old lead status change outcome associated with this Leadping lead status change.
+        newLeadStatusChangeId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the new lead status change associated with this Leadping lead status change.
+        notes:
+          type: string
+          description: The operator or customer notes recorded for this lead status change.
+        reason:
+          type:
+          - 'null'
+          - string
+          description: The reason this lead status change was changed.
+        changedByUserId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the Leadping user who made the change.
+        changedByAutomationId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the automation that changed the lead status change, when applicable.
+        changedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the lead status change change occurred.
+          format: date-time
+        changeSource:
+          enum:
+          - User
+          - AI
+          - Automation
+          - System
+          - API
+          type:
+          - 'null'
+          - string
+          description: Known sources that can change a lead's current lead status change.
+        timestamp:
+          type: string
+          description: UTC timestamp for timestamp on this lead status change.
+          format: date-time
+        createdAt:
+          type: string
+          description: UTC timestamp for created at on this lead status change.
+          format: date-time
+        updatedAt:
+          type: string
+          description: UTC timestamp for updated at on this lead status change.
+          format: date-time
+        followUpStatus:
+          type:
+          - 'null'
+          - string
+          description: The current follow up status for this lead status change.
+        callbackAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for callback at on this lead status change.
+          format: date-time
+        taskDueAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for task due at on this lead status change.
+          format: date-time
+        appointmentStartAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for appointment start at on this lead status change.
+          format: date-time
+        appointmentEndAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for appointment end at on this lead status change.
+          format: date-time
+        appointmentNotes:
+          type:
+          - 'null'
+          - string
+          description: Additional scheduling or preparation notes for the related appointment.
+        assignedToUserId:
+          type:
+          - 'null'
+          - string
+          description: The assigned to user ID associated with this lead status change.
+        relatedCallEventId:
+          type:
+          - 'null'
+          - string
+          description: The related call event ID associated with this lead status change.
+        isMissedCallFollowUp:
+          type: boolean
+          description: Whether this lead status change is missed call follow up.
+        sourceId:
+          type:
+          - 'null'
+          - string
+          description: The source ID associated with this lead status change.
+      description: Describes an auditable lead status transition, including the previous and new status, source, actor, and effective time.
+    LeadStatusChangeExportResponse:
+      type: object
+      properties:
+        fileName:
+          type: string
+          description: Suggested file name for the exported CSV document.
+        contentType:
+          type: string
+          description: MIME content type of the exported document.
+        csv:
+          type: string
+          description: Complete comma-separated values content encoded as text.
+        rows:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/LeadStatusChangeExportRow'
+            description: Describes lead status change export row data returned by Leadping.
+          description: The rows included with this lead status change export.
+      description: Describes lead status change export data returned by Leadping.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/OrderByOption'
+            description: Defines one field and direction used to order an API query result set.
+          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
+        search:
+          type:
+          - 'null'
+          - string
+          description: Free-text search term applied to the configured SearchFields.
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ExactMatchFilter'
+            description: Selects records whose named field equals a supplied scalar value.
+          description: Exact-match conditions that require each named field to equal its supplied value.
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/RangeFilter'
+            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
+      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+    PagedResultOfLeadStatusChangeResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/LeadStatusChangeResponse'
+            description: Describes an auditable lead status transition, including the previous and new status, source, actor, and effective time.
+          description: Items included in the current page, in the order determined by the query.
+        pageSize:
+          type: integer
+          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
+      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+    OrderByOption:
+      type: object
+      properties:
+        field:
+          type: string
+          description: Serializable field name used for sorting; supported names are determined by the queried resource.
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
+          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
+      description: Defines one field and direction used to order an API query result set.
+    ExactMatchFilter:
+      type: object
+      properties:
+        value:
+          description: Scalar value the target field must equal; its JSON type should match the field being queried.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records whose named field equals a supplied scalar value.
+    LeadStatusChangeExportRow:
+      type: object
+      properties:
+        leadId:
+          type:
+          - 'null'
+          - string
+          description: The lead ID associated with this lead status change export row.
+        leadStatusChangeId:
+          type:
+          - 'null'
+          - string
+          description: The lead status change ID associated with this lead status change export row.
+        type:
+          type:
+          - 'null'
+          - string
+          description: Category of status change represented by this exported row.
+        outcome:
+          type:
+          - 'null'
+          - string
+          description: Result of the interaction or workflow step represented by this exported row.
+        category:
+          enum:
+          - Open
+          - Qualified
+          - Converted
+          - Lost
+          - Invalid
+          - Duplicate
+          type:
+          - 'null'
+          - string
+          description: Controlled lead status change categories used for reporting, automation, and analytics.
+        oldLeadStatusChangeId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the old lead status change associated with this Leadping lead status change export row.
+        oldLeadStatusChangeType:
+          type:
+          - 'null'
+          - string
+          description: Old lead status change type classification for this Leadping lead status change export row.
+        oldLeadStatusChangeOutcome:
+          type:
+          - 'null'
+          - string
+          description: Old lead status change outcome associated with this Leadping lead status change export row.
+        newLeadStatusChangeId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the new lead status change associated with this Leadping lead status change export row.
+        changeSource:
+          enum:
+          - User
+          - AI
+          - Automation
+          - System
+          - API
+          type:
+          - 'null'
+          - string
+          description: Known sources that can change a lead's current lead status change.
+        changedByUserId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the Leadping user who made the change.
+        changedByAutomationId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the automation that changed the lead status change, when applicable.
+        changedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the lead status change change occurred.
+          format: date-time
+        reason:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation for the current lead status change export row outcome.
+        followUpStatus:
+          type:
+          - 'null'
+          - string
+          description: The current follow up status for this lead status change export row.
+        callbackAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for callback at on this lead status change export row.
+          format: date-time
+        taskDueAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for task due at on this lead status change export row.
+          format: date-time
+        appointmentStartAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for appointment start at on this lead status change export row.
+          format: date-time
+        appointmentEndAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for appointment end at on this lead status change export row.
+          format: date-time
+        assignedToUserId:
+          type:
+          - 'null'
+          - string
+          description: The assigned to user ID associated with this lead status change export row.
+        sourceId:
+          type:
+          - 'null'
+          - string
+          description: The source ID associated with this lead status change export row.
+        relatedCallEventId:
+          type:
+          - 'null'
+          - string
+          description: The related call event ID associated with this lead status change export row.
+        isMissedCallFollowUp:
+          type: boolean
+          description: Whether this lead status change export row is missed call follow up.
+        notes:
+          type:
+          - 'null'
+          - string
+          description: The operator or customer notes recorded for this lead status change export row.
+        createdAt:
+          type: string
+          description: UTC timestamp for created at on this lead status change export row.
+          format: date-time
+        updatedAt:
+          type: string
+          description: UTC timestamp for updated at on this lead status change export row.
+          format: date-time
+      description: Describes lead status change export row data returned by Leadping.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
+    RangeFilter:
+      type: object
+      properties:
+        greaterThan:
+          description: Exclusive lower bound; matching field values must be greater than this value.
+        greaterThanOrEqual:
+          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
+        lessThan:
+          description: Exclusive upper bound; matching field values must be less than this value.
+        lessThanOrEqual:
+          description: Inclusive upper bound; matching field values must be less than or equal to this value.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+    LeadStatusChangeRequest:
+      required:
+      - type
+      - outcome
+      type: object
+      properties:
+        type:
+          type: string
+          description: Category of status change being recorded for the lead.
+        outcome:
+          type: string
+          description: Result of the interaction or workflow step that caused the status change.
+        category:
+          enum:
+          - Open
+          - Qualified
+          - Converted
+          - Lost
+          - Invalid
+          - Duplicate
+          type:
+          - 'null'
+          - string
+          description: Controlled lead status change categories used for reporting, automation, and analytics.
+        notes:
+          type:
+          - 'null'
+          - string
+          description: The operator or customer notes recorded for this lead status change.
+        reason:
+          type:
+          - 'null'
+          - string
+          description: The reason this lead status change was changed.
+        changeSource:
+          enum:
+          - User
+          - AI
+          - Automation
+          - System
+          - API
+          type:
+          - 'null'
+          - string
+          description: Known sources that can change a lead's current lead status change.
+        changedByAutomationId:
+          type:
+          - 'null'
+          - string
+          description: The automation that changed this lead status change, when applicable.
+        timestamp:
+          type: string
+          description: UTC timestamp for timestamp on this lead status change.
+          format: date-time
+        followUpStatus:
+          type:
+          - 'null'
+          - string
+          description: The current follow up status for this lead status change.
+        callbackAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for callback at on this lead status change.
+          format: date-time
+        taskDueAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for task due at on this lead status change.
+          format: date-time
+        appointmentStartAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for appointment start at on this lead status change.
+          format: date-time
+        appointmentEndAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for appointment end at on this lead status change.
+          format: date-time
+        appointmentNotes:
+          type:
+          - 'null'
+          - string
+          description: Additional scheduling or preparation notes for the related appointment.
+        assignedToUserId:
+          type:
+          - 'null'
+          - string
+          description: The assigned to user ID associated with this lead status change.
+        relatedCallEventId:
+          type:
+          - 'null'
+          - string
+          description: The related call event ID associated with this lead status change.
+        isMissedCallFollowUp:
+          type: boolean
+          description: Whether this lead status change is missed call follow up.
+        sourceId:
+          type:
+          - 'null'
+          - string
+          description: The source ID associated with this lead status change.
+      description: Defines a lead status transition or correction, including its target status, effective time, source, and explanatory context.
+  securitySchemes:
+    Bearer:
+      type: http
+      description: Authorization header using the Bearer scheme. Accepted values are Leadping user JWT access tokens and WorkOS organization API keys beginning with sk_.
+      scheme: bearer
+      bearerFormat: JWT or organization API key
+    SourceKey:
+      type: http
+      description: 'Leadping source key for lead ingestion endpoints only using the Authorization header. Example: "Authorization: Bearer lp_src_...".'
+      scheme: bearer
+      bearerFormat: Leadping source key
+externalDocs:
+  description: Leadping API documentation, authentication guide, concepts, and integration guidance.
+  url: https://leadping.ai/docs/api-reference

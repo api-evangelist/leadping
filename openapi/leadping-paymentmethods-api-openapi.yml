@@ -1,0 +1,483 @@
+openapi: 3.2.0
+info:
+  title: Leadping Payment Methods API
+  description: The Leadping API helps businesses capture and manage leads, automate follow-up, send SMS and MMS messages, place calls, track conversations, enforce contact suppression, and analyze communication workflows. Use this OpenAPI 3.1 contract to integrate lead sources, build organization tools, or generate a typed API client. Authenticate protected operations with a Leadping user access token or WorkOS organization API key. Lead intake operations also accept a Leadping source key.
+  termsOfService: https://leadping.ai/docs/terms-of-service
+  contact:
+    name: Leadping Support
+    url: https://leadping.ai/contact
+    email: support@leadping.ai
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: v1
+  summary: Lead management, messaging, calling, and automation API
+servers:
+- url: https://api.leadping.ai
+  description: Production
+tags:
+- name: PaymentMethods
+  description: Manages organization payment methods and billing invoices. Use these endpoints to add, confirm, inspect, and remove payment methods or retrieve invoices associated with the current organization's billing account.
+paths:
+  /payment-methods:
+    get:
+      tags:
+      - PaymentMethods
+      summary: List payment methods
+      description: Lists the payment methods available to the current organization for billing, invoice payments, and wallet funding.
+      operationId: PaymentMethods_GetAll
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                  - $ref: '#/components/schemas/StripePaymentMethodResponse'
+                  description: Describes stripe payment method data used in Leadping API requests and responses.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /payment-methods/invoices:
+    get:
+      tags:
+      - PaymentMethods
+      summary: List current-organization Stripe invoices
+      description: Returns the current organization's Stripe invoices with their amounts, payment status, billing period, and hosted invoice details.
+      operationId: PaymentMethods_GetInvoices
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                  - $ref: '#/components/schemas/StripeInvoiceResponse'
+                  description: Customer-safe Leadping invoice summary for billing.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          headers:
+            WWW-Authenticate:
+              description: Bearer authentication challenge returned when credentials are missing or invalid.
+              schema:
+                type: string
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /payment-methods/invoices/{invoiceId}/pdf-access:
+    get:
+      tags:
+      - PaymentMethods
+      summary: Get invoice PDF access
+      description: Creates a short-lived, secure URL that lets the current organization view or download a private Stripe invoice PDF without exposing a permanent file link.
+      operationId: PaymentMethods_GetInvoicePdfAccess
+      parameters:
+      - name: invoiceId
+        in: path
+        description: The Stripe invoice identifier whose PDF should be accessed.
+        required: true
+        schema:
+          type: string
+      - name: download
+        in: query
+        description: Whether the secure URL should download the PDF instead of displaying it inline.
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/InvoicePdfAccessResponse'
+                description: Short-lived access details for a private Leadping invoice PDF.
+        '404':
+          description: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          headers:
+            WWW-Authenticate:
+              description: Bearer authentication challenge returned when credentials are missing or invalid.
+              schema:
+                type: string
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /payment-methods/{id}:
+    get:
+      tags:
+      - PaymentMethods
+      summary: Get an organization billing payment method
+      description: Returns one payment method for the current user or organization, including card metadata used for billing management.
+      operationId: PaymentMethods_Get
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the payment method to retrieve.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Payment method was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/StripePaymentMethodResponse'
+                description: Describes stripe payment method data used in Leadping API requests and responses.
+        '404':
+          description: The specified payment method was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '400':
+          description: The request was invalid or malformed.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+    delete:
+      tags:
+      - PaymentMethods
+      summary: Delete an organization billing payment method
+      description: Deletes a payment method so it is no longer available for wallet funding, invoices, or billing account management.
+      operationId: PaymentMethods_Delete
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the payment method to delete.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Payment method was successfully deleted.
+          content:
+            application/json:
+              schema:
+                type: string
+        '404':
+          description: The specified payment method was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '400':
+          description: The request was invalid or malformed.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /payment-methods/{id}/default:
+    post:
+      tags:
+      - PaymentMethods
+      summary: Set default payment method
+      description: Sets a payment method as the default for the current organization's future invoices and billing activity.
+      operationId: PaymentMethods_MakeDefault
+      parameters:
+      - name: id
+        in: path
+        description: The unique identifier of the payment method to make the default.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/StripePaymentMethodResponse'
+                description: Describes stripe payment method data used in Leadping API requests and responses.
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
+    StripeInvoiceResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Provider identifier for the invoice.
+        number:
+          type:
+          - 'null'
+          - string
+          description: Human-readable invoice number, when assigned.
+        createdAt:
+          type: string
+          description: Date and time when the invoice was created.
+          format: date-time
+        amount:
+          type: number
+          description: Total invoice amount in the invoice currency.
+          format: double
+        status:
+          type: string
+          description: Current provider-reported invoice status.
+        hasPdf:
+          type: boolean
+          description: Indicates whether a downloadable PDF is available for the invoice.
+      description: Customer-safe Leadping invoice summary for billing.
+    StripePaymentMethodResponse:
+      required:
+      - id
+      - brand
+      - last4
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this Stripe payment method.
+        brand:
+          type: string
+          description: Card network brand, such as Visa, Mastercard, or American Express.
+        last4:
+          type: string
+          description: UTC timestamp for last4 on this Stripe payment method.
+        expMonth:
+          type: integer
+          description: Two-digit month when the card expires.
+          format: int32
+        expYear:
+          type: integer
+          description: Four-digit year when the card expires.
+          format: int32
+        isDefault:
+          type: boolean
+          description: Whether this Stripe payment method is default.
+        createdAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for created at on this Stripe payment method.
+          format: date-time
+      description: Describes stripe payment method data used in Leadping API requests and responses.
+    InvoicePdfAccessResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          description: Short-lived URL that can be used to download the invoice PDF.
+          format: uri
+        expiresAt:
+          type: string
+          description: Date and time after which the download URL is no longer valid.
+          format: date-time
+      description: Short-lived access details for a private Leadping invoice PDF.
+  securitySchemes:
+    Bearer:
+      type: http
+      description: Authorization header using the Bearer scheme. Accepted values are Leadping user JWT access tokens and WorkOS organization API keys beginning with sk_.
+      scheme: bearer
+      bearerFormat: JWT or organization API key
+    SourceKey:
+      type: http
+      description: 'Leadping source key for lead ingestion endpoints only using the Authorization header. Example: "Authorization: Bearer lp_src_...".'
+      scheme: bearer
+      bearerFormat: Leadping source key
+externalDocs:
+  description: Leadping API documentation, authentication guide, concepts, and integration guidance.
+  url: https://leadping.ai/docs/api-reference

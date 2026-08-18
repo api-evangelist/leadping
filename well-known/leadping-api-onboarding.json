@@ -1,0 +1,105 @@
+{
+  "aod": "0.1",
+  "provider": {
+    "name": "Leadping",
+    "url": "https://leadping.ai",
+    "portalUrl": "https://leadping.ai/docs",
+    "apisJsonUrl": "https://api.leadping.ai/apis.json"
+  },
+  "maturity": "self-serve",
+  "account": {
+    "required": true,
+    "signupUrl": "https://leadping.ai/authentication/login",
+    "agentPolicy": "allowed-with-attestation",
+    "prerequisites": [
+      "A Leadping account and organization are required.",
+      "The account holder must be able to complete the agent identity claim ceremony.",
+      "Production SMS and calling require an approved lead source, consent evidence, and applicable sender or carrier registration."
+    ],
+    "plans": [
+      {
+        "name": "Monthly",
+        "requiredFor": "Leadping workspace and API access for $60 USD per month, plus metered provider usage.",
+        "url": "https://leadping.ai/pricing"
+      },
+      {
+        "name": "Annual",
+        "requiredFor": "The same workspace and API access for $600 USD per year, plus metered provider usage.",
+        "url": "https://leadping.ai/pricing"
+      }
+    ],
+    "termsOfService": {
+      "url": "https://leadping.ai/docs/terms-of-service",
+      "acceptance": "implicit"
+    }
+  },
+  "verification": [
+    {
+      "name": "Agent identity claim",
+      "description": "The Leadping account holder signs in through the verification URL and gives the agent the displayed one-time code.",
+      "blocking": true,
+      "expectedLatency": "minutes",
+      "url": "https://leadping.ai/auth.md"
+    },
+    {
+      "name": "Production communication readiness",
+      "description": "Lead sources, consent evidence, phone numbers, and carrier registration may require review before production SMS or calling is enabled.",
+      "blocking": false,
+      "expectedLatency": "varies by workflow and carrier",
+      "url": "https://leadping.ai/docs/get-started"
+    }
+  ],
+  "registration": {
+    "applicationNoun": "agent identity",
+    "owner": "organization",
+    "mechanisms": [
+      {
+        "type": "management-api",
+        "description": "An agent registers a service-auth identity without a bootstrap credential, completes a human claim ceremony, and exchanges the resulting assertion for a short-lived bearer token.",
+        "baseUrl": "https://motivated-run-93.authkit.app/agent/identity",
+        "tokenEndpoint": "https://motivated-run-93.authkit.app/oauth2/token",
+        "docsUrls": [
+          "https://leadping.ai/auth.md"
+        ],
+        "auth": "none"
+      }
+    ]
+  },
+  "authentication": {
+    "methods": [
+      {
+        "id": "none",
+        "type": "none",
+        "bootstrap": "",
+        "notes": "Initial service-auth registration requires only the account holder's email address; ownership is established by the human claim ceremony."
+      }
+    ]
+  },
+  "credentials": [
+    {
+      "type": "access-token",
+      "fields": {
+        "access_token": "access_token",
+        "refresh_token": "identity.refresh_token.value",
+        "assertion": "identity.assertion"
+      },
+      "ttl": "Access tokens last approximately 5 minutes; assertions and rotating refresh tokens are longer-lived.",
+      "rotation": "Exchange the stored assertion for a new access token; refresh the identity when the assertion approaches expiry.",
+      "oneTimeDisplay": true
+    }
+  ],
+  "scopes": {
+    "model": "scope-strings",
+    "resourceSelection": "Leadping organization",
+    "notes": "OAuth tokens use openid, profile, and email scopes; resource authorization is additionally constrained by the authenticated Leadping user and organization."
+  },
+  "economics": {
+    "freeTier": "No free API tier; API access is included with monthly and annual Leadping subscriptions.",
+    "pricingUrl": "https://leadping.ai/pricing",
+    "rateLimitsUrl": "https://api.leadping.ai/rate-limits.json"
+  },
+  "gaps": [
+    "The account holder must complete the interactive identity claim ceremony.",
+    "Production SMS and calling can require Leadping, carrier, or sender review after API credentials are available."
+  ]
+}

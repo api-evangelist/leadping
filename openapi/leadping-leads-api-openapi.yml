@@ -1,0 +1,3098 @@
+openapi: 3.2.0
+info:
+  title: Leadping Leads API
+  description: The Leadping API helps businesses capture and manage leads, automate follow-up, send SMS and MMS messages, place calls, track conversations, enforce contact suppression, and analyze communication workflows. Use this OpenAPI 3.1 contract to integrate lead sources, build organization tools, or generate a typed API client. Authenticate protected operations with a Leadping user access token or WorkOS organization API key. Lead intake operations also accept a Leadping source key.
+  termsOfService: https://leadping.ai/docs/terms-of-service
+  contact:
+    name: Leadping Support
+    url: https://leadping.ai/contact
+    email: support@leadping.ai
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: v1
+  summary: Lead management, messaging, calling, and automation API
+servers:
+- url: https://api.leadping.ai
+  description: Production
+tags:
+- name: Leads
+  description: Manages lead intake, records, assignment, routing, and lifecycle operations. Use these endpoints to ingest leads from trusted sources, search and update lead records, manage ownership and tags, and archive or delete leads.
+paths:
+  /leads:
+    post:
+      tags:
+      - Leads
+      summary: Create a lead record from an external source
+      description: Creates a source-authenticated lead captured outside Leadping, starting follow-up, routing, and automation from structured lead data.
+      operationId: Leads_CreateExternal
+      requestBody:
+        description: The lead data submitted by the external system.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadRequest'
+              description: Defines the fields clients can send when working with lead.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadRequest'
+              description: Defines the fields clients can send when working with lead.
+        required: true
+      responses:
+        '201':
+          description: Lead was successfully created.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadResponse'
+                description: Describes lead data returned by Leadping.
+        '404':
+          description: A related resource was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '400':
+          description: The request was invalid or malformed.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Source credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The source is not allowed to accept traffic.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - SourceKey: []
+  /leads/intake:
+    post:
+      tags:
+      - Leads
+      summary: Create a lead record from intake payload
+      description: Creates a source-authenticated lead from a flat intake payload, capturing contact fields, metadata, and automation-ready lead details.
+      operationId: Leads_CreateIntake
+      requestBody:
+        description: The common lead fields submitted by the external system.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadIntakeRequest'
+              description: Defines the fields clients can send when working with lead intake.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadIntakeRequest'
+              description: Defines the fields clients can send when working with lead intake.
+        required: true
+      responses:
+        '201':
+          description: The lead response was created successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadResponse'
+                description: Describes lead data returned by Leadping.
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Source credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The source is not allowed to accept traffic.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - SourceKey: []
+    get:
+      tags:
+      - Leads
+      summary: Create a lead record from query intake
+      description: Creates a source-authenticated lead from query parameters, supporting simple form posts, tracking metadata, and follow-up automation.
+      operationId: Leads_CreateIntakeFromQuery
+      parameters:
+      - name: FirstName
+        in: query
+        description: First name of the lead, user, or contact represented by this lead intake request.
+        schema:
+          type: string
+      - name: LastName
+        in: query
+        description: Last name of the lead, user, or contact represented by this lead intake request.
+        schema:
+          type: string
+      - name: Email
+        in: query
+        description: Email address for the person represented by this lead intake request.
+        schema:
+          type: string
+      - name: Phone
+        in: query
+        description: Phone details for the lead, user, or organization represented by this lead intake request.
+        schema:
+          type: string
+      - name: PhoneType
+        in: query
+        description: Source-provided phone type, such as mobile, landline, or VoIP, used during lead intake normalization.
+        schema:
+          type: string
+      - name: DateOfBirth
+        in: query
+        description: Lead date of birth supplied by intake sources and normalized into the lead profile.
+        schema:
+          type: string
+          format: date
+      - name: BirthDate
+        in: query
+        description: Lead birth date used for demographic matching and insurance intake workflows.
+        schema:
+          type: string
+          format: date
+      - name: Address1
+        in: query
+        description: First street address line submitted by the lead intake source.
+        schema:
+          type: string
+      - name: Address2
+        in: query
+        description: Second street address line submitted by the lead intake source.
+        schema:
+          type: string
+      - name: City
+        in: query
+        description: City for the lead or organization postal address.
+        schema:
+          type: string
+      - name: State
+        in: query
+        description: State, province, or region for the lead or organization postal address.
+        schema:
+          type: string
+      - name: Zip
+        in: query
+        description: ZIP code submitted by the lead intake source.
+        schema:
+          type: string
+      - name: PostalCode
+        in: query
+        description: Postal code for the lead or organization address.
+        schema:
+          type: string
+      - name: Gender
+        in: query
+        description: Lead gender supplied by intake sources and normalized when possible.
+        schema:
+          type: string
+      - name: SubId
+        in: query
+        description: Affiliate or publisher sub ID captured for lead attribution.
+        schema:
+          type: string
+      - name: SellerLeadId
+        in: query
+        description: Seller-provided lead identifier used to deduplicate and reconcile lead delivery.
+        schema:
+          type: string
+      - name: SellerLeadIdentifier
+        in: query
+        description: Alternate seller-provided lead identifier used during intake normalization.
+        schema:
+          type: string
+      - name: DirectPostPrice
+        in: query
+        description: Direct-post price supplied by the lead source during intake.
+        schema:
+          type:
+          - 'null'
+          - number
+          format: double
+      - name: Price
+        in: query
+        description: Lead price or transaction price supplied to the Leadping API.
+        schema:
+          type:
+          - 'null'
+          - number
+          format: double
+      - name: UtmSource
+        in: query
+        description: UTM source parameter captured for lead attribution reporting.
+        schema:
+          type: string
+      - name: UtmMedium
+        in: query
+        description: UTM medium parameter captured for lead attribution reporting.
+        schema:
+          type: string
+      - name: UtmCampaign
+        in: query
+        description: UTM campaign parameter captured for lead attribution reporting.
+        schema:
+          type: string
+      - name: UtmTerm
+        in: query
+        description: UTM term parameter captured for lead attribution reporting.
+        schema:
+          type: string
+      - name: UtmContent
+        in: query
+        description: UTM content parameter captured for lead attribution reporting.
+        schema:
+          type: string
+      - name: Product
+        in: query
+        description: Product or offer associated with the lead or source.
+        schema:
+          type: string
+      - name: Vertical
+        in: query
+        description: Industry vertical used for lead routing, compliance review, and reporting.
+        schema:
+          type: string
+      - name: Referrer
+        in: query
+        description: Referring page or traffic source that sent the lead into Leadping.
+        schema:
+          type: string
+      - name: LandingPage
+        in: query
+        description: Landing page URL where the lead submitted their information.
+        schema:
+          type: string
+      - name: TrustedFormUrl
+        in: query
+        description: TrustedForm certificate URL used as proof of consumer consent.
+        schema:
+          type: string
+      - name: ExternalId
+        in: query
+        description: External system identifier used to reconcile this lead intake request across integrations.
+        schema:
+          type: string
+      - name: SourceMetadata
+        in: query
+        description: Source-provided key-value metadata retained for lead attribution and integration troubleshooting.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+      - name: TagIds
+        in: query
+        description: Tag IDs assigned to or filtered against this lead.
+        schema:
+          type: array
+          items:
+            type: string
+      - name: TagNames
+        in: query
+        description: Tag names assigned to this lead when matching existing tags by name.
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '201':
+          description: The lead response was created successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadResponse'
+                description: Describes lead data returned by Leadping.
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Source credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The source is not allowed to accept traffic.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - SourceKey: []
+  /leads/{id}:
+    get:
+      tags:
+      - Leads
+      summary: Get an organization lead record for current user
+      description: Returns one lead visible to the current user, including communication details, status, source, and follow-up context.
+      operationId: Leads_GetForCurrentUser
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the lead to retrieve.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Lead was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadResponse'
+                description: Describes lead data returned by Leadping.
+        '404':
+          description: The specified lead was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: The user does not own this lead.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+    put:
+      tags:
+      - Leads
+      summary: Update an organization lead record and status
+      description: Updates lead details for the current organization, keeping contact data, status, source, and follow-up context current.
+      operationId: Leads_Update
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the lead to update.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The updated lead data.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadRequest'
+              description: Defines the fields clients can send when working with lead.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadRequest'
+              description: Defines the fields clients can send when working with lead.
+        required: true
+      responses:
+        '200':
+          description: Lead was successfully updated.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadResponse'
+                description: Describes lead data returned by Leadping.
+        '404':
+          description: The specified lead was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '400':
+          description: The request was invalid or malformed.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+    delete:
+      tags:
+      - Leads
+      summary: Delete an organization lead record by ID
+      description: 'Marks a lead as deleted so it no longer appears in user-facing lead, conversation, routing, or event workflows. The stored lead,
+
+        conversation, and event records are retained.'
+      operationId: Leads_Delete
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the lead to delete.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Lead was successfully deleted.
+        '404':
+          description: The specified lead was not found.
+          content:
+            text/plain:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            text/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            text/plain:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            text/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /leads/{id}/workflow-status:
+    get:
+      tags:
+      - Leads
+      summary: Get a lead automation workflow status
+      description: Returns automation workflow status for one lead, including active runs, paused state, and follow-up progress for the current organization.
+      operationId: Leads_GetWorkflowStatusForCurrentUser
+      parameters:
+      - name: id
+        in: path
+        description: The unique identifier of the lead whose workflow status to retrieve.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/AutomationWorkflowStatusResponse'
+                description: Automation workflow status collection for a lead.
+        '404':
+          description: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /leads/{id}/archive:
+    post:
+      tags:
+      - Leads
+      summary: Archive an organization lead record by ID
+      description: Archives a lead without deleting history, removing it from active pipeline views while preserving communication and event records.
+      operationId: Leads_Archive
+      parameters:
+      - name: id
+        in: path
+        description: The unique identifier of the lead to archive.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Optional archive reason and related audit context.
+        content:
+          application/json:
+            schema:
+              type:
+              - 'null'
+              - object
+              allOf:
+              - $ref: '#/components/schemas/LeadArchiveRequest'
+              description: Defines the fields clients can send when working with lead archive.
+          application/*+json:
+            schema:
+              type:
+              - 'null'
+              - object
+              allOf:
+              - $ref: '#/components/schemas/LeadArchiveRequest'
+              description: Defines the fields clients can send when working with lead archive.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadResponse'
+                description: Describes lead data returned by Leadping.
+        '404':
+          description: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /leads/{id}/unarchive:
+    post:
+      tags:
+      - Leads
+      summary: Unarchive an organization lead record by ID
+      description: Restores an archived lead to active pipeline views so follow-up, communication, and routing workflows can resume.
+      operationId: Leads_Unarchive
+      parameters:
+      - name: id
+        in: path
+        description: The unique identifier of the archived lead to restore.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadResponse'
+                description: Describes lead data returned by Leadping.
+        '404':
+          description: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /leads/all/my:
+    post:
+      tags:
+      - Leads
+      summary: List organization lead records for current user
+      description: Lists leads visible to the current user with paging, sorting, filters, tags, and archive status for pipeline review.
+      operationId: Leads_GetAllForCurrentUser
+      parameters:
+      - name: tagIds
+        in: query
+        description: Optional tag identifiers used to filter the lead list.
+        schema:
+          type: array
+          items:
+            type: string
+      - name: tagMatchAll
+        in: query
+        description: Whether a lead must contain every supplied tag instead of any supplied tag.
+        schema:
+          type: boolean
+      - name: untagged
+        in: query
+        description: Whether to include only leads that have no tags.
+        schema:
+          type: boolean
+      - name: archiveFilter
+        in: query
+        description: Optional filter selecting active, archived, or all leads.
+        schema:
+          type: string
+      requestBody:
+        description: Pagination, filtering, and sorting options for lead records.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+        required: true
+      responses:
+        '200':
+          description: Leads were successfully retrieved.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/PagedResultOfLeadTableRow'
+                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /leads/{id}/tags:
+    post:
+      tags:
+      - Leads
+      summary: Add organization tags to a lead record by ID
+      description: Adds one or more current-organization tags to a lead so users can segment, filter, route, and review follow-up work.
+      operationId: Leads_AddTags
+      parameters:
+      - name: id
+        in: path
+        description: The unique identifier of the lead to tag.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The organization tag identifiers to add to the lead.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadTagsRequest'
+              description: Defines the fields clients can send when working with lead tag update.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadTagsRequest'
+              description: Defines the fields clients can send when working with lead tag update.
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadResponse'
+                description: Describes lead data returned by Leadping.
+        '404':
+          description: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+    put:
+      tags:
+      - Leads
+      summary: Replace organization tags on a lead record
+      description: Replaces all tags on a lead with the supplied current-organization tags, keeping segmentation and routing labels in sync.
+      operationId: Leads_ReplaceTags
+      parameters:
+      - name: id
+        in: path
+        description: The unique identifier of the lead whose tags to replace.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The complete replacement set of organization tag identifiers.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadTagsRequest'
+              description: Defines the fields clients can send when working with lead tag update.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadTagsRequest'
+              description: Defines the fields clients can send when working with lead tag update.
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadResponse'
+                description: Describes lead data returned by Leadping.
+        '404':
+          description: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /leads/{id}/tags/{tagId}:
+    delete:
+      tags:
+      - Leads
+      summary: Remove an organization tag from a lead record
+      description: Removes one current-organization tag from a lead while leaving the lead record, other tags, and communication history intact.
+      operationId: Leads_RemoveTag
+      parameters:
+      - name: id
+        in: path
+        description: The unique identifier of the lead to update.
+        required: true
+        schema:
+          type: string
+      - name: tagId
+        in: path
+        description: The unique identifier of the organization tag to remove.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadResponse'
+                description: Describes lead data returned by Leadping.
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadResponse'
+                description: Describes lead data returned by Leadping.
+            text/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadResponse'
+                description: Describes lead data returned by Leadping.
+        '404':
+          description: The requested resource was not found.
+          content:
+            text/plain:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            text/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            text/plain:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            text/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+components:
+  schemas:
+    TagSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this tag summary.
+        name:
+          type: string
+          description: Display name for this tag summary in the Leadping API.
+        normalizedName:
+          type: string
+          description: Normalized name used for case-insensitive tag matching and deduplication.
+        color:
+          type:
+          - 'null'
+          - string
+          description: Hex color used to display this tag or status in Leadping clients.
+      description: Summary schema for Leadping API tag summary data used in dashboards and reports.
+    AutomationWorkflowEventResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for the automation workflow event.
+        stepId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the step associated with this Leadping automation workflow event.
+        actionId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the action associated with this Leadping automation workflow event.
+        eventType:
+          type: string
+          description: Event type classification for this Leadping automation workflow event.
+        status:
+          type: string
+          description: Current status for this Leadping automation workflow event.
+        statusDisplay:
+          type: string
+          description: Human-readable status display for this Leadping automation workflow event.
+        summary:
+          type: string
+          description: Human-readable summary for this Leadping automation workflow event.
+        reasonCode:
+          type:
+          - 'null'
+          - string
+          description: Reason or diagnostic code that explains the current outcome for this Leadping automation workflow event.
+        occurredAt:
+          type: string
+          description: Date and time when the automation workflow event event occurred.
+          format: date-time
+      description: User-safe workflow history event returned for lead automation status.
+    Coordinate:
+      required:
+      - latitude
+      - longitude
+      type: object
+      properties:
+        latitude:
+          type: number
+          description: Latitude of the geographic coordinate in decimal degrees, from -90 through 90.
+          format: double
+        longitude:
+          type: number
+          description: Longitude of the geographic coordinate in decimal degrees, from -180 through 180.
+          format: double
+      description: Latitude and longitude coordinate for this lead contact profile.
+    PagedResultOfLeadTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/LeadTableRow'
+            description: Summarizes lead data in paginated and searchable results.
+          description: Items included in the current page, in the order determined by the query.
+        pageSize:
+          type: integer
+          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
+      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+    OrderByOption:
+      type: object
+      properties:
+        field:
+          type: string
+          description: Serializable field name used for sorting; supported names are determined by the queried resource.
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
+          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
+      description: Defines one field and direction used to order an API query result set.
+    LeadMetadata:
+      required:
+      - trustedFormUrl
+      type: object
+      properties:
+        utmSource:
+          type:
+          - 'null'
+          - string
+          description: UTM source parameter captured for lead attribution reporting.
+        utmMedium:
+          type:
+          - 'null'
+          - string
+          description: UTM medium parameter captured for lead attribution reporting.
+        utmCampaign:
+          type:
+          - 'null'
+          - string
+          description: UTM campaign parameter captured for lead attribution reporting.
+        utmTerm:
+          type:
+          - 'null'
+          - string
+          description: UTM term parameter captured for lead attribution reporting.
+        utmContent:
+          type:
+          - 'null'
+          - string
+          description: UTM content parameter captured for lead attribution reporting.
+        referrer:
+          type:
+          - 'null'
+          - string
+          description: Referring page or traffic source that sent the lead into Leadping.
+        landingPage:
+          type:
+          - 'null'
+          - string
+          description: Landing page URL where the lead submitted their information.
+        subId:
+          type:
+          - 'null'
+          - string
+          description: Affiliate or publisher sub ID captured for lead attribution.
+        pubId:
+          type:
+          - 'null'
+          - string
+          description: Publisher ID supplied by the lead source for attribution.
+        ipAddress:
+          type:
+          - 'null'
+          - string
+          description: IP address captured with the request for audit and compliance review.
+        userAgent:
+          type:
+          - 'null'
+          - string
+          description: Browser or client user agent captured when this lead attribution metadata was submitted.
+        externalId:
+          type:
+          - 'null'
+          - string
+          description: External system identifier used to reconcile this lead attribution metadata across integrations.
+        sellerLeadId:
+          type:
+          - 'null'
+          - string
+          description: Seller-provided lead identifier used to deduplicate and reconcile lead delivery.
+        createdAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when this lead attribution metadata was created.
+          format: date-time
+        price:
+          type:
+          - 'null'
+          - number
+          description: Lead price or transaction price supplied to the Leadping API.
+          format: double
+        directPostPrice:
+          type:
+          - 'null'
+          - number
+          description: Direct-post price supplied by the lead source during intake.
+          format: double
+        product:
+          type:
+          - 'null'
+          - string
+          description: Product or offer associated with the lead or source.
+        vertical:
+          type:
+          - 'null'
+          - string
+          description: Industry vertical used for lead routing, compliance review, and reporting.
+        complianceStatus:
+          type:
+          - 'null'
+          - string
+          description: Compliance status used to decide whether Leadping can send messages.
+        complianceBlockedReason:
+          type:
+          - 'null'
+          - string
+          description: Reason Leadping blocked this operation for compliance.
+        sourceMetadata:
+          type:
+          - 'null'
+          - object
+          additionalProperties:
+            type: string
+          description: Source-provided key-value metadata retained for lead attribution and integration troubleshooting.
+        origin:
+          type:
+          - 'null'
+          - string
+          description: System or workflow that created this event.
+        importBatchId:
+          type:
+          - 'null'
+          - string
+          description: Bulk import batch ID that created or updated this lead.
+        isImported:
+          type: boolean
+          description: Indicates whether this lead was imported rather than captured through a live source.
+        assignedPhoneNumberId:
+          type:
+          - 'null'
+          - string
+          description: Phone number ID assigned to the lead, organization, or source.
+        smsConsentStatus:
+          type:
+          - 'null'
+          - string
+          description: Current SMS consent status recorded for this lead.
+        smsOptedOut:
+          type: boolean
+          description: Indicates whether the lead has opted out of SMS communication.
+        smsOptOutAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the lead opted out of SMS communication.
+          format: date-time
+        smsOptInAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the lead opted in to SMS communication.
+          format: date-time
+        smsHelpRequestedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the lead requested SMS help instructions.
+          format: date-time
+        smsConsentPhoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Phone number where SMS consent was captured or evaluated.
+        trustedFormUrl:
+          type: string
+          description: TrustedForm certificate URL used as proof of consumer consent.
+          format: uri
+        trustedFormCheckedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping last successfully validated the TrustedForm certificate URL.
+          format: date-time
+        userId:
+          type:
+          - 'null'
+          - string
+          description: User ID associated with this lead's attribution metadata.
+        organizationId:
+          type:
+          - 'null'
+          - string
+          description: Organization ID that owns this lead's attribution metadata.
+      description: Public Leadping API schema for lead attribution metadata data.
+    LeadTableRow:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this lead table row.
+        firstName:
+          type:
+          - 'null'
+          - string
+          description: First name of the lead, user, or contact represented by this lead table row.
+        lastName:
+          type:
+          - 'null'
+          - string
+          description: Last name of the lead, user, or contact represented by this lead table row.
+        phone:
+          type: string
+          description: Phone details for the lead, user, or organization represented by this lead table row.
+        email:
+          type: string
+          description: Email address for the person represented by this lead table row.
+          format: email
+        createdAt:
+          type: string
+          description: UTC timestamp when this lead table row was created.
+          format: date-time
+        updatedAt:
+          type: string
+          description: UTC timestamp when this lead table row was last updated.
+          format: date-time
+        status:
+          type: string
+          description: Current lifecycle status for this lead table row in the Leadping API.
+        statusTone:
+          type: string
+          description: Presentation tone that helps clients style the current status of this lead table row.
+        enabled:
+          type: boolean
+          description: Indicates whether this lead table row is active and available in the Leadping API.
+        archivedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when this record was archived.
+          format: date-time
+        archivedByUserId:
+          type:
+          - 'null'
+          - string
+          description: User ID of the person who archived this record.
+        archiveReason:
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          type:
+          - 'null'
+          - integer
+          description: Defines why a lead was removed from the active working pipeline.
+          format: int32
+        isArchived:
+          type: boolean
+          description: Whether this lead is archived.
+        currentLeadStatus:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/CurrentLeadStatusSummary'
+          description: Current lead status change summary that describes the lead outcome.
+        processingStatus:
+          enum:
+          - Verifying
+          - Validating
+          - Enriching
+          - Ready
+          - Invalid
+          - Failed
+          type:
+          - 'null'
+          - string
+          description: Defines the asynchronous verification and enrichment lifecycle for a lead.
+        processingStatusReason:
+          type:
+          - 'null'
+          - string
+          description: Explanation when asynchronous lead processing is blocked or fails.
+        processingStatusChangedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the processing stage last changed.
+          format: date-time
+        price:
+          type:
+          - 'null'
+          - number
+          description: Lead price or transaction price supplied to the Leadping API.
+          format: double
+        organization:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related organization.
+        source:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related source.
+        tags:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/TagSummary'
+            description: Summary schema for Leadping API tag summary data used in dashboards and reports.
+          description: Tags currently attached to this lead, source, or record.
+      description: Summarizes lead data in paginated and searchable results.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
+    PhoneIdentityLookupAction:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of this phone identity lookup action.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PhoneIdentityLookupActionType'
+          description: The category of enrichment, validation, or reputation lookup that was performed.
+        provider:
+          type: string
+          description: The provider that performed the phone identity lookup.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/PhoneIdentityLookupActionStatus'
+          description: The processing outcome reported for the phone identity lookup.
+        occurredAt:
+          type: string
+          description: The UTC timestamp when the lookup action occurred.
+          format: date-time
+        providerCostAmount:
+          type:
+          - 'null'
+          - number
+          description: The provider cost incurred by this lookup action, in USD.
+          format: double
+        providerPricingVersion:
+          type:
+          - 'null'
+          - string
+          description: The provider pricing version used to calculate the lookup cost.
+      description: An auditable lookup, enrichment, or reputation check performed for a phone identity.
+    LeadContact:
+      type: object
+      properties:
+        firstName:
+          type:
+          - 'null'
+          - string
+          description: First name of the lead, user, or contact represented by this lead contact profile.
+        lastName:
+          type:
+          - 'null'
+          - string
+          description: Last name of the lead, user, or contact represented by this lead contact profile.
+        streetAddress:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/StreetAddress'
+          description: Postal street address for the lead contact profile.
+        coordinate:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/Coordinate'
+          description: Latitude and longitude coordinate for this lead contact profile.
+        timeZoneId:
+          type:
+          - 'null'
+          - string
+          description: IANA or Windows time zone identifier used for local scheduling and reporting.
+        phone:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/Phone'
+          description: Phone details for the lead, user, or organization represented by this lead contact profile.
+        email:
+          type:
+          - 'null'
+          - string
+          description: Email address for the person represented by this lead contact profile.
+          format: email
+        avatarUrl:
+          type:
+          - 'null'
+          - string
+          description: Optional profile image URL for the contact. Clients fall back to Gravatar and then initials when this value is not supplied.
+          format: uri
+      description: Public Leadping API schema for lead contact profile data.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/OrderByOption'
+            description: Defines one field and direction used to order an API query result set.
+          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
+        search:
+          type:
+          - 'null'
+          - string
+          description: Free-text search term applied to the configured SearchFields.
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ExactMatchFilter'
+            description: Selects records whose named field equals a supplied scalar value.
+          description: Exact-match conditions that require each named field to equal its supplied value.
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/RangeFilter'
+            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
+      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+    PhoneLookup:
+      type: object
+      properties:
+        number:
+          type:
+          - 'null'
+          - string
+          description: E.164 phone number exposed by this phone lookup result.
+        nationalFormat:
+          type:
+          - 'null'
+          - string
+          description: Provider-formatted national phone number.
+        recordType:
+          type:
+          - 'null'
+          - string
+          description: Provider record discriminator.
+        fraud:
+          type:
+          - 'null'
+          - string
+          description: Fraud value returned by the provider, when available.
+        isValid:
+          type: boolean
+          description: Indicates whether this phone lookup result passed validation.
+        lineType:
+          enum:
+          - Wireline
+          - Wireless
+          - VoWiFi
+          - VoIP
+          - PrePaidWireless
+          - Unknown
+          type:
+          - 'null'
+          - string
+          description: Classifies the access technology or service type associated with a telephone number.
+        carrier:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLookupCarrier'
+          description: Complete carrier metadata reported for this phone number.
+        callerName:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLookupCallerName'
+          description: Caller-name data returned by the provider.
+        portability:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLookupPortability'
+          description: Complete portability data returned by Telnyx.
+        location:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneNumberLocation'
+          description: Geographic location metadata for the phone number, lead, or lookup result.
+        id:
+          type: string
+          description: Stable unique identifier of the resource.
+        createdAt:
+          type: string
+          description: UTC timestamp when the resource was created.
+          format: date-time
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
+          format: date-time
+      description: Public Leadping API schema for phone lookup result data.
+    CurrentLeadStatusSummary:
+      type: object
+      properties:
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique Leadping identifier for this current lead status change summary.
+        category:
+          enum:
+          - Open
+          - Qualified
+          - Converted
+          - Lost
+          - Invalid
+          - Duplicate
+          type:
+          - 'null'
+          - string
+          description: Controlled lead status change categories used for reporting, automation, and analytics.
+        outcome:
+          type:
+          - 'null'
+          - string
+          description: Current lead status change outcome assigned to the lead.
+        displayName:
+          type: string
+          description: Human-readable display name shown for this current lead status change summary.
+        changedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the lead status change last changed.
+          format: date-time
+        changedByUserId:
+          type:
+          - 'null'
+          - string
+          description: User ID of the person who last changed the lead status change.
+        changedByAutomationId:
+          type:
+          - 'null'
+          - string
+          description: Automation ID that last changed the lead status change.
+        source:
+          enum:
+          - User
+          - AI
+          - Automation
+          - System
+          - API
+          type:
+          - 'null'
+          - string
+          description: Known sources that can change a lead's current lead status change.
+      description: Summary schema for Leadping API current lead status change summary data used in dashboards and reports.
+    PhoneIdentityResponse:
+      type: object
+      properties:
+        number:
+          type: string
+          description: The canonical E.164 phone number.
+        lookup:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLookup'
+          description: Provider lookup and enrichment data for the number.
+        providerEnrichment:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLookupProviderSnapshot'
+          description: Lossless provider response retained for administrative diagnostics.
+        lastEnrichedAt:
+          type:
+          - 'null'
+          - string
+          description: The most recent time lookup data was enriched.
+          format: date-time
+        lookupActions:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/PhoneIdentityLookupAction'
+            description: An auditable lookup, enrichment, or reputation check performed for a phone identity.
+          description: Lookup, enrichment, and reputation actions performed for this identity.
+        name:
+          type: string
+          description: Human-readable display name of the resource.
+        id:
+          type: string
+          description: Stable unique identifier of the resource.
+        createdAt:
+          type: string
+          description: UTC timestamp when the resource was created.
+          format: date-time
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
+          format: date-time
+      description: Describes Leadping's canonical identity for a phone number, including normalization, carrier, line type, reputation, and lookup history.
+    LeadIntakeRequest:
+      type: object
+      properties:
+        firstName:
+          type:
+          - 'null'
+          - string
+          description: First name of the lead, user, or contact represented by this lead intake request.
+        lastName:
+          type:
+          - 'null'
+          - string
+          description: Last name of the lead, user, or contact represented by this lead intake request.
+        email:
+          type:
+          - 'null'
+          - string
+          description: Email address for the person represented by this lead intake request.
+          format: email
+        phone:
+          type:
+          - 'null'
+          - string
+          description: Phone details for the lead, user, or organization represented by this lead intake request.
+        phoneType:
+          type:
+          - 'null'
+          - string
+          description: Source-provided phone type, such as mobile, landline, or VoIP, used during lead intake normalization.
+        dateOfBirth:
+          type:
+          - 'null'
+          - string
+          description: Lead date of birth supplied by intake sources and normalized into the lead profile.
+          format: date
+        birthDate:
+          type:
+          - 'null'
+          - string
+          description: Lead birth date used for demographic matching and insurance intake workflows.
+          format: date
+        address1:
+          type:
+          - 'null'
+          - string
+          description: First street address line submitted by the lead intake source.
+        address2:
+          type:
+          - 'null'
+          - string
+          description: Second street address line submitted by the lead intake source.
+        city:
+          type:
+          - 'null'
+          - string
+          description: City for the lead or organization postal address.
+        state:
+          type:
+          - 'null'
+          - string
+          description: State, province, or region for the lead or organization postal address.
+        zip:
+          type:
+          - 'null'
+          - string
+          description: ZIP code submitted by the lead intake source.
+        postalCode:
+          type:
+          - 'null'
+          - string
+          description: Postal code for the lead or organization address.
+        gender:
+          type:
+          - 'null'
+          - string
+          description: Lead gender supplied by intake sources and normalized when possible.
+        subId:
+          type:
+          - 'null'
+          - string
+          description: Affiliate or publisher sub ID captured for lead attribution.
+        sellerLeadId:
+          type:
+          - 'null'
+          - string
+          description: Seller-provided lead identifier used to deduplicate and reconcile lead delivery.
+        sellerLeadIdentifier:
+          type:
+          - 'null'
+          - string
+          description: Alternate seller-provided lead identifier used during intake normalization.
+        directPostPrice:
+          type:
+          - 'null'
+          - number
+          description: Direct-post price supplied by the lead source during intake.
+          format: double
+        price:
+          type:
+          - 'null'
+          - number
+          description: Lead price or transaction price supplied to the Leadping API.
+          format: double
+        utmSource:
+          type:
+          - 'null'
+          - string
+          description: UTM source parameter captured for lead attribution reporting.
+        utmMedium:
+          type:
+          - 'null'
+          - string
+          description: UTM medium parameter captured for lead attribution reporting.
+        utmCampaign:
+          type:
+          - 'null'
+          - string
+          description: UTM campaign parameter captured for lead attribution reporting.
+        utmTerm:
+          type:
+          - 'null'
+          - string
+          description: UTM term parameter captured for lead attribution reporting.
+        utmContent:
+          type:
+          - 'null'
+          - string
+          description: UTM content parameter captured for lead attribution reporting.
+        product:
+          type:
+          - 'null'
+          - string
+          description: Product or offer associated with the lead or source.
+        vertical:
+          type:
+          - 'null'
+          - string
+          description: Industry vertical used for lead routing, compliance review, and reporting.
+        referrer:
+          type:
+          - 'null'
+          - string
+          description: Referring page or traffic source that sent the lead into Leadping.
+        landingPage:
+          type:
+          - 'null'
+          - string
+          description: Landing page URL where the lead submitted their information.
+        trustedFormUrl:
+          type:
+          - 'null'
+          - string
+          description: TrustedForm certificate URL used as proof of consumer consent.
+          format: uri
+        externalId:
+          type:
+          - 'null'
+          - string
+          description: External system identifier used to reconcile this lead intake request across integrations.
+        sourceMetadata:
+          type:
+          - 'null'
+          - object
+          additionalProperties:
+            type: string
+          description: Source-provided key-value metadata retained for lead attribution and integration troubleshooting.
+        tagIds:
+          type: array
+          items:
+            type: string
+          description: Tag IDs assigned to or filtered against this lead.
+        tagNames:
+          type: array
+          items:
+            type: string
+          description: Tag names assigned to this lead when matching existing tags by name.
+      description: Defines the fields clients can send when working with lead intake.
+      example:
+        firstName: Taylor
+        lastName: Morgan
+        email: taylor@example.com
+        phone: '+13125550100'
+        utmSource: paid-search
+        utmCampaign: summer-campaign
+        landingPage: https://example.com/request-a-quote
+        externalId: external-lead-123
+        tagNames:
+        - website
+        - new-lead
+    LeadProfile:
+      type: object
+      properties:
+        gender:
+          enum:
+          - M
+          - F
+          - NonBinary
+          - PreferNotToSay
+          - Other
+          type:
+          - 'null'
+          - string
+          description: Classifies a lead's self-reported gender when required by a qualification, demographic, or integration workflow.
+        height:
+          type:
+          - 'null'
+          - integer
+          description: Lead height provided for qualification workflows that require demographic details.
+          format: int32
+        weight:
+          type:
+          - 'null'
+          - integer
+          description: Relative weighting used to rank or score this lead demographic profile.
+          format: int32
+        birthDate:
+          type:
+          - 'null'
+          - string
+          description: Lead birth date used for demographic matching and insurance intake workflows.
+          format: date
+        maritalStatus:
+          enum:
+          - Married
+          - Single
+          - Widow
+          - Separated
+          - Divorced
+          type:
+          - 'null'
+          - string
+          description: Classifies a lead's reported marital status when required by a qualification or integration workflow.
+        income:
+          type:
+          - 'null'
+          - integer
+          description: Lead income amount or range supplied for qualification workflows.
+          format: int32
+        isHomeowner:
+          type:
+          - 'null'
+          - boolean
+          description: Indicates whether the lead owns their home.
+        monthsAtResidence:
+          type:
+          - 'null'
+          - integer
+          description: Number of months the lead has lived at the current residence.
+          format: int32
+        creditScore:
+          type:
+          - 'null'
+          - integer
+          description: Lead credit score range or score supplied by the intake source.
+          format: int32
+        hasBankruptcy:
+          type:
+          - 'null'
+          - boolean
+          description: Indicates whether the lead reported bankruptcy history.
+        employmentType:
+          enum:
+          - Employed
+          - PartTime
+          - SelfEmployed
+          - Contractor
+          - Unemployed
+          - Retired
+          - Student
+          - Military
+          - Homemaker
+          - Disabled
+          - Other
+          type:
+          - 'null'
+          - string
+          description: Classifies a lead's reported employment arrangement for qualification and demographic workflows.
+        numberOfDependents:
+          type:
+          - 'null'
+          - integer
+          description: Number of dependents reported by the lead.
+          format: int32
+        hasMedicalCondition:
+          type:
+          - 'null'
+          - boolean
+          description: Indicates whether the lead reported a medical condition relevant to qualification.
+      description: Public Leadping API schema for lead demographic profile data.
+    PhoneIdentityLookupActionType:
+      enum:
+      - validation
+      - enrichment
+      - unwanted-number-check
+      type: string
+      description: Identifies the kind of lookup action performed for a phone identity.
+    LeadTagsRequest:
+      required:
+      - tagIds
+      - tagNames
+      type: object
+      properties:
+        tagIds:
+          type: array
+          items:
+            type: string
+          description: Tag IDs assigned to or filtered against this lead.
+        tagNames:
+          type: array
+          items:
+            type: string
+          description: Tag names assigned to this lead when matching existing tags by name.
+        createMissing:
+          type: boolean
+          description: Indicates whether Leadping should create missing records while processing the request.
+      description: Defines the fields clients can send when working with lead tag update.
+    RangeFilter:
+      type: object
+      properties:
+        greaterThan:
+          description: Exclusive lower bound; matching field values must be greater than this value.
+        greaterThanOrEqual:
+          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
+        lessThan:
+          description: Exclusive upper bound; matching field values must be less than this value.
+        lessThanOrEqual:
+          description: Inclusive upper bound; matching field values must be less than or equal to this value.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+    StreetAddress:
+      type: object
+      properties:
+        line1:
+          type:
+          - 'null'
+          - string
+          description: Primary delivery line, such as a street address, post-office box, or company name.
+        line2:
+          type:
+          - 'null'
+          - string
+          description: Secondary delivery line, such as an apartment, suite, unit, floor, or building.
+        city:
+          type:
+          - 'null'
+          - string
+          description: City, town, village, or other postal locality.
+        state:
+          type:
+          - 'null'
+          - string
+          description: State or equivalent first-level administrative subdivision when that label is used by the country.
+        province:
+          type:
+          - 'null'
+          - string
+          description: Province or territory when represented separately from State by the source or destination system.
+        region:
+          type:
+          - 'null'
+          - string
+          description: Region, district, county, prefecture, or other administrative area not represented by state or province.
+        postalCode:
+          type:
+          - 'null'
+          - string
+          description: Postal routing code, such as a ZIP code or postcode, formatted according to the destination country.
+        country:
+          type:
+          - 'null'
+          - string
+          description: Two-letter ISO 3166-1 alpha-2 country code, such as US, GB, or CA.
+        additionalInfo:
+          type:
+          - 'null'
+          - string
+          description: Additional address context or delivery instructions that do not fit the structured fields.
+      description: Describes a physical or mailing address using international locality, administrative-area, postal-code, and country fields.
+    PhoneNumberLocation:
+      type: object
+      properties:
+        location:
+          type:
+          - 'null'
+          - string
+          description: Geographic location metadata for the phone number, lead, or lookup result.
+        state:
+          type:
+          - 'null'
+          - string
+          description: State, province, or region for the lead or organization postal address.
+        canonicalCity:
+          type:
+          - 'null'
+          - string
+          description: Canonical city resolved by Leadping from its ZIP-code geography data.
+        canonicalState:
+          type:
+          - 'null'
+          - string
+          description: Canonical state or territory abbreviation resolved by Leadping.
+        countryCode:
+          type:
+          - 'null'
+          - string
+          description: Country code for the phone number or location represented by this phone number location.
+        coordinate:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/Coordinate'
+          description: Latitude and longitude coordinate for this phone number location.
+        coordinateSource:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLocationSource'
+          description: Describes how the coordinate was resolved.
+        timeZoneId:
+          type:
+          - 'null'
+          - string
+          description: IANA or Windows time zone identifier used for local scheduling and reporting.
+        timeZoneSource:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLocationSource'
+          description: Describes how the time zone was resolved.
+      description: Public Leadping API schema for phone number location data.
+    AutomationWorkflowActionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for the automation workflow action.
+        stepId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the step associated with this Leadping automation workflow action.
+        stepOrder:
+          type: integer
+          description: Step order associated with this Leadping automation workflow action.
+          format: int32
+        stepDisplayName:
+          type: string
+          description: Human-readable step display name associated with this Leadping automation workflow action.
+        actionType:
+          type: string
+          description: Action type classification for this Leadping automation workflow action.
+        actionTypeDisplay:
+          type: string
+          description: Human-readable action type display for this Leadping automation workflow action.
+        status:
+          type: string
+          description: Current status for this Leadping automation workflow action.
+        statusDisplay:
+          type: string
+          description: Human-readable status display for this Leadping automation workflow action.
+        scheduledAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow action was scheduled.
+          format: date-time
+        startedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow action started.
+          format: date-time
+        completedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow action completed.
+          format: date-time
+        failedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow action failed.
+          format: date-time
+        skippedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the workflow action was skipped.
+          format: date-time
+        retryCount:
+          type: integer
+          description: Total number of retry records represented by this Leadping automation workflow action.
+          format: int32
+        nextRetryAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the next retry is scheduled.
+          format: date-time
+        userSummary:
+          type:
+          - 'null'
+          - string
+          description: Human-readable user summary for this Leadping automation workflow action.
+        safeReason:
+          type:
+          - 'null'
+          - string
+          description: Safe reason associated with this Leadping automation workflow action.
+        failureCode:
+          type:
+          - 'null'
+          - string
+          description: Reason or diagnostic code that explains the current outcome for this Leadping automation workflow action.
+      description: User-safe action status returned for lead automation workflow visibility.
+    PhoneLookupPortability:
+      type: object
+      properties:
+        alternativeSpid:
+          type:
+          - 'null'
+          - string
+          description: Alternative service provider identifier reported for the number.
+        alternativeCarrierName:
+          type:
+          - 'null'
+          - string
+          description: Name of the carrier associated with the alternative service provider identifier.
+        alternativeCarrierType:
+          type:
+          - 'null'
+          - string
+          description: Carrier type associated with the alternative service provider identifier.
+        city:
+          type:
+          - 'null'
+          - string
+          description: City reported by the portability lookup.
+        lineType:
+          type:
+          - 'null'
+          - string
+          description: Provider-native line type reported by the portability lookup.
+        localRoutingNumber:
+          type:
+          - 'null'
+          - string
+          description: Local routing number used to route calls for the ported number.
+        operatingCompanyNumber:
+          type:
+          - 'null'
+          - string
+          description: Operating company number associated with the phone number.
+        portedDate:
+          type:
+          - 'null'
+          - string
+          description: Date on which the phone number was ported, as reported by the provider.
+        portedStatus:
+          type:
+          - 'null'
+          - string
+          description: Current number-portability status reported by the provider.
+        spid:
+          type:
+          - 'null'
+          - string
+          description: Service provider identifier currently associated with the number.
+        carrierName:
+          type:
+          - 'null'
+          - string
+          description: Name of the carrier currently serving the number.
+        carrierType:
+          type:
+          - 'null'
+          - string
+          description: Type of carrier currently serving the number.
+        state:
+          type:
+          - 'null'
+          - string
+          description: State or region reported by the portability lookup.
+      description: Number-portability and routing data returned by Telnyx.
+    LeadArchiveRequest:
+      type: object
+      properties:
+        reason:
+          allOf:
+          - $ref: '#/components/schemas/LeadArchiveReason'
+          description: Human-readable reason supplied for this request or result.
+        note:
+          maxLength: 500
+          type:
+          - 'null'
+          - string
+          description: Optional archive note that gives additional context for why the lead was archived.
+      description: Defines the fields clients can send when working with lead archive.
+    LeadRequest:
+      required:
+      - metadata
+      - contact
+      - customer
+      - tagIds
+      - tagNames
+      type: object
+      properties:
+        metadata:
+          allOf:
+          - $ref: '#/components/schemas/LeadMetadata'
+          description: Structured metadata used for attribution, integrations, and reporting on this lead request.
+        contact:
+          allOf:
+          - $ref: '#/components/schemas/LeadContact'
+          description: Contact details for the lead or customer represented by this lead request.
+        customer:
+          allOf:
+          - $ref: '#/components/schemas/LeadProfile'
+          description: Demographic profile details for the lead represented by this lead request.
+        enabled:
+          type:
+          - 'null'
+          - boolean
+          description: Indicates whether this lead request is active and available in the Leadping API.
+        tagIds:
+          type: array
+          items:
+            type: string
+          description: Tag IDs assigned to or filtered against this lead.
+        tagNames:
+          type: array
+          items:
+            type: string
+          description: Tag names assigned to this lead when matching existing tags by name.
+        id:
+          type:
+          - 'null'
+          - string
+          description: Stable unique identifier of an existing resource to update; omit it when the API assigns an identifier during creation.
+      description: Defines the fields clients can send when working with lead.
+    PhoneLookupProviderSnapshot:
+      type: object
+      properties:
+        provider:
+          type: string
+          description: The provider that supplied the phone lookup record.
+        lookupType:
+          type: string
+          description: The provider lookup product or operation that produced this snapshot.
+        schemaVersion:
+          type: integer
+          description: The Leadping schema version used to interpret the stored provider record.
+          format: int32
+        retrievedAt:
+          type: string
+          description: The UTC timestamp when Leadping retrieved the provider record.
+          format: date-time
+        rawRecordJson:
+          type: string
+          description: The complete provider response serialized as JSON for lossless audit and replay.
+      description: Lossless provider snapshot retained with a phone identity for replay, audits, and fields added by providers later.
+    PhoneIdentityLookupActionStatus:
+      enum:
+      - succeeded
+      - failed
+      type: string
+      description: Identifies the outcome of a phone identity lookup action.
+    PhoneLookupCarrier:
+      type: object
+      properties:
+        mobileCountryCode:
+          type:
+          - 'null'
+          - string
+          description: Mobile country code (MCC) reported by the carrier lookup.
+        mobileNetworkCode:
+          type:
+          - 'null'
+          - string
+          description: Mobile network code (MNC) reported by the carrier lookup.
+        name:
+          type:
+          - 'null'
+          - string
+          description: Human-readable name of the phone lookup carrier.
+        normalizedCarrier:
+          type:
+          - 'null'
+          - string
+          description: Normalized carrier name used for consistent matching and reporting.
+        type:
+          enum:
+          - FixedLine
+          - Mobile
+          - Voip
+          - FixedLineOrMobile
+          - TollFree
+          - PremiumRate
+          - SharedCost
+          - PersonalNumber
+          - Pager
+          - Uan
+          - Voicemail
+          - Unknown
+          type:
+          - 'null'
+          - string
+          description: Classifies a telephone number by the network service or carrier category that provides it.
+        errorCode:
+          type:
+          - 'null'
+          - string
+          description: Reason or diagnostic code that explains the current outcome for this Leadping phone lookup carrier.
+      description: Complete carrier metadata returned by a phone number lookup provider.
+    PhoneLookupCallerName:
+      type: object
+      properties:
+        name:
+          type:
+          - 'null'
+          - string
+          description: Caller name associated with the phone number, when reported by the provider.
+        errorCode:
+          type:
+          - 'null'
+          - string
+          description: Provider error code returned when caller-name data could not be resolved.
+      description: Caller-name data returned by the phone lookup provider.
+    ExactMatchFilter:
+      type: object
+      properties:
+        value:
+          description: Scalar value the target field must equal; its JSON type should match the field being queried.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records whose named field equals a supplied scalar value.
+    PhoneLocationSource:
+      type: object
+      properties:
+        method:
+          type: string
+          description: The resolution method, such as telnyx-city-state, coordinates, phone-number, or state-default.
+        query:
+          type:
+          - 'null'
+          - string
+          description: The city, state, coordinates, phone number, or representative ZIP used by the method.
+      description: Describes how a phone location value was resolved.
+    AutomationWorkflowStatusResponse:
+      type: object
+      properties:
+        leadId:
+          type: string
+          description: Unique identifier of the lead associated with this Leadping automation workflow status.
+        runs:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationWorkflowRunResponse'
+            description: User-safe automation workflow run status returned for a lead.
+          description: Collection of runs included with this Leadping automation workflow status.
+      description: Automation workflow status collection for a lead.
+    Phone:
+      type: object
+      properties:
+        phoneIdentityId:
+          type:
+          - 'null'
+          - string
+          description: Identifier of the canonical phone identity stored by Leadping.
+        number:
+          type: string
+          description: E.164 phone number exposed by this lead phone number.
+        type:
+          type:
+          - 'null'
+          - string
+          description: Type classification used to route and interpret this lead phone number in the Leadping API.
+      description: Public Leadping API schema for lead phone number data.
+    LeadArchiveReason:
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      type: integer
+      description: Defines why a lead was removed from the active working pipeline.
+      format: int32
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable unique identifier of the referenced resource.
+        name:
+          type: string
+          description: Human-readable display name of the referenced resource.
+      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
+    AutomationWorkflowRunResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for the automation workflow run.
+        organizationId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the organization associated with this Leadping automation workflow run.
+        leadId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the lead associated with this Leadping automation workflow run.
+        automation:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related automation.
+        triggerType:
+          type:
+          - 'null'
+          - string
+          description: Trigger type classification for this Leadping automation workflow run.
+        triggerDisplay:
+          type:
+          - 'null'
+          - string
+          description: Human-readable trigger display for this Leadping automation workflow run.
+        status:
+          type: string
+          description: Current status for this Leadping automation workflow run.
+        statusDisplay:
+          type: string
+          description: Human-readable status display for this Leadping automation workflow run.
+        currentStep:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the workflow step currently awaiting or performing work.
+        currentStepOrder:
+          type:
+          - 'null'
+          - integer
+          description: Current step order associated with this Leadping automation workflow run.
+          format: int32
+        nextExecutionAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the next execution is scheduled.
+          format: date-time
+        lastExecutionAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time of the most recent execution for this Leadping automation workflow run.
+          format: date-time
+        startedAt:
+          type: string
+          description: Date and time when the automation workflow run started.
+          format: date-time
+        updatedAt:
+          type: string
+          description: Date and time when the automation workflow run was last updated.
+          format: date-time
+        completedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow run completed.
+          format: date-time
+        failedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow run failed.
+          format: date-time
+        cancelledAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow run was cancelled.
+          format: date-time
+        retryCount:
+          type: integer
+          description: Total number of retry records represented by this Leadping automation workflow run.
+          format: int32
+        maxRetryCount:
+          type: integer
+          description: Total number of max retry records represented by this Leadping automation workflow run.
+          format: int32
+        nextRetryAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the next retry is scheduled.
+          format: date-time
+        lastErrorCode:
+          type:
+          - 'null'
+          - string
+          description: Machine-readable code for the most recent workflow execution error.
+        lastErrorMessage:
+          type:
+          - 'null'
+          - string
+          description: Human-readable last error message for this Leadping automation workflow run.
+        skipReasonCode:
+          type:
+          - 'null'
+          - string
+          description: Machine-readable code explaining why the workflow run or action was skipped.
+        skipReasonDisplay:
+          type:
+          - 'null'
+          - string
+          description: Human-readable skip reason display for this Leadping automation workflow run.
+        lastActionSummary:
+          type:
+          - 'null'
+          - string
+          description: Human-readable last action summary for this Leadping automation workflow run.
+        actions:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationWorkflowActionResponse'
+            description: User-safe action status returned for lead automation workflow visibility.
+          description: Collection of actions included with this Leadping automation workflow run.
+        events:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationWorkflowEventResponse'
+            description: User-safe workflow history event returned for lead automation status.
+          description: Collection of events included with this Leadping automation workflow run.
+      description: User-safe automation workflow run status returned for a lead.
+    LeadResponse:
+      type: object
+      properties:
+        metadata:
+          allOf:
+          - $ref: '#/components/schemas/LeadMetadata'
+          description: Structured metadata used for attribution, integrations, and reporting on this lead response.
+        contact:
+          allOf:
+          - $ref: '#/components/schemas/LeadContact'
+          description: Contact details for the lead or customer represented by this lead response.
+        phoneIdentity:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneIdentityResponse'
+          description: Canonical phone identity and provider lookup details for this lead.
+        customer:
+          allOf:
+          - $ref: '#/components/schemas/LeadProfile'
+          description: Demographic profile details for the lead represented by this lead response.
+        enabled:
+          type: boolean
+          description: Indicates whether this lead response is active and available in the Leadping API.
+        deletedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when this lead was soft deleted.
+          format: date-time
+        deletedByUserId:
+          type:
+          - 'null'
+          - string
+          description: User ID of the person who soft deleted this lead.
+        archivedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when this record was archived.
+          format: date-time
+        archivedByUserId:
+          type:
+          - 'null'
+          - string
+          description: User ID of the person who archived this record.
+        archiveReason:
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          type:
+          - 'null'
+          - integer
+          description: Defines why a lead was removed from the active working pipeline.
+          format: int32
+        archiveNote:
+          type:
+          - 'null'
+          - string
+          description: Optional note explaining why the lead was archived.
+        isArchived:
+          type: boolean
+          description: Indicates whether the lead has been archived in Leadping.
+        currentLeadStatus:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/CurrentLeadStatusSummary'
+          description: Current lead status change summary that describes the lead outcome.
+        processingStatus:
+          enum:
+          - Verifying
+          - Validating
+          - Enriching
+          - Ready
+          - Invalid
+          - Failed
+          type:
+          - 'null'
+          - string
+          description: Defines the asynchronous verification and enrichment lifecycle for a lead.
+        processingStatusReason:
+          type:
+          - 'null'
+          - string
+          description: Explanation when asynchronous lead processing is blocked or fails.
+        processingStatusChangedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the processing stage last changed.
+          format: date-time
+        tags:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/TagSummary'
+            description: Summary schema for Leadping API tag summary data used in dashboards and reports.
+          description: Tags currently attached to this lead, source, or record.
+        id:
+          type: string
+          description: Stable unique identifier of the resource.
+        createdAt:
+          type: string
+          description: UTC timestamp when the resource was created.
+          format: date-time
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
+          format: date-time
+      description: Describes lead data returned by Leadping.
+  securitySchemes:
+    Bearer:
+      type: http
+      description: Authorization header using the Bearer scheme. Accepted values are Leadping user JWT access tokens and WorkOS organization API keys beginning with sk_.
+      scheme: bearer
+      bearerFormat: JWT or organization API key
+    SourceKey:
+      type: http
+      description: 'Leadping source key for lead ingestion endpoints only using the Authorization header. Example: "Authorization: Bearer lp_src_...".'
+      scheme: bearer
+      bearerFormat: Leadping source key
+externalDocs:
+  description: Leadping API documentation, authentication guide, concepts, and integration guidance.
+  url: https://leadping.ai/docs/api-reference

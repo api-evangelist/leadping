@@ -1,0 +1,187 @@
+openapi: 3.2.0
+info:
+  title: Leadping Telephony API
+  description: The Leadping API helps businesses capture and manage leads, automate follow-up, send SMS and MMS messages, place calls, track conversations, enforce contact suppression, and analyze communication workflows. Use this OpenAPI 3.1 contract to integrate lead sources, build organization tools, or generate a typed API client. Authenticate protected operations with a Leadping user access token or WorkOS organization API key. Lead intake operations also accept a Leadping source key.
+  termsOfService: https://leadping.ai/docs/terms-of-service
+  contact:
+    name: Leadping Support
+    url: https://leadping.ai/contact
+    email: support@leadping.ai
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: v1
+  summary: Lead management, messaging, calling, and automation API
+servers:
+- url: https://api.leadping.ai
+  description: Production
+tags:
+- name: Telephony
+  description: Provides shared authentication and bootstrap data for Leadping telephony clients. Use this endpoint to obtain the scoped credentials and configuration required to initialize supported calling experiences.
+paths:
+  /telephony/login:
+    post:
+      tags:
+      - Telephony
+      summary: Generate a WebRTC login token
+      description: Generates a Leadping WebRTC login token so authenticated agents can connect to telephony services and place or receive browser-based calls.
+      operationId: Telephony_Login
+      requestBody:
+        description: The telephony login request containing connection details.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/TelephonyLoginRequest'
+              description: Identifies the Leadping user and calling context for which a short-lived telephony client token should be issued.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/TelephonyLoginRequest'
+              description: Identifies the Leadping user and calling context for which a short-lived telephony client token should be issued.
+        required: true
+      responses:
+        '200':
+          description: Login token was successfully generated.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/TelephonyLoginResponse'
+                description: Provides the short-lived access token and client configuration required to initialize an authenticated Leadping calling session.
+        '400':
+          description: The request was invalid or malformed.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: The user is not authenticated.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+components:
+  schemas:
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable unique identifier of the referenced resource.
+        name:
+          type: string
+          description: Human-readable display name of the referenced resource.
+      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
+    TelephonyLoginResponse:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username for this telephony login.
+        password:
+          type: string
+          description: Password for this telephony login.
+        expiresAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for expires at on this telephony login.
+          format: date-time
+        callbackToken:
+          type: string
+          description: Callback token for this telephony login.
+      description: Provides the short-lived access token and client configuration required to initialize an authenticated Leadping calling session.
+    TelephonyLoginRequest:
+      type: object
+      properties:
+        device:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related device.
+      description: Identifies the Leadping user and calling context for which a short-lived telephony client token should be issued.
+  securitySchemes:
+    Bearer:
+      type: http
+      description: Authorization header using the Bearer scheme. Accepted values are Leadping user JWT access tokens and WorkOS organization API keys beginning with sk_.
+      scheme: bearer
+      bearerFormat: JWT or organization API key
+    SourceKey:
+      type: http
+      description: 'Leadping source key for lead ingestion endpoints only using the Authorization header. Example: "Authorization: Bearer lp_src_...".'
+      scheme: bearer
+      bearerFormat: Leadping source key
+externalDocs:
+  description: Leadping API documentation, authentication guide, concepts, and integration guidance.
+  url: https://leadping.ai/docs/api-reference

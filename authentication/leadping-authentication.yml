@@ -1,0 +1,124 @@
+generated: '2026-08-18'
+method: searched
+source: https://leadping.ai/docs/api-authentication
+docs: https://leadping.ai/docs/api-authentication
+spec: openapi/leadping-openapi.json
+summary:
+  types:
+    - http
+    - oauth2
+  transport: Authorization header, Bearer scheme, HTTPS only
+  note: >-
+    The OpenAPI document declares two HTTP bearer securitySchemes (Bearer, SourceKey). The published
+    authentication guide documents four accepted credential forms carried by those two schemes, plus an
+    OAuth 2.0 / OIDC authorization server (WorkOS AuthKit) advertised through RFC 8414 / RFC 9728 metadata.
+schemes:
+  - name: Bearer
+    type: http
+    scheme: bearer
+    bearerFormat: JWT or organization API key
+    description: >-
+      Authorization header using the Bearer scheme. Accepted values are Leadping user JWT access tokens
+      and WorkOS organization API keys beginning with sk_.
+    sources:
+      - openapi/leadping-openapi.json
+      - https://leadping.ai/docs/api-authentication
+  - name: SourceKey
+    type: http
+    scheme: bearer
+    bearerFormat: Leadping source key
+    description: >-
+      Leadping source key for lead ingestion endpoints only, sent in the Authorization header as
+      "Authorization: Bearer lp_src_...".
+    sources:
+      - openapi/leadping-openapi.json
+      - https://leadping.ai/docs/api-authentication
+credentials:
+  - id: user-access-token
+    header: 'Authorization: Bearer <leadping_user_access_token>'
+    prefix: null
+    use: First-party user-scoped API operations
+    issued_by: Leadping (WorkOS AuthKit issuer)
+  - id: agent-access-token
+    header: 'Authorization: Bearer <workos_agent_access_token>'
+    prefix: null
+    use: User-approved agent automation with a short-lived token
+    issued_by: WorkOS AuthKit Agent Registration (service_auth identity type)
+    note: >-
+      Requires a human claim ceremony — the agent registers with the account holder's email, the account
+      holder approves via the verification link, and the resulting assertion is exchanged for a
+      short-lived access token. Leadping does not support anonymous agent registration.
+  - id: organization-api-key
+    header: 'Authorization: Bearer sk_...'
+    prefix: sk_
+    use: Agent, service, and integration access to an organization
+    issued_by: Leadping console at https://leadping.ai/api-keys
+    note: Created by a signed-in user against a chosen organization, with a selectable expiration; shown once.
+  - id: source-key
+    header: 'Authorization: Bearer lp_src_...'
+    prefix: lp_src_
+    use: Lead ingestion only, from an approved source
+    restricted_to:
+      - 'POST /leads'
+      - 'POST /leads/intake'
+      - 'GET /leads/intake'
+    note: >-
+      Rejected on account, organization, user, analytics, setup, and other non-ingestion operations.
+oauth:
+  model: OAuth 2.0 / OpenID Connect via WorkOS AuthKit
+  issuer: https://motivated-run-93.authkit.app
+  authorization_endpoint: https://motivated-run-93.authkit.app/oauth2/authorize
+  token_endpoint: https://motivated-run-93.authkit.app/oauth2/token
+  device_authorization_endpoint: https://motivated-run-93.authkit.app/oauth2/device_authorization
+  introspection_endpoint: https://motivated-run-93.authkit.app/oauth2/introspection
+  userinfo_endpoint: https://motivated-run-93.authkit.app/oauth2/userinfo
+  jwks_uri: https://motivated-run-93.authkit.app/oauth2/jwks
+  grant_types:
+    - authorization_code
+    - client_credentials
+    - refresh_token
+    - 'urn:ietf:params:oauth:grant-type:device_code'
+  pkce: S256
+  scopes:
+    - openid
+    - profile
+    - email
+    - offline_access
+  agent_auth:
+    skill: https://motivated-run-93.authkit.app/agent/auth.md
+    identity_endpoint: https://motivated-run-93.authkit.app/agent/identity
+    claim_endpoint: https://motivated-run-93.authkit.app/agent/identity/claim
+    revocation_endpoint: https://motivated-run-93.authkit.app/oauth2/revoke
+    identity_types_supported:
+      - service_auth
+  note: >-
+    The authorization server is a Leadping-operated WorkOS AuthKit tenant, named as the issuer by
+    Leadping's own /.well-known/oauth-protected-resource and /.well-known/openid-configuration documents
+    on leadping.ai and api.leadping.ai. Different domain, same provider — Leadping delegates identity to
+    WorkOS and says so in its published authentication guide.
+discovery:
+  - path: /.well-known/oauth-protected-resource
+    host: leadping.ai
+    status: 200
+    file: well-known/leadping-oauth-protected-resource.json
+  - path: /.well-known/oauth-protected-resource
+    host: api.leadping.ai
+    status: 200
+    file: well-known/leadping-api-oauth-protected-resource.json
+  - path: /.well-known/oauth-authorization-server
+    host: leadping.ai
+    status: 200
+    file: well-known/leadping-oauth-authorization-server.json
+  - path: /.well-known/openid-configuration
+    host: leadping.ai
+    status: 200
+    file: well-known/leadping-openid-configuration.json
+  - path: /auth.md
+    host: leadping.ai
+    status: 200
+    note: Machine-readable agent registration + credential exchange guide.
+challenge:
+  status: 401
+  header: 'WWW-Authenticate: Bearer resource_metadata="http://api.leadping.ai/.well-known/oauth-protected-resource"'
+  body_media_type: application/problem+json
+  observed_on: 'POST https://api.leadping.ai/mcp (2026-08-18)'

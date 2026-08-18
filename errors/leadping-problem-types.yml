@@ -1,0 +1,131 @@
+generated: '2026-08-18'
+method: derived
+source: openapi/leadping-openapi.json
+docs: https://leadping.ai/docs/rate-limits
+format: rfc9457
+envelope:
+  schema: ProblemDetails
+  media_type: application/problem+json
+  also_served_as:
+    - application/json
+    - text/json
+    - text/plain
+  fields:
+    - name: type
+      description: URI reference that identifies the problem type.
+    - name: title
+      description: Short, human-readable summary of the problem.
+    - name: status
+      description: HTTP status code returned for the problem.
+    - name: detail
+      description: Human-readable explanation specific to this occurrence.
+    - name: instance
+      description: URI reference that identifies this specific occurrence.
+  example:
+    type: https://leadping.ai/docs/errors/validation
+    title: Request validation failed
+    status: 400
+    detail: One or more request fields are invalid.
+    instance: /leads/intake
+  note: >-
+    Leadping models errors as RFC 9457 Problem Details throughout, and 429/403 responses are declared
+    with the application/problem+json media type. Most 400/401/404/500 responses are declared as
+    application/json (plus text/json and text/plain variants) carrying the same ProblemDetails schema —
+    the shape is consistent, the content-type declaration is not.
+consistency_gap: >-
+  No published registry of "type" URI values. The single in-spec example points at
+  https://leadping.ai/docs/errors/validation, but that path is not in the docs index and no error-code
+  reference page exists. A client cannot enumerate problem types ahead of time.
+problem_types:
+  - status: 400
+    title: The request was invalid or failed validation.
+    occurrences: 60
+    media_types:
+      - application/json
+      - text/plain
+      - text/json
+    remediation: >-
+      Fix the request body or parameters. The lead-intake guide warns not to retry 400 without changing
+      the request or source configuration — repeating an invalid request can trigger source review.
+  - status: 400
+    title: The request was invalid or malformed.
+    occurrences: 23
+  - status: 400
+    title: The automation cannot be run with its current configuration or state.
+    occurrences: 1
+    scope: Automations manual trigger
+  - status: 401
+    title: Authentication credentials are missing or invalid.
+    occurrences: 126
+    media_types:
+      - application/json
+      - application/problem+json
+    headers:
+      - 'WWW-Authenticate: Bearer resource_metadata="…/.well-known/oauth-protected-resource"'
+    remediation: >-
+      Follow the resource_metadata pointer and https://leadping.ai/auth.md, then retry with a valid
+      Bearer credential. Do not retry unchanged.
+  - status: 401
+    title: Source credentials are missing or invalid.
+    occurrences: 3
+    scope: Lead intake with lp_src_ source keys
+  - status: 401
+    title: The user does not own this lead.
+    occurrences: 1
+  - status: 403
+    title: The authenticated user or organization does not have permission to perform this operation.
+    occurrences: 100
+    media_types:
+      - application/problem+json
+    remediation: Check organization membership, role and the credential class. Do not retry unchanged.
+  - status: 403
+    title: The authenticated user is not authorized for this operation.
+    occurrences: 4
+  - status: 403
+    title: The source is not allowed to accept traffic.
+    occurrences: 3
+    scope: Lead intake
+    remediation: The source is disabled or not approved. Fix source configuration before retrying.
+  - status: 403
+    title: The authenticated user is not allowed to run this automation.
+    occurrences: 1
+  - status: 404
+    title: The requested resource was not found.
+    occurrences: 28
+  - status: 404
+    title: The specified lead was not found.
+    occurrences: 4
+  - status: 404
+    title: The specified source was not found.
+    occurrences: 3
+  - status: 404
+    title: A related resource was not found.
+    occurrences: 2
+  - status: 410
+    title: Gone
+    occurrences: 1
+    scope: User data export report download
+  - status: 429
+    title: The API rate limit for this account or client has been exceeded.
+    occurrences: 136
+    media_types:
+      - application/problem+json
+    headers:
+      - 'Retry-After (seconds, not guaranteed present)'
+    remediation: >-
+      Wait Retry-After seconds. If absent, retry with exponential backoff and jitter. Leadping does not
+      queue excess requests. See rate-limits/leadping-rate-limits.yml.
+  - status: 500
+    title: An unexpected server error occurred.
+    occurrences: 12
+  - status: 500
+    title: An internal server error occurred.
+    occurrences: 2
+coverage:
+  operations: 137
+  operations_with_429: 137
+  operations_with_401: 132
+  operations_with_403: 108
+  operations_with_400: 84
+  operations_with_404: 50
+  operations_with_500: 14

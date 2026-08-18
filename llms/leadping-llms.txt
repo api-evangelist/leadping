@@ -1,0 +1,65 @@
+# Leadping
+
+> Leadping helps teams respond to new inbound leads fast with SMS, voice, alerts, and follow-up workflows.
+
+Leadping helps organizations move new inbound leads from source to first touch, organization handoff, conversation history, and follow-up without stitching together separate tools. This file contains public product and documentation links only.
+
+## Core Pages
+
+- [Home](https://leadping.ai/): Inbound lead response overview.
+- [Platform](https://leadping.ai/platform): Source-to-response workflows with SMS, voice, alerts, follow-up, records, and public guardrails.
+- [Pricing](https://leadping.ai/pricing): Monthly and annual plans, prepaid usage credits, provider usage, carrier, and setup pricing.
+- [About](https://leadping.ai/about): Leadping's product direction and operating principles.
+- [Contact](https://leadping.ai/contact): Sales, support, security, careers, and product questions.
+- [Status](https://status.leadping.ai): Leadping service status.
+
+## Documentation
+
+- [Documentation index](https://leadping.ai/docs/llms.txt): Complete agent-readable index of Leadping guides, policies, SDKs, and API endpoints.
+- [Docs](https://leadping.ai/docs/introduction.md): Product, compliance, developer, and legal documentation.
+- [Get Started](https://leadping.ai/docs/get-started.md): Setup path for a Leadping account.
+- [Compliance Overview](https://leadping.ai/docs/compliance.md): Public compliance expectations and related resources.
+- [Carrier Registration](https://leadping.ai/docs/carrier-registration.md): Public SMS registration overview.
+- [TrustedSetup](https://leadping.ai/docs/trustedsetup.md): Public phone-number warmup overview.
+- [Requiring TrustedForm](https://leadping.ai/docs/requiring-trustedform.md): TrustedForm requirements for submitted leads.
+- [Sending Leads to Leadping](https://leadping.ai/docs/sending-leads-to-leadping.md): Public external lead intake guide.
+- [API Reference](https://leadping.ai/docs/openapi.json): Machine-readable OpenAPI reference.
+
+## Developer Resources
+
+- [OpenAPI](https://leadping.ai/docs/openapi.json): Leadping API OpenAPI document.
+- [API catalog](https://leadping.ai/.well-known/api-catalog): Linkset for the Leadping API description, docs, and status.
+- [Agent authentication guide](https://leadping.ai/auth.md): Agent-readable authentication and API-key registration instructions.
+- [OAuth protected resource metadata](https://leadping.ai/.well-known/oauth-protected-resource): Public site resource metadata.
+- [API OAuth protected resource metadata](https://api.leadping.ai/.well-known/oauth-protected-resource): Public API resource metadata.
+- [OAuth authorization server metadata](https://leadping.ai/.well-known/oauth-authorization-server): Public authorization server metadata.
+- [OpenID configuration](https://leadping.ai/.well-known/openid-configuration): Public OpenID Connect discovery metadata.
+- [Automation resource index](https://leadping.ai/.well-known/agents.json): Index of public agent, API, MCP, and LLM-readable resources.
+- [MCP server card](https://leadping.ai/.well-known/mcp/server-card.json): Public WebMCP server metadata.
+- [Agent skill index](https://leadping.ai/.well-known/agent-skills/index.json): Public agent-skill discovery.
+
+## Legal and Policy
+
+- [Acceptable Use Policy](https://leadping.ai/docs/acceptable-use.md): Messaging, voice, consent, and carrier compliance requirements.
+- [Forbidden Message Categories](https://leadping.ai/docs/forbidden-message-categories.md): Disallowed message content categories.
+- [Privacy Policy](https://leadping.ai/docs/privacy-policy.md): Privacy practices.
+- [Terms of Service](https://leadping.ai/docs/terms-of-service.md): Terms governing Leadping products and services.
+- [Business Associate Agreement](https://leadping.ai/docs/business-associate-agreement.md): BAA terms for expressly approved protected health information use.
+- [Subprocessors](https://leadping.ai/docs/subprocessors.md): Public subprocessor information.
+
+## Billing Policy Summary
+
+Purchased prepaid usage credits expire 12 months after purchase, have no cash value, are not deposits, gift cards, escrow, or stored-value accounts, and are non-refundable except where required by law. Credits are only usable for eligible Leadping services and are not transferable unless Leadping expressly allows it. Carrier, registration, telecom, phone-number, domain/website, pass-through, subscription, and consumed usage charges may follow separate refund rules and are generally non-refundable after submission, provisioning, or use. Unauthorized charges or suspected account compromise should be reported to support for review.
+
+## Contact
+
+- Support: [support@leadping.ai](mailto:support@leadping.ai)
+- Security: [security@leadping.ai](mailto:security@leadping.ai)
+- Careers: [careers@leadping.ai](mailto:careers@leadping.ai)
+- Contact form: [https://leadping.ai/contact](https://leadping.ai/contact)
+
+## More Context
+
+- [Full LLM context](https://leadping.ai/llms-full.txt): Expanded public product, pricing, compliance, API, and resource briefing.
+- [Sitemap](https://leadping.ai/sitemap.xml): Public website sitemap.
+- [Robots](https://leadping.ai/robots.txt): Crawler directives and content signals.

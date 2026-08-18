@@ -1,0 +1,95 @@
+{
+  "specification": "FinOps Framework",
+  "specificationVersion": "1.0",
+  "provider": "Leadping",
+  "providerId": "leadping",
+  "publisherName": "Leadping LLC",
+  "serviceCategory": "Lead communications",
+  "created": "2026-08-17",
+  "modified": "2026-08-17",
+  "description": "Machine-readable mapping of Leadping subscription and provider-usage charges to the usage meters customers can allocate and optimize.",
+  "sources": [
+    "https://leadping.ai/pricing"
+  ],
+  "billingModel": {
+    "pricingCategory": "Subscription and usage-based",
+    "billingFrequency": "Monthly or annual subscription; metered usage billed monthly",
+    "billingCurrency": "USD",
+    "chargeCategories": [
+      "Subscription",
+      "Usage",
+      "Purchase",
+      "Credit",
+      "Adjustment"
+    ]
+  },
+  "focusColumns": {
+    "ServiceName": "Leadping",
+    "ServiceCategory": "Lead communications",
+    "ProviderName": "Leadping",
+    "PublisherName": "Leadping LLC",
+    "InvoiceIssuerName": "Leadping LLC",
+    "BillingCurrency": "USD"
+  },
+  "meters": [
+    {
+      "name": "sms_segments",
+      "description": "SMS segments sent through Leadping.",
+      "unit": "segment",
+      "aggregation": "sum",
+      "unitPrice": "0.02 USD"
+    },
+    {
+      "name": "outbound_mms_messages",
+      "description": "Outbound MMS messages sent through Leadping.",
+      "unit": "message",
+      "aggregation": "sum",
+      "unitPrice": "0.06 USD"
+    },
+    {
+      "name": "voice_minutes",
+      "description": "Voice minutes consumed through Leadping.",
+      "unit": "minute",
+      "aggregation": "sum",
+      "unitPrice": "0.021 USD"
+    },
+    {
+      "name": "phone_numbers",
+      "description": "Phone numbers provisioned for a monthly billing period.",
+      "unit": "number-month",
+      "aggregation": "max",
+      "unitPrice": "2.00 USD"
+    },
+    {
+      "name": "new_leads",
+      "description": "New leads accepted by Leadping.",
+      "unit": "lead",
+      "aggregation": "sum",
+      "unitPrice": "0.01 USD"
+    }
+  ],
+  "principles": [
+    {
+      "name": "Visibility",
+      "description": "Keep subscription, usage, credits, and one-time setup charges separately identifiable."
+    },
+    {
+      "name": "Allocation",
+      "description": "Allocate communication and lead costs to the organization, source, workflow, and channel that generated them."
+    },
+    {
+      "name": "Optimization",
+      "description": "Monitor message segments, call duration, phone-number inventory, and lead volume to reduce unnecessary usage."
+    },
+    {
+      "name": "Accountability",
+      "description": "Organization owners control subscriptions, billing methods, credits, and usage."
+    }
+  ],
+  "maintainers": [
+    {
+      "FN": "Leadping API Team",
+      "email": "support@leadping.ai"
+    }
+  ]
+}

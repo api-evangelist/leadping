@@ -1,0 +1,66 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://api.leadping.ai/",
+      "service-desc": [
+        {
+          "href": "https://leadping.ai/docs/openapi.json",
+          "type": "application/vnd.oai.openapi+json",
+          "title": "Leadping API OpenAPI document"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://leadping.ai/docs",
+          "type": "text/html",
+          "title": "Leadping documentation"
+        }
+      ],
+      "oauth-protected-resource": [
+        {
+          "href": "https://api.leadping.ai/.well-known/oauth-protected-resource",
+          "type": "application/json",
+          "title": "Leadping API OAuth protected resource metadata"
+        }
+      ],
+      "service-meta": [
+        {
+          "href": "https://api.leadping.ai/apis.json",
+          "type": "application/json",
+          "title": "Leadping APIs.json index"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://api.leadping.ai/",
+          "type": "application/json",
+          "title": "Leadping API status"
+        }
+      ]
+    },
+    {
+      "anchor": "https://leadping.ai/",
+      "service-doc": [
+        {
+          "href": "https://leadping.ai/auth.md",
+          "type": "text/markdown",
+          "title": "Leadping agent authentication guide"
+        }
+      ],
+      "oauth-protected-resource": [
+        {
+          "href": "https://leadping.ai/.well-known/oauth-protected-resource",
+          "type": "application/json",
+          "title": "Leadping site OAuth protected resource metadata"
+        }
+      ],
+      "oauth-authorization-server": [
+        {
+          "href": "https://leadping.ai/.well-known/oauth-authorization-server",
+          "type": "application/json",
+          "title": "Leadping OAuth authorization server metadata"
+        }
+      ]
+    }
+  ]
+}

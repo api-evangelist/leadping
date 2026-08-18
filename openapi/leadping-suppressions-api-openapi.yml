@@ -1,0 +1,723 @@
+openapi: 3.2.0
+info:
+  title: Leadping Suppressions API
+  description: The Leadping API helps businesses capture and manage leads, automate follow-up, send SMS and MMS messages, place calls, track conversations, enforce contact suppression, and analyze communication workflows. Use this OpenAPI 3.1 contract to integrate lead sources, build organization tools, or generate a typed API client. Authenticate protected operations with a Leadping user access token or WorkOS organization API key. Lead intake operations also accept a Leadping source key.
+  termsOfService: https://leadping.ai/docs/terms-of-service
+  contact:
+    name: Leadping Support
+    url: https://leadping.ai/contact
+    email: support@leadping.ai
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: v1
+  summary: Lead management, messaging, calling, and automation API
+servers:
+- url: https://api.leadping.ai
+  description: Production
+tags:
+- name: Suppressions
+  description: Manages recipient suppression state for compliant Leadping communication workflows. Use these endpoints to check contact eligibility, record or release suppressions, and review suppression history before sending messages or placing calls.
+paths:
+  /suppressions:
+    post:
+      tags:
+      - Suppressions
+      summary: Create or reactivate a recipient suppression
+      description: Creates or reactivates a Leadping suppression entry that blocks future outreach to a recipient across the selected communication channel.
+      operationId: Suppressions_Suppress
+      requestBody:
+        description: The suppression entry request payload for the operation.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SuppressionEntryRequest'
+              description: Defines a recipient and communication channel to suppress, release, or check before Leadping sends outreach.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SuppressionEntryRequest'
+              description: Defines a recipient and communication channel to suppress, release, or check before Leadping sends outreach.
+        required: true
+      responses:
+        '201':
+          description: The suppression entry response was created successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/SuppressionEntryResponse'
+                description: Describes a recipient suppression that prevents outreach through one or more communication channels.
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /suppressions/release:
+    post:
+      tags:
+      - Suppressions
+      summary: Release an active recipient suppression
+      description: Releases an active Leadping suppression entry so a recipient can be contacted again, returning the updated suppression record when available.
+      operationId: Suppressions_Release
+      requestBody:
+        description: The suppression entry request payload for the operation.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SuppressionEntryRequest'
+              description: Defines a recipient and communication channel to suppress, release, or check before Leadping sends outreach.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SuppressionEntryRequest'
+              description: Defines a recipient and communication channel to suppress, release, or check before Leadping sends outreach.
+        required: true
+      responses:
+        '200':
+          description: Returns the suppression entry response.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/SuppressionEntryResponse'
+                description: Describes a recipient suppression that prevents outreach through one or more communication channels.
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /suppressions/check:
+    post:
+      tags:
+      - Suppressions
+      summary: Check whether a recipient is suppressed
+      description: Checks whether a recipient is blocked by an active Leadping suppression entry before sending messages or placing calls through the selected channel.
+      operationId: Suppressions_Check
+      requestBody:
+        description: The suppression entry request payload for the operation.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SuppressionEntryRequest'
+              description: Defines a recipient and communication channel to suppress, release, or check before Leadping sends outreach.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SuppressionEntryRequest'
+              description: Defines a recipient and communication channel to suppress, release, or check before Leadping sends outreach.
+        required: true
+      responses:
+        '200':
+          description: Returns the suppression check result.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/SuppressionCheckResult'
+                description: Reports whether Leadping may contact a recipient and identifies the active suppression when contact is blocked.
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /suppressions/all/my:
+    post:
+      tags:
+      - Suppressions
+      summary: List current-organization suppression entries
+      description: Returns a filtered, paginated list of recipients the current organization has blocked from phone, SMS, or email outreach.
+      operationId: Suppressions_GetAllForCurrentOrganization
+      requestBody:
+        description: Pagination, filtering, and sorting options for suppression entries.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/PagedResultOfSuppressionEntryResponse'
+                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /suppressions/{id}:
+    get:
+      tags:
+      - Suppressions
+      summary: Get an organization suppression entry
+      description: Returns one suppression entry for the current organization, including its recipient, channel, reason, status, and audit timestamps.
+      operationId: Suppressions_Get
+      parameters:
+      - name: id
+        in: path
+        description: The unique identifier of the suppression entry to retrieve.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/SuppressionEntryResponse'
+                description: Describes a recipient suppression that prevents outreach through one or more communication channels.
+        '404':
+          description: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+components:
+  schemas:
+    PagedResultOfSuppressionEntryResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/SuppressionEntryResponse'
+            description: Describes a recipient suppression that prevents outreach through one or more communication channels.
+          description: Items included in the current page, in the order determined by the query.
+        pageSize:
+          type: integer
+          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
+      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/OrderByOption'
+            description: Defines one field and direction used to order an API query result set.
+          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
+        search:
+          type:
+          - 'null'
+          - string
+          description: Free-text search term applied to the configured SearchFields.
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ExactMatchFilter'
+            description: Selects records whose named field equals a supplied scalar value.
+          description: Exact-match conditions that require each named field to equal its supplied value.
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/RangeFilter'
+            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
+      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
+    SuppressionEntryAudit:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this suppression audit record.
+        status:
+          type: string
+          description: Suppression status established by this change, such as active or released.
+        source:
+          type: string
+          description: System or workflow that initiated the change.
+        timestamp:
+          type: string
+          description: UTC timestamp when the suppression change occurred.
+          format: date-time
+        actorId:
+          type:
+          - 'null'
+          - string
+          description: Identifier of the user or system actor responsible for the change.
+        reason:
+          type:
+          - 'null'
+          - string
+          description: Human-readable reason recorded for the suppression change.
+        safeMetadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: Non-sensitive metadata that provides additional audit context.
+      description: Records one auditable change to a recipient suppression entry.
+    SuppressionEntryResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique Leadping identifier for the suppression entry.
+        organizationId:
+          type:
+          - 'null'
+          - string
+          description: Identifier of the organization that owns the suppression entry.
+        recipientIdentifier:
+          type:
+          - 'null'
+          - string
+          description: Provider or customer identifier used to recognize the suppressed recipient.
+        normalizedPhoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Suppressed phone number normalized to a consistent format.
+        normalizedEmail:
+          type:
+          - 'null'
+          - string
+          description: Suppressed email address normalized for matching.
+          format: email
+        channel:
+          type:
+          - 'null'
+          - string
+          description: Communication channel affected by the suppression, such as SMS, voice, email, or all channels.
+        source:
+          type:
+          - 'null'
+          - string
+          description: System or workflow that created the suppression.
+        status:
+          type:
+          - 'null'
+          - string
+          description: Current lifecycle state, such as active or released.
+        reason:
+          type:
+          - 'null'
+          - string
+          description: Human-readable reason the recipient was suppressed or subsequently released.
+        suppressedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the suppression became active.
+          format: date-time
+        releasedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the suppression was released, or null while it remains active.
+          format: date-time
+        audit:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/SuppressionEntryAudit'
+            description: Records one auditable change to a recipient suppression entry.
+          description: Chronological audit history of suppression and release changes.
+      description: Describes a recipient suppression that prevents outreach through one or more communication channels.
+    OrderByOption:
+      type: object
+      properties:
+        field:
+          type: string
+          description: Serializable field name used for sorting; supported names are determined by the queried resource.
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
+          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
+      description: Defines one field and direction used to order an API query result set.
+    SuppressionCheckResult:
+      type: object
+      properties:
+        allowed:
+          type: boolean
+          description: Whether outreach to the recipient is allowed for the requested channel.
+        organizationId:
+          type:
+          - 'null'
+          - string
+          description: Identifier of the organization whose suppression list was checked.
+        recipientIdentifier:
+          type:
+          - 'null'
+          - string
+          description: Provider or customer identifier used to match the recipient.
+        normalizedPhoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Phone number used for matching, normalized to a consistent format.
+        normalizedEmail:
+          type:
+          - 'null'
+          - string
+          description: Email address used for matching, normalized for comparison.
+          format: email
+        channel:
+          type:
+          - 'null'
+          - string
+          description: Communication channel evaluated by the suppression check.
+        suppressionEntryId:
+          type:
+          - 'null'
+          - string
+          description: Identifier of the active suppression that blocked contact, when one matched.
+        source:
+          type:
+          - 'null'
+          - string
+          description: The source value on the active suppression entry that blocked this check.
+        suppressedAt:
+          type:
+          - 'null'
+          - string
+          description: The date and time the blocking suppression became active.
+          format: date-time
+        customerReason:
+          type:
+          - 'null'
+          - string
+          description: Customer-safe explanation of why contact is blocked or allowed.
+      description: Reports whether Leadping may contact a recipient and identifies the active suppression when contact is blocked.
+    ExactMatchFilter:
+      type: object
+      properties:
+        value:
+          description: Scalar value the target field must equal; its JSON type should match the field being queried.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records whose named field equals a supplied scalar value.
+    SuppressionEntryRequest:
+      required:
+      - organizationId
+      type: object
+      properties:
+        organizationId:
+          type: string
+          description: Organization whose suppression list should be used.
+        recipientIdentifier:
+          type:
+          - 'null'
+          - string
+          description: Optional provider or customer identifier that uniquely identifies the recipient.
+        phoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Recipient phone number to suppress or check, preferably in E.164 format.
+        email:
+          type:
+          - 'null'
+          - string
+          description: Recipient email address to suppress or check.
+          format: email
+        channel:
+          type: string
+          description: Communication channel affected by the suppression, such as SMS, voice, email, or all channels.
+        reason:
+          type:
+          - 'null'
+          - string
+          description: Human-readable reason for creating or releasing the suppression.
+      description: Defines a recipient and communication channel to suppress, release, or check before Leadping sends outreach.
+    RangeFilter:
+      type: object
+      properties:
+        greaterThan:
+          description: Exclusive lower bound; matching field values must be greater than this value.
+        greaterThanOrEqual:
+          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
+        lessThan:
+          description: Exclusive upper bound; matching field values must be less than this value.
+        lessThanOrEqual:
+          description: Inclusive upper bound; matching field values must be less than or equal to this value.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+  securitySchemes:
+    Bearer:
+      type: http
+      description: Authorization header using the Bearer scheme. Accepted values are Leadping user JWT access tokens and WorkOS organization API keys beginning with sk_.
+      scheme: bearer
+      bearerFormat: JWT or organization API key
+    SourceKey:
+      type: http
+      description: 'Leadping source key for lead ingestion endpoints only using the Authorization header. Example: "Authorization: Bearer lp_src_...".'
+      scheme: bearer
+      bearerFormat: Leadping source key
+externalDocs:
+  description: Leadping API documentation, authentication guide, concepts, and integration guidance.
+  url: https://leadping.ai/docs/api-reference

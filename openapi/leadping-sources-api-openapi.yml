@@ -1,0 +1,1033 @@
+openapi: 3.2.0
+info:
+  title: Leadping Sources API
+  description: The Leadping API helps businesses capture and manage leads, automate follow-up, send SMS and MMS messages, place calls, track conversations, enforce contact suppression, and analyze communication workflows. Use this OpenAPI 3.1 contract to integrate lead sources, build organization tools, or generate a typed API client. Authenticate protected operations with a Leadping user access token or WorkOS organization API key. Lead intake operations also accept a Leadping source key.
+  termsOfService: https://leadping.ai/docs/terms-of-service
+  contact:
+    name: Leadping Support
+    url: https://leadping.ai/contact
+    email: support@leadping.ai
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: v1
+  summary: Lead management, messaging, calling, and automation API
+servers:
+- url: https://api.leadping.ai
+  description: Production
+tags:
+- name: Sources
+  description: Manages lead sources, intake credentials, routing defaults, and attribution. Use these endpoints to create and configure sources, search source records, inspect source activity, rotate intake access, and remove obsolete sources.
+paths:
+  /sources:
+    post:
+      tags:
+      - Sources
+      summary: Create an organization lead intake source
+      description: Creates a lead source for the current organization, storing intake credentials and routing context for captured external leads.
+      operationId: Sources_Create
+      requestBody:
+        description: The source data to create.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SourceRequest'
+              description: Defines the fields clients can send when working with lead source.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SourceRequest'
+              description: Defines the fields clients can send when working with lead source.
+        required: true
+      responses:
+        '201':
+          description: Source was successfully created.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/SourceResponse'
+                description: Describes lead source data returned by Leadping.
+        '400':
+          description: The request was invalid or malformed.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /sources/{id}:
+    put:
+      tags:
+      - Sources
+      summary: Update an organization lead intake source
+      description: Updates a lead source for the current organization, changing intake settings, credentials, routing context, or active status.
+      operationId: Sources_Update
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the source to update.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The updated source data.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SourceRequest'
+              description: Defines the fields clients can send when working with lead source.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SourceRequest'
+              description: Defines the fields clients can send when working with lead source.
+        required: true
+      responses:
+        '200':
+          description: Source was successfully updated.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/SourceResponse'
+                description: Describes lead source data returned by Leadping.
+        '404':
+          description: The specified source was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+    get:
+      tags:
+      - Sources
+      summary: Get an organization lead intake source by ID
+      description: Returns one lead source for the current organization, including intake settings, credentials metadata, and routing context.
+      operationId: Sources_Get
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the source to retrieve.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Source was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/SourceResponse'
+                description: Describes lead source data returned by Leadping.
+        '404':
+          description: The specified source was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+    delete:
+      tags:
+      - Sources
+      summary: Delete an organization lead intake source
+      description: Deletes a lead source from the current organization so it can no longer accept or route newly captured leads.
+      operationId: Sources_Delete
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the source to delete.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Source was successfully deleted.
+        '404':
+          description: The specified source was not found.
+          content:
+            text/plain:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            text/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            text/plain:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+            text/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /sources/all/my:
+    post:
+      tags:
+      - Sources
+      summary: List organization lead intake sources for user
+      description: Lists current-user lead sources with paging, sorting, and filters for intake configuration and routing review.
+      operationId: Sources_GetAllForCurrentUser
+      requestBody:
+        description: Pagination, filtering, and sorting options.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RequestDataOptions'
+              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+        required: true
+      responses:
+        '200':
+          description: Sources were successfully retrieved.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/PagedResultOfSourceTableRow'
+                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /sources/{id}/metrics:
+    get:
+      tags:
+      - Sources
+      summary: Get lead metrics for a source
+      description: View lead creation metrics for an organization intake source, including accepted, rejected, duplicate, validation, and recent activity counts.
+      operationId: Sources_GetMetrics
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the source to retrieve metrics for.
+        required: true
+        schema:
+          type: string
+      - name: startAt
+        in: query
+        description: Optional start date/time for the metric range.
+        schema:
+          type: string
+          format: date-time
+      - name: endAt
+        in: query
+        description: Optional end date/time for the metric range.
+        schema:
+          type: string
+          format: date-time
+      - name: days
+        in: query
+        description: Optional rolling day count when explicit dates are not provided.
+        schema:
+          type:
+          - 'null'
+          - integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/SourceMetricsResponse'
+                description: Aggregates lead volume, conversion, delivery, and activity metrics attributed to a Leadping source over the requested reporting period.
+        '404':
+          description: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+components:
+  schemas:
+    SourceResponse:
+      type: object
+      properties:
+        description:
+          type:
+          - 'null'
+          - string
+          description: Human-readable description that explains this lead source response to API users.
+        enabled:
+          type: boolean
+          description: Indicates whether this lead source response is active and available in the Leadping API.
+        apiKey:
+          type:
+          - 'null'
+          - string
+          description: Source API key used to authenticate inbound lead delivery to Leadping. Unlike an organization API key, this value remains available to authorized source users.
+        apiKeyPreview:
+          type:
+          - 'null'
+          - string
+          description: Masked preview of the source API key for compact display.
+        firstLeadReceivedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when this source first delivered a lead to Leadping.
+          format: date-time
+        lastLeadReceivedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when this source most recently delivered a lead to Leadping.
+          format: date-time
+        user:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: User summary connected to this lead source response.
+        createdByUser:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: User summary for the person who created this lead source response.
+        createdByUserEmail:
+          type:
+          - 'null'
+          - string
+          description: Email used to resolve the creator's avatar.
+          format: email
+        modifiedByUser:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: User summary for the person who last modified this lead source response.
+        organization:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Organization summary connected to this lead source response.
+        costPerLead:
+          type:
+          - 'null'
+          - number
+          description: Configured cost charged when this source creates a billable lead.
+          format: double
+        allowedStates:
+          type: array
+          items:
+            type: string
+          description: State or region allowlist used to accept leads from this source.
+        allowedProducts:
+          type: array
+          items:
+            type: string
+          description: Product allowlist used to accept or route leads from this source.
+        requiresTrustedForm:
+          type: boolean
+          description: Indicates whether leads from this source must include a TrustedForm certificate for consent proof.
+        complianceApproved:
+          type: boolean
+          description: Indicates whether the organization or sender passed compliance review.
+        defaultTagIds:
+          type: array
+          items:
+            type: string
+          description: Tag IDs automatically assigned to leads created by this source.
+        defaultTags:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/TagSummary'
+            description: Summary schema for Leadping API tag summary data used in dashboards and reports.
+          description: Default tag summaries automatically applied to leads from this source.
+        name:
+          type: string
+          description: Human-readable display name of the resource.
+        id:
+          type: string
+          description: Stable unique identifier of the resource.
+        createdAt:
+          type: string
+          description: UTC timestamp when the resource was created.
+          format: date-time
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
+          format: date-time
+      description: Describes lead source data returned by Leadping.
+    SourceRequest:
+      required:
+      - name
+      - allowedStates
+      - allowedProducts
+      - defaultTagIds
+      - defaultTagNames
+      type: object
+      properties:
+        description:
+          type:
+          - 'null'
+          - string
+          description: Human-readable description that explains this lead source request to API users.
+        enabled:
+          type: boolean
+          description: Indicates whether this lead source request is active and available in the Leadping API.
+        apiKey:
+          type:
+          - 'null'
+          - string
+          description: Source API key used to authenticate inbound lead delivery to Leadping.
+        regenerateApiKey:
+          type: boolean
+          description: Indicates whether Leadping should issue a new API key for this source.
+        costPerLead:
+          type:
+          - 'null'
+          - number
+          description: Configured cost charged when this source creates a billable lead.
+          format: double
+        allowedStates:
+          type: array
+          items:
+            type: string
+          description: State or region allowlist used to accept leads from this source.
+        allowedProducts:
+          type: array
+          items:
+            type: string
+          description: Product allowlist used to accept or route leads from this source.
+        requiresTrustedForm:
+          type: boolean
+          description: Indicates whether leads from this source must include a TrustedForm certificate for consent proof.
+        defaultTagIds:
+          type: array
+          items:
+            type: string
+          description: Tag IDs automatically assigned to leads created by this source.
+        defaultTagNames:
+          type: array
+          items:
+            type: string
+          description: Tag names automatically assigned to leads created by this source.
+        name:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: Human-readable display name for the resource, subject to the API's maximum name length.
+        id:
+          type:
+          - 'null'
+          - string
+          description: Stable unique identifier of an existing resource to update; omit it when the API assigns an identifier during creation.
+      description: Defines the fields clients can send when working with lead source.
+    TagSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this tag summary.
+        name:
+          type: string
+          description: Display name for this tag summary in the Leadping API.
+        normalizedName:
+          type: string
+          description: Normalized name used for case-insensitive tag matching and deduplication.
+        color:
+          type:
+          - 'null'
+          - string
+          description: Hex color used to display this tag or status in Leadping clients.
+      description: Summary schema for Leadping API tag summary data used in dashboards and reports.
+    PagedResultOfSourceTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/SourceTableRow'
+            description: Summarizes lead source data in paginated and searchable results.
+          description: Items included in the current page, in the order determined by the query.
+        pageSize:
+          type: integer
+          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
+      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+    SourceTableRow:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this lead source table row.
+        name:
+          type: string
+          description: Display name for this lead source table row in the Leadping API.
+        description:
+          type: string
+          description: Human-readable description that explains this lead source table row to API users.
+        apiKey:
+          type: string
+          description: Source API key used to authenticate inbound lead delivery to Leadping. Unlike an organization API key, this value remains available to authorized source users.
+        apiKeyPreview:
+          type: string
+          description: Masked preview of the source API key for compact display.
+        apiKeyLastUsedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the source API key was last used.
+          format: date-time
+        apiKeyTotalUses:
+          type: integer
+          description: Total number of authenticated requests made with this source API key.
+          format: int64
+        createdAt:
+          type: string
+          description: UTC timestamp when this lead source table row was created.
+          format: date-time
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when this lead source table row was last modified.
+          format: date-time
+        firstLeadReceivedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when this source first delivered a lead to Leadping.
+          format: date-time
+        lastLeadReceivedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when this source most recently delivered a lead to Leadping.
+          format: date-time
+        enabled:
+          type: boolean
+          description: Indicates whether this lead source table row is active and available in the Leadping API.
+        user:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: User summary connected to this lead source table row.
+        createdByUser:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: User summary for the person who created this lead source table row.
+        modifiedByUser:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: User summary for the person who last modified this lead source table row.
+        organization:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Organization summary connected to this lead source table row.
+        organizationId:
+          type:
+          - 'null'
+          - string
+          description: Organization ID that owns this lead source.
+        costPerLead:
+          type:
+          - 'null'
+          - number
+          description: Configured cost charged when this source creates a billable lead.
+          format: double
+        allowedStates:
+          type: array
+          items:
+            type: string
+          description: State or region allowlist used to accept leads from this source.
+        allowedProducts:
+          type: array
+          items:
+            type: string
+          description: Product allowlist used to accept or route leads from this source.
+        requiresTrustedForm:
+          type: boolean
+          description: Indicates whether leads from this source must include a TrustedForm certificate for consent proof.
+        complianceApproved:
+          type: boolean
+          description: Indicates whether the organization or sender passed compliance review.
+        defaultTagIds:
+          type: array
+          items:
+            type: string
+          description: Tag IDs automatically assigned to leads created by this source.
+        defaultTags:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/TagSummary'
+            description: Summary schema for Leadping API tag summary data used in dashboards and reports.
+          description: Default tag summaries automatically applied to leads from this source.
+      description: Summarizes lead source data in paginated and searchable results.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/OrderByOption'
+            description: Defines one field and direction used to order an API query result set.
+          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
+        search:
+          type:
+          - 'null'
+          - string
+          description: Free-text search term applied to the configured SearchFields.
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ExactMatchFilter'
+            description: Selects records whose named field equals a supplied scalar value.
+          description: Exact-match conditions that require each named field to equal its supplied value.
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/RangeFilter'
+            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
+      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable unique identifier of the referenced resource.
+        name:
+          type: string
+          description: Human-readable display name of the referenced resource.
+      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
+    OrderByOption:
+      type: object
+      properties:
+        field:
+          type: string
+          description: Serializable field name used for sorting; supported names are determined by the queried resource.
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
+          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
+      description: Defines one field and direction used to order an API query result set.
+    AnalyticsBucketSize:
+      enum:
+      - 3
+      - 0
+      - 1
+      - 2
+      type: integer
+      description: Selects the time interval used to aggregate points in a Leadping analytics trend series.
+      format: int32
+    AnalyticsDateRange:
+      type: object
+      properties:
+        startAt:
+          type: string
+          description: Date and time when this Leadping analytics date range was start.
+          format: date-time
+        endAt:
+          type: string
+          description: Date and time when this Leadping analytics date range was end.
+          format: date-time
+        bucketSize:
+          allOf:
+          - $ref: '#/components/schemas/AnalyticsBucketSize'
+          description: Bucket size associated with this Leadping analytics date range.
+      description: Defines the inclusive reporting window and comparison window used to calculate Leadping analytics.
+    AnalyticsTrendPointOfint:
+      type: object
+      properties:
+        startAt:
+          type: string
+          description: Date and time when this Leadping analytics trend point was start.
+          format: date-time
+        endAt:
+          type: string
+          description: Date and time when this Leadping analytics trend point was end.
+          format: date-time
+        label:
+          type: string
+          description: Human-readable label for this Leadping analytics trend point.
+        value:
+          type: integer
+          description: Value associated with this Leadping analytics trend point.
+          format: int32
+      description: Associates a typed analytics value with one normalized time bucket in a trend series.
+    SourceMetricsResponse:
+      type: object
+      properties:
+        range:
+          allOf:
+          - $ref: '#/components/schemas/AnalyticsDateRange'
+          description: Range associated with this Leadping source metrics.
+        totalLeads:
+          type: integer
+          description: Total number of leads records represented by this Leadping source metrics.
+          format: int32
+        points:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AnalyticsTrendPointOfint'
+            description: Associates a typed analytics value with one normalized time bucket in a trend series.
+          description: Collection of points included with this Leadping source metrics.
+        generatedAt:
+          type: string
+          description: Date and time when the source metrics was generated.
+          format: date-time
+      description: Aggregates lead volume, conversion, delivery, and activity metrics attributed to a Leadping source over the requested reporting period.
+    ExactMatchFilter:
+      type: object
+      properties:
+        value:
+          description: Scalar value the target field must equal; its JSON type should match the field being queried.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records whose named field equals a supplied scalar value.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
+    RangeFilter:
+      type: object
+      properties:
+        greaterThan:
+          description: Exclusive lower bound; matching field values must be greater than this value.
+        greaterThanOrEqual:
+          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
+        lessThan:
+          description: Exclusive upper bound; matching field values must be less than this value.
+        lessThanOrEqual:
+          description: Inclusive upper bound; matching field values must be less than or equal to this value.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+  securitySchemes:
+    Bearer:
+      type: http
+      description: Authorization header using the Bearer scheme. Accepted values are Leadping user JWT access tokens and WorkOS organization API keys beginning with sk_.
+      scheme: bearer
+      bearerFormat: JWT or organization API key
+    SourceKey:
+      type: http
+      description: 'Leadping source key for lead ingestion endpoints only using the Authorization header. Example: "Authorization: Bearer lp_src_...".'
+      scheme: bearer
+      bearerFormat: Leadping source key
+externalDocs:
+  description: Leadping API documentation, authentication guide, concepts, and integration guidance.
+  url: https://leadping.ai/docs/api-reference

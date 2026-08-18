@@ -1,0 +1,118 @@
+generated: '2026-08-18'
+method: probed
+source: https://leadping.ai/docs/mcp-server
+docs: https://leadping.ai/docs/mcp-server
+summary: >-
+  Leadping operates TWO remote MCP servers: a public read-only documentation server at
+  https://leadping.ai/docs/mcp (Mintlify-hosted, anonymous tools/list succeeds) and an authenticated
+  organization-tools server at https://api.leadping.ai/mcp (stateless Streamable HTTP, MCP protocol
+  revision 2026-07-28, 401 without a bearer credential).
+deployment:
+  mode: remote
+  endpoint: https://api.leadping.ai/mcp
+  auth: api-key
+  verified: probed
+  note: >-
+    Both servers are hosted HTTPS endpoints an MCP client POSTs to directly. Leadping ships no stdio
+    package and documents no npx/uvx install; the docs explicitly tell stdio-only clients to use a
+    remote-MCP bridge. auth is api-key because the organization-tools server accepts a Leadping user
+    access token or an organization API key (sk_...) as a Bearer credential; OAuth metadata is also
+    advertised on the 401 via WWW-Authenticate resource_metadata.
+servers:
+  - id: leadping-docs
+    name: Leadping Docs
+    endpoint: https://leadping.ai/docs/mcp
+    transport: streamable-http
+    auth: none
+    status: live
+    probe:
+      method: 'POST tools/list'
+      http_status: 200
+      protocol_version: '2025-06-18'
+      server_version: 1.0.0
+      fetched: '2026-08-18'
+    scope: Public, read-only documentation and API reference retrieval.
+    tools:
+      - name: search_leadping_docs
+        input_schema:
+          query: string (required)
+        read_only: true
+        description: >-
+          Search the Leadping Docs knowledge base for guides, code examples, API reference content.
+      - name: query_docs_filesystem_leadping_docs
+        input_schema:
+          command: string (required)
+        read_only: true
+        description: >-
+          Read-only shell-like query against a virtualized in-memory filesystem containing only the
+          Leadping docs pages and OpenAPI specs.
+      - name: submit_feedback
+        input_schema:
+          path: string (required)
+          feedback: string (required)
+          reason: string (optional)
+        read_only: false
+        description: Report a documentation problem to the Leadping docs team.
+    resources:
+      - uri: mintlify://skills/leadping
+        name: leadping
+    note: >-
+      The published docs page names these tools search_leadping_documentation and
+      query_docs_filesystem_leadping_documentation; the live server returns search_leadping_docs and
+      query_docs_filesystem_leadping_docs. The live names above are authoritative.
+  - id: leadping-org-tools
+    name: Leadping organization tools
+    endpoint: https://api.leadping.ai/mcp
+    transport: streamable-http
+    stateful: false
+    protocol_revision: '2026-07-28'
+    auth: bearer
+    accepted_credentials:
+      - Leadping user access token
+      - 'Organization API key (sk_...)'
+    rejected_credentials:
+      - 'Source key (lp_src_...) — ingestion-only'
+    status: live
+    probe:
+      method: 'POST tools/list'
+      http_status: 401
+      body: '{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.2","title":"Unauthorized","status":401,...}'
+      www_authenticate: 'Bearer resource_metadata="http://api.leadping.ai/.well-known/oauth-protected-resource"'
+      fetched: '2026-08-18'
+    tools_schema_status: auth-gated
+    tools_note: >-
+      The live tool list requires an authenticated session. The capability groups below are transcribed
+      verbatim from the provider's published MCP documentation, NOT from an authenticated tools/list —
+      individual tool names and inputSchemas need authenticated introspection to confirm.
+    documented_capabilities:
+      read:
+        - Read the current organization and available organization-switch options
+        - List and read leads
+        - List conversations, including conversations for a specific lead
+        - List events, lead events, and event details
+        - List and read sources and source metrics
+      write:
+        - Create and update leads
+        - Archive and restore leads
+        - Add, replace, and remove lead tags
+        - Permanently delete a lead after explicit confirmation
+    permissions: >-
+      Write tools enforce the same organization access and leads:write permissions as the REST API. Tool
+      annotations identify mutations and permanent deletion as consequential operations so compatible
+      clients can apply approval policies. Creating a lead can start configured routing and automation.
+web_mcp:
+  card: https://leadping.ai/.well-known/mcp/server-card.json
+  file: well-known/leadping-mcp-server-card.json
+  transport: webmcp
+  endpoint: https://leadping.ai/
+  tools:
+    - leadping.get_public_resources
+    - leadping.get_authentication_guidance
+    - leadping.open_public_page
+    - leadping.open_agent_resource
+  note: Browser-side WebMCP tools registered on the Leadping homepage. Not an MCP HTTP endpoint.
+clients_documented:
+  - Codex
+  - Cursor
+  - VS Code
+  - Claude Code

@@ -1,0 +1,34 @@
+generated: '2026-08-18'
+method: probed
+source: https://api.leadping.ai/changelog.json
+title: Leadping API Changelog
+description: Material changes to Leadping's public API, MCP, webhook, and machine-discovery surfaces.
+scheme: dated entries, machine-readable JSON
+current_version: v1
+format_version: '1.0'
+updated: '2026-08-17'
+entry_count: 1
+note: >-
+  The changelog was published on 2026-08-17 alongside the discovery surface itself and currently carries
+  a single founding entry. There is no human-facing changelog page in the docs (/docs/changelog 404s);
+  the JSON document at api.leadping.ai/changelog.json is the only changelog Leadping publishes.
+entries:
+  - date: '2026-08-17'
+    version: v1
+    category: added
+    breaking: false
+    summary: Published the Leadping API discovery and governance surface.
+    changes:
+      - Published the APIs.json catalog for the REST API, MCP server, and webhook event surface.
+      - Published the production OpenAPI 3.1 contract and first-party Spectral ruleset.
+      - >-
+        Published machine-readable plans, rate limits, FinOps, API onboarding, OAuth protected-resource
+        metadata, and RFC 9727 API catalog documents.
+      - >-
+        Published developer documentation, SDK guides, security disclosure guidance, and agent-readable
+        discovery resources.
+gaps:
+  - >-
+    The entry claims a "first-party Spectral ruleset" but no ruleset is published at any probed location
+    (api.leadping.ai/rules.json, /spectral.json, /spectral.yaml, /.well-known/spectral.yaml and
+    leadpingai/openapi/.spectral.yaml all returned 404 on 2026-08-18). No rules/ artifact was written.

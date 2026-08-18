@@ -1,0 +1,18 @@
+{
+  "resource": "https://leadping.ai",
+  "authorization_servers": [
+    "https://motivated-run-93.authkit.app"
+  ],
+  "bearer_methods_supported": [
+    "header"
+  ],
+  "scopes_supported": [
+    "openid",
+    "profile",
+    "email"
+  ],
+  "resource_name": "Leadping",
+  "resource_documentation": "https://leadping.ai/docs",
+  "resource_policy_uri": "https://leadping.ai/docs/acceptable-use",
+  "resource_tos_uri": "https://leadping.ai/docs/terms-of-service"
+}

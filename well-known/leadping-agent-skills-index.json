@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "leadping-public-website",
+      "type": "skill-md",
+      "description": "Discover public Leadping resources, API metadata, and agent-ready entry points.",
+      "url": "https://leadping.ai/.well-known/agent-skills/leadping-website/SKILL.md",
+      "digest": "sha256:0dd4352132ee0efbe75d6a6e5804faa4f1e98ff611661bde35cf00bc04dac115"
+    }
+  ]
+}

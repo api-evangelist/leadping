@@ -1,0 +1,428 @@
+openapi: 3.2.0
+info:
+  title: Leadping Lead Statuses API
+  description: The Leadping API helps businesses capture and manage leads, automate follow-up, send SMS and MMS messages, place calls, track conversations, enforce contact suppression, and analyze communication workflows. Use this OpenAPI 3.1 contract to integrate lead sources, build organization tools, or generate a typed API client. Authenticate protected operations with a Leadping user access token or WorkOS organization API key. Lead intake operations also accept a Leadping source key.
+  termsOfService: https://leadping.ai/docs/terms-of-service
+  contact:
+    name: Leadping Support
+    url: https://leadping.ai/contact
+    email: support@leadping.ai
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: v1
+  summary: Lead management, messaging, calling, and automation API
+servers:
+- url: https://api.leadping.ai
+  description: Production
+tags:
+- name: LeadStatuses
+  description: Manages the lead statuses used to classify and track leads throughout their lifecycle. Use these endpoints to list, create, update, and archive organization-specific lead statuses for consistent pipeline organization and reporting.
+paths:
+  /lead-statuses:
+    get:
+      tags:
+      - LeadStatuses
+      summary: List the current organization's lead statuses
+      description: Lists the current organization's active lead statuses for organizing and tracking leads through the sales workflow.
+      operationId: LeadStatuses_GetAll
+      responses:
+        '200':
+          description: The active lead statuses available to the current organization.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                  - $ref: '#/components/schemas/LeadStatusResponse'
+                  description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          headers:
+            WWW-Authenticate:
+              description: Bearer authentication challenge returned when credentials are missing or invalid.
+              schema:
+                type: string
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+    post:
+      tags:
+      - LeadStatuses
+      summary: Create an organization lead status
+      description: Creates a reusable lead status for the current organization to categorize, organize, and track leads consistently throughout its sales and follow-up workflow.
+      operationId: LeadStatuses_Create
+      requestBody:
+        description: The lead status name, color, and display order to create.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadStatusRequest'
+              description: Defines the editable values used to create or update a lead status.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadStatusRequest'
+              description: Defines the editable values used to create or update a lead status.
+        required: true
+      responses:
+        '201':
+          description: The newly created lead status.
+          content:
+            text/plain:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadStatusResponse'
+                description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadStatusResponse'
+                description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
+            text/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadStatusResponse'
+                description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          headers:
+            WWW-Authenticate:
+              description: Bearer authentication challenge returned when credentials are missing or invalid.
+              schema:
+                type: string
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /lead-statuses/{id}:
+    put:
+      tags:
+      - LeadStatuses
+      summary: Update an organization lead status
+      description: Updates the name, color, and display order of a lead status owned by the current organization so pipeline stages remain clear and consistently organized.
+      operationId: LeadStatuses_Update
+      parameters:
+      - name: id
+        in: path
+        description: The unique identifier of the lead status to update.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The replacement lead status name, color, and display order.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadStatusRequest'
+              description: Defines the editable values used to create or update a lead status.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LeadStatusRequest'
+              description: Defines the editable values used to create or update a lead status.
+        required: true
+      responses:
+        '200':
+          description: The updated lead status.
+          content:
+            text/plain:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadStatusResponse'
+                description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadStatusResponse'
+                description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
+            text/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/LeadStatusResponse'
+                description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          headers:
+            WWW-Authenticate:
+              description: Bearer authentication challenge returned when credentials are missing or invalid.
+              schema:
+                type: string
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+    delete:
+      tags:
+      - LeadStatuses
+      summary: Archive an organization lead status
+      description: Archives a lead status for the current organization so it is unavailable for new assignments while existing lead history is preserved.
+      operationId: LeadStatuses_Archive
+      parameters:
+      - name: id
+        in: path
+        description: The unique identifier of the lead status to archive.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '`true` after the lead status is archived.'
+          content:
+            text/plain:
+              schema:
+                type: boolean
+            application/json:
+              schema:
+                type: boolean
+            text/json:
+              schema:
+                type: boolean
+        '401':
+          description: Authentication credentials are missing or invalid.
+          headers:
+            WWW-Authenticate:
+              description: Bearer authentication challenge returned when credentials are missing or invalid.
+              schema:
+                type: string
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+components:
+  schemas:
+    LeadStatusResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the lead status.
+        organizationId:
+          type: string
+          description: Identifier of the organization that owns the lead status.
+        name:
+          type: string
+          description: Display name of the lead status.
+        color:
+          type: string
+          description: Display color assigned to the lead status.
+        category:
+          allOf:
+          - $ref: '#/components/schemas/LeadStatusCategory'
+          description: LeadStatusChange category represented by the lead status.
+        sortOrder:
+          type: integer
+          description: Relative display order of the lead status.
+          format: int32
+        isArchived:
+          type: boolean
+          description: Indicates whether the lead status has been archived.
+        modifiedAt:
+          type: string
+          description: Date and time when the lead status was last modified.
+          format: date-time
+      description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
+    LeadStatusRequest:
+      type: object
+      properties:
+        name:
+          type:
+          - 'null'
+          - string
+          description: Display name for the lead status.
+        color:
+          type:
+          - 'null'
+          - string
+          description: Display color for the lead status.
+        category:
+          enum:
+          - Open
+          - Qualified
+          - Converted
+          - Lost
+          - Invalid
+          - Duplicate
+          type:
+          - 'null'
+          - string
+          description: Controlled lead status change categories used for reporting, automation, and analytics.
+        sortOrder:
+          type:
+          - 'null'
+          - integer
+          description: Relative display order for the lead status.
+          format: int32
+      description: Defines the editable values used to create or update a lead status.
+    LeadStatusCategory:
+      enum:
+      - Open
+      - Qualified
+      - Converted
+      - Lost
+      - Invalid
+      - Duplicate
+      type: string
+      description: Controlled lead status change categories used for reporting, automation, and analytics.
+  securitySchemes:
+    Bearer:
+      type: http
+      description: Authorization header using the Bearer scheme. Accepted values are Leadping user JWT access tokens and WorkOS organization API keys beginning with sk_.
+      scheme: bearer
+      bearerFormat: JWT or organization API key
+    SourceKey:
+      type: http
+      description: 'Leadping source key for lead ingestion endpoints only using the Authorization header. Example: "Authorization: Bearer lp_src_...".'
+      scheme: bearer
+      bearerFormat: Leadping source key
+externalDocs:
+  description: Leadping API documentation, authentication guide, concepts, and integration guidance.
+  url: https://leadping.ai/docs/api-reference

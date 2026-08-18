@@ -1,0 +1,318 @@
+generated: '2026-08-18'
+method: derived
+source: openapi/leadping-openapi.json
+vocabulary: vocabulary/leadping-vocabulary.json
+summary: >-
+  Derived from 219 component schemas and their id-reference fields. Organization is the tenant root:
+  almost every resource carries organizationId. Lead is the domain root: conversations, events, calls,
+  SMS, status history and tags all hang off leadId. There are no $ref-embedded sub-resources between
+  top-level entities — Leadping links by id field, not by nesting, so a client resolves the graph with
+  follow-up calls rather than expansion (no expand/include parameter exists; see
+  conventions/leadping-conventions.yml).
+id_style:
+  format: opaque string
+  prefixes_published: false
+  note: >-
+    No documented id prefix scheme on resources. Credentials are prefixed (sk_ organization API key,
+    lp_src_ source key, whsec_ webhook signing secret) but resource ids are not.
+entities:
+  - name: Organization
+    vocabulary_id: organization
+    description: Tenant that owns users, leads, sources, conversations, automations and billing resources.
+    schemas:
+      - OrganizationResponse
+      - OrganizationRequest
+      - OrganizationTableRow
+      - OrganizationActivationState
+    relationships:
+      - has_many: User
+        via: members
+      - has_many: Lead
+        via: organizationId
+      - has_many: Source
+        via: organizationId
+      - has_many: PhoneNumber
+        via: organizationId
+      - has_many: Automation
+        via: organizationId
+      - has_many: LeadStatus
+        via: organizationId
+      - has_many: Tag
+        via: organizationId
+      - has_many: SuppressionEntry
+        via: organizationId
+      - has_one: Wallet
+        via: organizationId
+  - name: Lead
+    vocabulary_id: lead
+    description: Prospective customer plus contact, source, consent, status and engagement information.
+    schemas:
+      - LeadResponse
+      - LeadTableRow
+      - LeadIntakeRequest
+      - LeadMetadata
+      - LeadContact
+    relationships:
+      - belongs_to: Organization
+        via: organizationId
+      - belongs_to: Source
+        via: sourceId
+      - has_many: Conversation
+        via: leadId
+      - has_many: Event
+        via: leadId
+      - has_many: LeadStatusChange
+        via: leadId
+      - has_many: Tag
+        via: tags
+      - has_one: CurrentLeadStatusSummary
+        via: id
+      - belongs_to: User
+        via: archivedByUserId
+      - belongs_to: User
+        via: deletedByUserId
+      - belongs_to: PhoneNumber
+        via: assignedPhoneNumberId
+    external_identifiers:
+      - externalId
+      - sellerLeadId
+      - pubId
+      - subId
+      - importBatchId
+  - name: Source
+    vocabulary_id: source
+    description: Authenticated intake origin through which external systems submit leads.
+    schemas:
+      - SourceTableRow
+      - SourceResponse
+    relationships:
+      - belongs_to: Organization
+        via: organizationId
+      - has_many: Lead
+        via: sourceId
+    note: 'Authenticated by lp_src_ source key; carries metrics (Sources_GetMetrics).'
+  - name: Conversation
+    vocabulary_id: conversation
+    description: Communication history connecting a lead and an organization across channels.
+    schemas:
+      - ConversationResponse
+    relationships:
+      - belongs_to: Lead
+        via: leadId
+      - has_many: Event
+        via: conversationId
+      - has_many: Sms
+        via: conversationId
+      - has_many: Call
+        via: conversationId
+      - belongs_to: PhoneNumber
+        via: activeOutboundPhoneNumberId
+      - belongs_to: PhoneNumber
+        via: outboundPhoneNumberOverrideId
+  - name: Event
+    vocabulary_id: event
+    description: Durable record of a business or communication occurrence.
+    schemas:
+      - EventTableRow
+      - EventDetailResponse
+    relationships:
+      - belongs_to: Lead
+        via: leadId
+      - belongs_to: Conversation
+        via: conversationId
+      - belongs_to: User
+        via: actorUserId
+      - belongs_to: Source
+        via: sourceId
+      - belongs_to: PhoneNumber
+        via: fromPhoneNumberId
+    subtypes:
+      - SmsEventTableRow
+      - CallEventTableRow
+  - name: Sms
+    vocabulary_id: message
+    description: Inbound or outbound SMS/MMS item associated with a conversation.
+    schemas:
+      - SendSmsRequest
+      - SmsResponse
+      - SmsEventTableRow
+    relationships:
+      - belongs_to: Conversation
+        via: conversationId
+      - belongs_to: Lead
+        via: leadId
+      - belongs_to: PhoneNumber
+        via: fromPhoneNumberId
+      - belongs_to: Source
+        via: sourceId
+    idempotency_field: outboundIdempotencyKey
+  - name: Call
+    vocabulary_id: call
+    description: Voice session associated with an organization, lead and conversation.
+    schemas:
+      - InitiateCallRequest
+      - PhoneCallResponse
+      - CallEventTableRow
+    relationships:
+      - belongs_to: Conversation
+        via: conversationId
+      - belongs_to: Lead
+        via: leadId
+      - belongs_to: PhoneNumber
+        via: fromPhoneNumberId
+      - belongs_to: Source
+        via: sourceId
+    idempotency_field: outboundIdempotencyKey
+  - name: PhoneNumber
+    description: Provisioned sender number with provider, warmup and carrier-registration state.
+    schemas:
+      - PhoneNumberResponse
+      - PhoneNumberTableRow
+      - PhoneNumberRoutingMetadata
+      - OutboundPhoneNumberCapacity
+      - SmsReadinessStatusResponse
+    relationships:
+      - belongs_to: Organization
+        via: organizationId
+      - has_one: PhoneIdentity
+        via: phoneIdentityId
+      - belongs_to: Source
+        via: sourceId
+      - belongs_to: TenDlcApplication
+        via: tenDlcApplicationId
+  - name: Automation
+    vocabulary_id: automation
+    description: Configured workflow that evaluates triggers and performs follow-up actions.
+    schemas:
+      - AutomationResponse
+      - AutomationTableRow
+      - AutomationRunRecord
+      - AutomationActionRunRecord
+      - AutomationConnection
+      - AutomationWorkflowRunResponse
+    relationships:
+      - belongs_to: Organization
+        via: organizationId
+      - belongs_to: User
+        via: createdByUserId
+      - has_many: AutomationRun
+        via: automationId
+      - has_many: AutomationActionRun
+        via: automationRunId
+      - references: Lead
+        via: leadId
+    note: >-
+      Automations are a node/connection graph (sourceNodeId / targetNodeId) with a preview endpoint and
+      a manual trigger. They are also what fires outbound webhooks (asyncapi/leadping-webhooks.yml).
+  - name: LeadStatus
+    description: Organization-defined lead status.
+    schemas:
+      - LeadStatusResponse
+    relationships:
+      - belongs_to: Organization
+        via: organizationId
+      - has_many: LeadStatusChange
+        via: leadStatusId
+  - name: LeadStatusChange
+    description: Audit entry recording a lead moving between statuses.
+    schemas:
+      - LeadStatusChangeResponse
+      - LeadStatusChangeRequest
+      - LeadStatusChangeExportRow
+    relationships:
+      - belongs_to: Lead
+        via: leadId
+      - belongs_to: User
+        via: changedByUserId
+      - belongs_to: User
+        via: assignedToUserId
+      - belongs_to: Automation
+        via: changedByAutomationId
+      - belongs_to: CallEvent
+        via: relatedCallEventId
+      - belongs_to: Source
+        via: sourceId
+      - references: LeadStatusChange
+        via: oldLeadStatusChangeId
+      - references: LeadStatusChange
+        via: newLeadStatusChangeId
+  - name: Tag
+    description: Organization lead-segmentation tag.
+    schemas:
+      - TagResponse
+    relationships:
+      - belongs_to: Organization
+        via: organizationId
+      - belongs_to: User
+        via: createdByUserId
+      - has_many: Lead
+        via: 'lead tags (add/replace/remove)'
+  - name: SuppressionEntry
+    description: Recipient suppression record enforcing opt-out and DNC handling.
+    schemas:
+      - SuppressionEntryResponse
+      - SuppressionEntryRequest
+      - SuppressionEntryAudit
+      - SuppressionCheckResult
+    relationships:
+      - belongs_to: Organization
+        via: organizationId
+      - has_many: SuppressionEntryAudit
+        via: suppressionEntryId
+  - name: User
+    description: Leadping account holder, a member of one or more organizations.
+    schemas:
+      - UserResponse
+      - UserRequest
+      - UserIdentity
+      - OrganizationMemberResponse
+    relationships:
+      - belongs_to: Organization
+        via: organization membership
+      - has_many: Notification
+        via: userId
+      - has_many: UserDataExport
+        via: userId
+  - name: Wallet
+    description: Organization prepaid-credit balance.
+    schemas:
+      - WalletResponse
+    relationships:
+      - belongs_to: Organization
+        via: organizationId
+      - has_many: Transaction
+        via: originalTransactionId
+  - name: Transaction
+    description: Billing transaction against an organization wallet or payment method.
+    schemas:
+      - TransactionTableRow
+    relationships:
+      - belongs_to: Wallet
+        via: originalTransactionId
+      - references: Event
+        via: sourceEventId
+  - name: UsageLedgerEntry
+    description: Metered messaging usage line item.
+    schemas:
+      - UsageLedgerTableRow
+    relationships:
+      - belongs_to: PhoneNumber
+        via: phoneNumberId
+    meters: finops/leadping-finops.json
+paged_result_families:
+  count: 14
+  schemas:
+    - PagedResultOfAutomationTableRow
+    - PagedResultOfCallEventTableRow
+    - PagedResultOfConversationResponse
+    - PagedResultOfEventTableRow
+    - PagedResultOfLeadStatusChangeResponse
+    - PagedResultOfLeadTableRow
+    - PagedResultOfNotificationTableRow
+    - PagedResultOfOrganizationTableRow
+    - PagedResultOfPhoneNumberTableRow
+    - PagedResultOfSmsEventTableRow
+    - PagedResultOfSourceTableRow
+    - PagedResultOfSuppressionEntryResponse
+    - PagedResultOfTransactionTableRow
+    - PagedResultOfUsageLedgerTableRow

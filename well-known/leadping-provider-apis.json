@@ -1,0 +1,751 @@
+{
+  "aid": "leadping.ai:apis",
+  "name": "Leadping API Catalog",
+  "type": "Index",
+  "kind": "company",
+  "visibility": "Public",
+  "position": "Producing",
+  "description": "Authoritative catalog of Leadping's public REST and Model Context Protocol APIs for lead intake, compliant messaging and calling, conversations, automations, events, analytics, billing, and organization management.",
+  "image": "https://leadping.ai/img/favicon/leadpinglogo1024x1024.png",
+  "tags": [
+    "Leadping",
+    "lead management",
+    "lead intake",
+    "communications",
+    "messaging",
+    "calling",
+    "conversations",
+    "automations",
+    "compliance",
+    "CRM",
+    "AI agents"
+  ],
+  "created": "2026-08-17",
+  "modified": "2026-08-17",
+  "url": "https://api.leadping.ai/apis.json",
+  "specificationVersion": "0.22",
+  "apis": [
+    {
+      "aid": "leadping.ai:rest-api",
+      "name": "Leadping REST API",
+      "description": "The HTTPS JSON API for submitting and managing leads, conversations, SMS messages, calls, automations, events, sources, organizations, phone numbers, usage, and billing resources. It supports organization API keys and OAuth bearer tokens, with the complete contract published as OpenAPI 3.1.",
+      "image": "https://leadping.ai/img/favicon/leadpinglogo1024x1024.png",
+      "humanURL": "https://leadping.ai/docs/api-reference",
+      "baseURL": "https://api.leadping.ai",
+      "version": "v1",
+      "created": "2026-08-17",
+      "modified": "2026-08-17",
+      "tags": [
+        "REST",
+        "JSON",
+        "OpenAPI 3.1",
+        "OAuth 2.0",
+        "API keys",
+        "lead intake",
+        "lead management",
+        "conversations",
+        "SMS",
+        "voice",
+        "automations",
+        "events",
+        "analytics",
+        "billing"
+      ],
+      "properties": [
+        {
+          "type": "OpenAPI",
+          "name": "Leadping OpenAPI 3.1 Document",
+          "description": "Machine-readable contract for the production Leadping REST API.",
+          "url": "https://api.leadping.ai/openapi/v1.json",
+          "mediaType": "application/vnd.oai.openapi+json",
+          "tags": [
+            "contract",
+            "operations",
+            "schemas"
+          ]
+        },
+        {
+          "type": "APIReference",
+          "name": "Interactive API Reference",
+          "description": "Browsable endpoint, parameter, request, response, and schema reference generated from the OpenAPI contract.",
+          "url": "https://leadping.ai/docs/api-reference",
+          "mediaType": "text/html",
+          "tags": [
+            "reference",
+            "endpoints"
+          ]
+        },
+        {
+          "type": "GettingStarted",
+          "name": "Send Leads to Leadping",
+          "description": "Practical integration guide for submitting external leads to Leadping.",
+          "url": "https://leadping.ai/docs/sending-leads-to-leadping",
+          "mediaType": "text/html",
+          "tags": [
+            "quickstart",
+            "lead intake"
+          ]
+        },
+        {
+          "type": "Authentication",
+          "name": "API Authentication Guide",
+          "description": "Agent-readable instructions for OAuth bearer tokens and organization API keys.",
+          "url": "https://leadping.ai/auth.md",
+          "mediaType": "text/markdown",
+          "tags": [
+            "OAuth 2.0",
+            "bearer tokens",
+            "API keys"
+          ]
+        },
+        {
+          "type": "APIOnboarding",
+          "name": "API Onboarding Descriptor",
+          "description": "Machine-readable account, plan, verification, registration, credential, scope, and economics requirements for onboarding with Leadping.",
+          "url": "https://api.leadping.ai/.well-known/api-onboarding",
+          "mediaType": "application/json",
+          "tags": [
+            "AOD 0.1",
+            "onboarding",
+            "credentials"
+          ]
+        },
+        {
+          "type": "Plans",
+          "name": "API Plans and Pricing",
+          "description": "Monthly and annual Leadping subscriptions include API access; provider usage and setup are billed separately.",
+          "url": "https://leadping.ai/pricing",
+          "mediaType": "text/html",
+          "tags": [
+            "monthly",
+            "annual",
+            "usage pricing"
+          ]
+        },
+        {
+          "type": "RateLimits",
+          "name": "API Rate Limits",
+          "description": "Published request limits, response headers, retry guidance, and endpoint-specific throttling behavior.",
+          "url": "https://leadping.ai/docs/rate-limits",
+          "mediaType": "text/html",
+          "tags": [
+            "quotas",
+            "throttling",
+            "retry"
+          ]
+        },
+        {
+          "type": "StatusPage",
+          "name": "Leadping Service Status",
+          "description": "Current service availability and incident history for Leadping.",
+          "url": "https://status.leadping.ai",
+          "mediaType": "text/html"
+        },
+        {
+          "type": "TermsOfService",
+          "name": "API Terms of Service",
+          "description": "Terms governing access to and use of Leadping products, APIs, and services.",
+          "url": "https://leadping.ai/docs/terms-of-service",
+          "mediaType": "text/html"
+        },
+        {
+          "type": "Security",
+          "name": "API Security",
+          "description": "Leadping security controls, credential guidance, tenant isolation, monitoring, incident handling, and reporting information.",
+          "url": "https://leadping.ai/docs/trust/security",
+          "mediaType": "text/html"
+        },
+        {
+          "type": "X-OAuthProtectedResource",
+          "name": "OAuth Protected Resource Metadata",
+          "description": "RFC 9728 metadata identifying authorization servers, supported bearer methods, scopes, and API documentation.",
+          "url": "https://api.leadping.ai/.well-known/oauth-protected-resource",
+          "mediaType": "application/json",
+          "tags": [
+            "RFC 9728",
+            "OAuth 2.0",
+            "discovery"
+          ]
+        },
+        {
+          "type": "X-APICatalog",
+          "name": "API Catalog",
+          "description": "RFC 9727 linkset connecting the API to its contract, documentation, authentication metadata, and service index.",
+          "url": "https://api.leadping.ai/.well-known/api-catalog",
+          "mediaType": "application/linkset+json",
+          "tags": [
+            "RFC 9727",
+            "discovery",
+            "linkset"
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "type": "SpectralRules",
+          "name": "Leadping OpenAPI Governance Rules",
+          "description": "First-party Spectral ruleset enforcing baseline OpenAPI completeness, documentation, operation identity, server, path-parameter, and response requirements.",
+          "url": "https://api.leadping.ai/rules/openapi.spectral.json",
+          "mediaType": "application/json",
+          "tags": [
+            "Spectral",
+            "OpenAPI",
+            "governance"
+          ]
+        }
+      ],
+      "contact": [
+        {
+          "FN": "Leadping Support",
+          "organizationName": "Leadping",
+          "email": "support@leadping.ai",
+          "url": "https://leadping.ai/contact"
+        }
+      ]
+    },
+    {
+      "aid": "leadping.ai:mcp-server",
+      "name": "Leadping MCP Server",
+      "description": "The authenticated Model Context Protocol server for AI agents to retrieve organization, lead, conversation, event, and source data for the caller's Leadping account.",
+      "image": "https://leadping.ai/img/favicon/leadpinglogo1024x1024.png",
+      "humanURL": "https://leadping.ai/docs/mcp-server",
+      "baseURL": "https://api.leadping.ai/mcp",
+      "created": "2026-08-17",
+      "modified": "2026-08-17",
+      "tags": [
+        "Model Context Protocol",
+        "MCP",
+        "AI agents",
+        "OAuth 2.0",
+        "tools",
+        "lead management",
+        "conversations",
+        "events",
+        "sources"
+      ],
+      "properties": [
+        {
+          "type": "MCPServer",
+          "name": "Leadping MCP Endpoint",
+          "description": "Production Streamable HTTP endpoint for the authenticated Leadping MCP server.",
+          "url": "https://api.leadping.ai/mcp",
+          "tags": [
+            "Streamable HTTP",
+            "tools",
+            "production"
+          ]
+        },
+        {
+          "type": "Documentation",
+          "name": "MCP Server Guide",
+          "description": "Setup, authentication, client configuration, and tool usage guidance for the Leadping MCP server.",
+          "url": "https://leadping.ai/docs/mcp-server",
+          "mediaType": "text/html",
+          "tags": [
+            "setup",
+            "configuration",
+            "tools"
+          ]
+        },
+        {
+          "type": "Authentication",
+          "name": "Agent Authentication Guide",
+          "description": "Agent-readable OAuth registration, authorization, token, and API-key guidance.",
+          "url": "https://leadping.ai/auth.md",
+          "mediaType": "text/markdown",
+          "tags": [
+            "OAuth 2.0",
+            "agents",
+            "bearer tokens"
+          ]
+        },
+        {
+          "type": "APIOnboarding",
+          "name": "API Onboarding Descriptor",
+          "description": "Machine-readable account, plan, identity-claim, credential, scope, and economics requirements shared by the REST API and MCP server.",
+          "url": "https://api.leadping.ai/.well-known/api-onboarding",
+          "mediaType": "application/json",
+          "tags": [
+            "AOD 0.1",
+            "onboarding",
+            "agents"
+          ]
+        },
+        {
+          "type": "Plans",
+          "name": "MCP Plans and Pricing",
+          "description": "Monthly and annual Leadping subscriptions include authenticated API and MCP access; provider usage is billed separately.",
+          "url": "https://leadping.ai/pricing",
+          "mediaType": "text/html"
+        },
+        {
+          "type": "RateLimits",
+          "name": "API and MCP Rate Limits",
+          "description": "Published request limits, response headers, retry guidance, and throttling behavior for Leadping integrations.",
+          "url": "https://leadping.ai/docs/rate-limits",
+          "mediaType": "text/html"
+        },
+        {
+          "type": "StatusPage",
+          "name": "Leadping Service Status",
+          "description": "Current service availability and incident history for Leadping.",
+          "url": "https://status.leadping.ai",
+          "mediaType": "text/html"
+        },
+        {
+          "type": "TermsOfService",
+          "name": "MCP Terms of Service",
+          "description": "Terms governing agent access to and use of Leadping APIs and services.",
+          "url": "https://leadping.ai/docs/terms-of-service",
+          "mediaType": "text/html"
+        },
+        {
+          "type": "Security",
+          "name": "MCP Security",
+          "description": "Leadping authentication, credential, authorization, tenant-isolation, monitoring, and incident-handling guidance.",
+          "url": "https://leadping.ai/docs/trust/security",
+          "mediaType": "text/html"
+        },
+        {
+          "type": "X-OAuthProtectedResource",
+          "name": "OAuth Protected Resource Metadata",
+          "description": "RFC 9728 discovery metadata for authenticating to the MCP server's protected API resource.",
+          "url": "https://api.leadping.ai/.well-known/oauth-protected-resource",
+          "mediaType": "application/json",
+          "tags": [
+            "RFC 9728",
+            "OAuth 2.0",
+            "discovery"
+          ]
+        }
+      ],
+      "contact": [
+        {
+          "FN": "Leadping Support",
+          "organizationName": "Leadping",
+          "email": "support@leadping.ai",
+          "url": "https://leadping.ai/contact"
+        }
+      ]
+    },
+    {
+      "aid": "leadping.ai:webhook-events",
+      "name": "Leadping Webhook Events API",
+      "description": "The event-driven integration surface for receiving Leadping lead, conversation, message, call, automation, and organization lifecycle notifications. Consumers register HTTPS endpoints and validate signed deliveries before processing them.",
+      "image": "https://leadping.ai/img/favicon/leadpinglogo1024x1024.png",
+      "humanURL": "https://leadping.ai/docs/validating-webhooks",
+      "baseURL": "https://api.leadping.ai",
+      "version": "v1",
+      "created": "2026-08-17",
+      "modified": "2026-08-17",
+      "tags": [
+        "webhooks",
+        "events",
+        "lead management",
+        "conversations",
+        "messaging",
+        "voice",
+        "automations",
+        "signed payloads"
+      ],
+      "properties": [
+        {
+          "type": "Webhooks",
+          "name": "Webhook Integration Guide",
+          "description": "Delivery, signature-validation, retry, and processing guidance for Leadping webhook consumers.",
+          "url": "https://leadping.ai/docs/validating-webhooks",
+          "mediaType": "text/html",
+          "tags": [
+            "signatures",
+            "delivery",
+            "retries"
+          ]
+        },
+        {
+          "type": "OpenAPI",
+          "name": "Leadping OpenAPI 3.1 Document",
+          "description": "Machine-readable contract containing the Leadping webhook and event surface alongside its REST operations.",
+          "url": "https://api.leadping.ai/openapi/v1.json",
+          "mediaType": "application/vnd.oai.openapi+json",
+          "tags": [
+            "contract",
+            "webhooks",
+            "events"
+          ]
+        },
+        {
+          "type": "Security",
+          "name": "Webhook Security Guidance",
+          "description": "Security guidance for validating signatures and safely processing event deliveries.",
+          "url": "https://leadping.ai/docs/validating-webhooks",
+          "mediaType": "text/html"
+        },
+        {
+          "type": "StatusPage",
+          "name": "Leadping Service Status",
+          "description": "Current service availability and incident history for Leadping event delivery.",
+          "url": "https://status.leadping.ai",
+          "mediaType": "text/html"
+        }
+      ],
+      "contact": [
+        {
+          "FN": "Leadping Support",
+          "organizationName": "Leadping",
+          "email": "support@leadping.ai",
+          "url": "https://leadping.ai/contact"
+        }
+      ]
+    }
+  ],
+  "common": [
+    {
+      "type": "Website",
+      "name": "Leadping Website",
+      "description": "Product overview and primary entry point for Leadping.",
+      "url": "https://leadping.ai/",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "DeveloperPortal",
+      "name": "Leadping Developer Portal",
+      "description": "The primary developer entry point for API concepts, authentication, SDKs, webhooks, rate limits, MCP, and endpoint reference documentation.",
+      "url": "https://leadping.ai/docs/developers/overview",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "Documentation",
+      "name": "Leadping Documentation",
+      "description": "Product, integration, compliance, developer, and legal documentation.",
+      "url": "https://leadping.ai/docs",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "APIReference",
+      "name": "Leadping API Reference",
+      "description": "Complete endpoint-level reference generated from the production OpenAPI contract.",
+      "url": "https://leadping.ai/docs/api-reference",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "GettingStarted",
+      "name": "Get Started with Leadping",
+      "description": "Account setup and onboarding path for new Leadping customers.",
+      "url": "https://leadping.ai/docs/get-started",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "Examples",
+      "name": "Lead Intake Integration Example",
+      "description": "Worked request examples for sending external leads into Leadping using source-key authentication.",
+      "url": "https://leadping.ai/docs/sending-leads-to-leadping",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "Authentication",
+      "name": "Leadping API Authentication",
+      "description": "Authentication guidance for organization API keys, source keys, OAuth bearer tokens, and agent identity exchange.",
+      "url": "https://leadping.ai/docs/api-authentication",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "OAuthScopes",
+      "name": "OAuth Scopes and Protected Resource Metadata",
+      "description": "Machine-readable OAuth resource metadata including supported scopes, authorization servers, and bearer methods.",
+      "url": "https://api.leadping.ai/.well-known/oauth-protected-resource",
+      "mediaType": "application/json"
+    },
+    {
+      "type": "SDKs",
+      "name": "TypeScript SDK",
+      "description": "Installation, configuration, authentication, and usage guidance for the Leadping TypeScript SDK.",
+      "url": "https://leadping.ai/docs/sdks/typescript",
+      "mediaType": "text/html",
+      "tags": [
+        "TypeScript",
+        "JavaScript"
+      ]
+    },
+    {
+      "type": "SDKs",
+      "name": "Python SDK",
+      "description": "Installation, configuration, authentication, and usage guidance for the Leadping Python SDK.",
+      "url": "https://leadping.ai/docs/sdks/python",
+      "mediaType": "text/html",
+      "tags": [
+        "Python"
+      ]
+    },
+    {
+      "type": "SDKs",
+      "name": ".NET SDK",
+      "description": "Installation, configuration, authentication, and usage guidance for the Leadping .NET SDK.",
+      "url": "https://leadping.ai/docs/sdks/dotnet",
+      "mediaType": "text/html",
+      "tags": [
+        ".NET",
+        "C#"
+      ]
+    },
+    {
+      "type": "SDKs",
+      "name": "Go SDK",
+      "description": "Installation, configuration, authentication, and usage guidance for the Leadping Go SDK.",
+      "url": "https://leadping.ai/docs/sdks/go",
+      "mediaType": "text/html",
+      "tags": [
+        "Go"
+      ]
+    },
+    {
+      "type": "SDKs",
+      "name": "PHP SDK",
+      "description": "Installation, configuration, authentication, and usage guidance for the Leadping PHP SDK.",
+      "url": "https://leadping.ai/docs/sdks/php",
+      "mediaType": "text/html",
+      "tags": [
+        "PHP"
+      ]
+    },
+    {
+      "type": "SDKs",
+      "name": "Java SDK",
+      "description": "Installation, configuration, authentication, and usage guidance for the Leadping Java SDK.",
+      "url": "https://leadping.ai/docs/sdks/java",
+      "mediaType": "text/html",
+      "tags": [
+        "Java"
+      ]
+    },
+    {
+      "type": "MCPServer",
+      "name": "Leadping MCP Server",
+      "description": "Provider-operated authenticated Model Context Protocol server for organization, lead, conversation, event, and source tools.",
+      "url": "https://api.leadping.ai/mcp",
+      "tags": [
+        "MCP",
+        "AI agents",
+        "Streamable HTTP"
+      ]
+    },
+    {
+      "type": "Pricing",
+      "name": "Pricing",
+      "description": "Current Leadping plans, included capabilities, and pricing information.",
+      "url": "https://leadping.ai/pricing",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "Plans",
+      "name": "Machine-Readable API Plans",
+      "description": "Structured monthly and annual Leadping subscription plans, including API access and plan elements.",
+      "url": "https://api.leadping.ai/plans.json",
+      "mediaType": "application/json"
+    },
+    {
+      "type": "SignUp",
+      "name": "Create or Access a Leadping Account",
+      "description": "Self-service Leadping authentication and account onboarding entry point.",
+      "url": "https://leadping.ai/authentication/login",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "FinOps",
+      "name": "Leadping FinOps Profile",
+      "description": "Machine-readable mapping of subscription and provider-usage charges to allocation and optimization meters.",
+      "url": "https://api.leadping.ai/finops.json",
+      "mediaType": "application/json"
+    },
+    {
+      "type": "StatusPage",
+      "name": "Service Status",
+      "description": "Current availability and incident history for Leadping services.",
+      "url": "https://status.leadping.ai",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "RateLimits",
+      "name": "Machine-Readable API Rate Limits",
+      "description": "Structured organization, lead-intake, user-fallback, and unauthenticated IP request limits.",
+      "url": "https://api.leadping.ai/rate-limits.json",
+      "mediaType": "application/json"
+    },
+    {
+      "type": "ChangeLog",
+      "name": "Leadping API Changelog",
+      "description": "Machine-readable history of material changes to Leadping's public REST, MCP, webhook, and discovery surfaces.",
+      "url": "https://api.leadping.ai/changelog.json",
+      "mediaType": "application/json",
+      "tags": [
+        "releases",
+        "API changes",
+        "history"
+      ]
+    },
+    {
+      "type": "Vocabulary",
+      "name": "Leadping API Vocabulary",
+      "description": "Controlled vocabulary for the core resources, actions, channels, and integration concepts used across Leadping API artifacts.",
+      "url": "https://api.leadping.ai/vocabulary.json",
+      "mediaType": "application/json",
+      "tags": [
+        "governance",
+        "terminology",
+        "data model"
+      ]
+    },
+    {
+      "type": "Compliance",
+      "name": "Compliance Overview",
+      "description": "Leadping's consent, messaging, calling, carrier registration, and communication compliance guidance.",
+      "url": "https://leadping.ai/docs/compliance",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "TrustCenter",
+      "name": "Leadping Trust Center",
+      "description": "Consolidated security, privacy, subprocessors, compliance, data lifecycle, and responsible-disclosure information.",
+      "url": "https://leadping.ai/docs/trust/overview",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "X-AcceptableUsePolicy",
+      "name": "Acceptable Use Policy",
+      "description": "Permitted and prohibited uses of Leadping messaging, voice, and API services.",
+      "url": "https://leadping.ai/docs/acceptable-use",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "Security",
+      "name": "Security Contact and Disclosure Policy",
+      "description": "Leadping security controls, credential handling, tenant isolation, monitoring, incident response, and customer responsibilities.",
+      "url": "https://leadping.ai/docs/trust/security",
+      "mediaType": "text/html",
+      "tags": [
+        "security",
+        "data protection"
+      ]
+    },
+    {
+      "type": "SecurityTxt",
+      "name": "RFC 9116 Security Contact",
+      "description": "Machine-readable security contact and responsible-disclosure entry point.",
+      "url": "https://leadping.ai/.well-known/security.txt",
+      "mediaType": "text/plain",
+      "tags": [
+        "RFC 9116",
+        "vulnerability disclosure"
+      ]
+    },
+    {
+      "type": "VulnerabilityDisclosure",
+      "name": "Responsible Disclosure",
+      "description": "Public vulnerability-reporting channel, safe-reporting expectations, prohibited testing, and response process.",
+      "url": "https://leadping.ai/docs/trust/responsible-disclosure",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "PrivacyPolicy",
+      "name": "Privacy Policy",
+      "description": "How Leadping collects, uses, retains, and protects personal information.",
+      "url": "https://leadping.ai/docs/privacy-policy",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "TermsOfService",
+      "name": "Terms of Service",
+      "description": "Terms governing access to and use of Leadping products and services.",
+      "url": "https://leadping.ai/docs/terms-of-service",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "Support",
+      "name": "Leadping Support",
+      "description": "Contact Leadping for product, account, billing, or integration assistance.",
+      "url": "https://leadping.ai/contact",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "Webhooks",
+      "name": "Leadping Webhooks",
+      "description": "Webhook validation and integration guidance for Leadping event deliveries.",
+      "url": "https://leadping.ai/docs/validating-webhooks",
+      "mediaType": "text/html"
+    },
+    {
+      "type": "LLMsTxt",
+      "name": "LLM Resource Index",
+      "description": "Concise machine-readable map of Leadping's public product, documentation, API, compliance, and legal resources.",
+      "url": "https://leadping.ai/llms.txt",
+      "mediaType": "text/plain",
+      "tags": [
+        "LLM",
+        "AI agents",
+        "discovery"
+      ]
+    },
+    {
+      "type": "LLMsTxt",
+      "name": "Full LLM Documentation",
+      "description": "Expanded agent-readable Leadping documentation corpus for grounded retrieval and integration planning.",
+      "url": "https://leadping.ai/llms-full.txt",
+      "mediaType": "text/plain",
+      "tags": [
+        "LLM",
+        "AI agents",
+        "documentation"
+      ]
+    },
+    {
+      "type": "AgentSkill",
+      "name": "Leadping Public Website Agent Skill",
+      "description": "Provider-authored packaged instructions that teach AI agents how to discover and use public Leadping resources.",
+      "url": "https://leadping.ai/.well-known/agent-skills/leadping-website/SKILL.md",
+      "mediaType": "text/markdown",
+      "tags": [
+        "Agent Skills",
+        "AI agents",
+        "discovery"
+      ]
+    },
+    {
+      "type": "X-AgentManifest",
+      "name": "Leadping Agent Discovery Manifest",
+      "description": "Public manifest connecting agents to Leadping documentation, APIs, authentication, compliance, legal, contact, and automation resources.",
+      "url": "https://leadping.ai/.well-known/agents.json",
+      "mediaType": "application/json",
+      "tags": [
+        "AI agents",
+        "discovery",
+        "manifest"
+      ]
+    },
+    {
+      "type": "APICatalog",
+      "name": "Leadping API Catalog Linkset",
+      "description": "RFC 9727 discovery document linking Leadping services to their contracts, documentation, and authorization metadata.",
+      "url": "https://leadping.ai/.well-known/api-catalog",
+      "mediaType": "application/linkset+json",
+      "tags": [
+        "RFC 9727",
+        "discovery",
+        "linkset"
+      ]
+    },
+    {
+      "type": "GitHubOrganization",
+      "name": "Leadping on GitHub",
+      "description": "Leadping's public GitHub organization and open-source repositories.",
+      "url": "https://github.com/leadpingai",
+      "mediaType": "text/html"
+    }
+  ],
+  "maintainers": [
+    {
+      "FN": "Leadping API Team",
+      "organizationName": "Leadping",
+      "email": "support@leadping.ai",
+      "url": "https://leadping.ai/contact"
+    }
+  ]
+}

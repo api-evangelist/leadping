@@ -1,0 +1,113 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Leadping API
+  version: 1.0.0
+extends: ../openapi/leadping-openapi.json
+x-generated: '2026-08-18'
+x-method: derived
+x-source: >-
+  Derived from openapi/leadping-openapi.json plus the searched artifacts in this repo. Captures API
+  Evangelist annotations without mutating the provider's contract.
+actions:
+  - target: $.info
+    description: Link the provider's own machine-readable discovery surface from the contract.
+    update:
+      x-apis-json: https://api.leadping.ai/apis.json
+      x-api-catalog: https://leadping.ai/.well-known/api-catalog
+      x-api-onboarding: https://api.leadping.ai/.well-known/api-onboarding
+      x-llms-txt: https://leadping.ai/llms.txt
+      x-agent-auth-guide: https://leadping.ai/auth.md
+      x-status-page: https://status.leadping.ai
+      x-changelog: https://api.leadping.ai/changelog.json
+      x-vocabulary: https://api.leadping.ai/vocabulary.json
+      x-finops: https://api.leadping.ai/finops.json
+  - target: $.info
+    description: >-
+      Record the rate limit that applies uniformly to every operation, since it is documented outside the
+      contract and no quota headers are declared.
+    update:
+      x-rate-limit:
+        limit: 300
+        window: 60s
+        partitions:
+          - organization
+          - organization-intake
+          - user
+          - ip
+        exhaustion_status: 429
+        headers:
+          - Retry-After
+        docs: https://leadping.ai/docs/rate-limits
+  - target: $.info
+    description: Record the four credential classes the docs define but the two securitySchemes do not distinguish.
+    update:
+      x-credential-classes:
+        - id: user-access-token
+          scheme: Bearer
+          use: first-party user-scoped operations
+        - id: agent-access-token
+          scheme: Bearer
+          use: WorkOS AuthKit service_auth agent identity, short-lived
+        - id: organization-api-key
+          scheme: Bearer
+          prefix: sk_
+          use: agent, service and integration access to an organization
+        - id: source-key
+          scheme: Bearer
+          prefix: lp_src_
+          use: lead ingestion only
+          allowed_operations:
+            - Leads_CreateExternal
+            - Leads_CreateIntake
+            - Leads_CreateIntakeFromQuery
+  - target: $.components.securitySchemes.SourceKey
+    description: Make the ingestion-only restriction machine-readable on the scheme itself.
+    update:
+      x-restricted-to-operations:
+        - Leads_CreateExternal
+        - Leads_CreateIntake
+        - Leads_CreateIntakeFromQuery
+      x-rejected-elsewhere: true
+  - target: $.paths['/sms/send'].post
+    description: Surface the body-scoped idempotency key as an operation-level property.
+    update:
+      x-idempotency:
+        mechanism: request-body-field
+        field: outboundIdempotencyKey
+        scope: outbound delivery
+  - target: $.paths['/phone-call/initiate'].post
+    description: Surface the body-scoped idempotency key as an operation-level property.
+    update:
+      x-idempotency:
+        mechanism: request-body-field
+        field: outboundIdempotencyKey
+        scope: outbound delivery
+  - target: $.components.schemas.ProblemDetails
+    description: Record that the error envelope is RFC 9457 and that no problem-type registry is published.
+    update:
+      x-standard: RFC 9457
+      x-type-registry-published: false
+      x-catalog: errors/leadping-problem-types.yml
+  - target: $.components.schemas.RequestDataOptions
+    description: Record the pagination contract for agents reading the spec alone.
+    update:
+      x-pagination:
+        style: opaque-cursor
+        cursor_field: continuationToken
+        page_size_field: pageSize
+        total_count_field: includeCount
+        transport: request body on POST list operations
+        note: Leadping list endpoints are POST-with-body, not GET-with-query.
+  - target: $.info
+    description: Record the event surface, which the contract itself does not describe.
+    update:
+      x-webhooks:
+        standard: Standard Webhooks
+        signing: HMAC-SHA256
+        headers:
+          - webhook-id
+          - webhook-timestamp
+          - webhook-signature
+        docs: https://leadping.ai/docs/validating-webhooks
+        asyncapi_published: false
+        catalog: asyncapi/leadping-webhooks.yml

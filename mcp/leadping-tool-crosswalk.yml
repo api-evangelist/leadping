@@ -1,0 +1,218 @@
+generated: '2026-08-18'
+method: derived
+source: >-
+  mcp/leadping-mcp.yml (probed tool lists + provider MCP documentation) bound to
+  openapi/leadping-openapi.json operationIds
+surfaces:
+  openapi:
+    file: openapi/leadping-openapi.json
+    url: https://api.leadping.ai/openapi/v1.json
+    operations: 137
+    gated: false
+  mcp:
+    - url: https://leadping.ai/docs/mcp
+      gated: false
+      note: Anonymous tools/list returned 3 tools with real inputSchemas on 2026-08-18.
+    - url: https://api.leadping.ai/mcp
+      gated: true
+      note: >-
+        401 without a bearer credential. Capability groups below are mapped from the provider's published
+        MCP documentation by name and semantics, not from an authenticated tools/list.
+  graphql: null
+  webmcp:
+    url: https://leadping.ai/.well-known/mcp/server-card.json
+    gated: false
+crosswalk:
+  - tool: 'org-tools: read current organization'
+    category: organizations
+    rest:
+      - Organizations_GetForCurrentUser
+    binding: semantic
+    confidence: high
+    note: 'Docs: "Reading the current organization". GET /organizations/me is the only such operation.'
+  - tool: 'org-tools: list organization-switch options'
+    category: organizations
+    rest:
+      - Organizations_GetSwitchOptions
+    binding: semantic
+    confidence: high
+  - tool: 'org-tools: list leads'
+    category: leads
+    rest:
+      - Leads_GetAllForCurrentUser
+    binding: semantic
+    confidence: high
+  - tool: 'org-tools: read a lead'
+    category: leads
+    rest:
+      - Leads_GetForCurrentUser
+    binding: semantic
+    confidence: high
+  - tool: 'org-tools: create a lead'
+    category: leads
+    rest:
+      - Leads_CreateExternal
+      - Leads_CreateIntake
+    binding: semantic
+    confidence: medium
+    note: >-
+      Docs say "Creating a lead can start configured routing and automation workflows". Three REST intake
+      operations exist (POST /leads, POST /leads/intake, GET /leads/intake); which one the tool wraps is
+      not stated. GET /leads/intake (Leads_CreateIntakeFromQuery) is a query-string variant, unlikely.
+  - tool: 'org-tools: update a lead'
+    category: leads
+    rest:
+      - Leads_Update
+    binding: semantic
+    confidence: high
+  - tool: 'org-tools: archive a lead'
+    category: leads
+    rest:
+      - Leads_Archive
+    binding: semantic
+    confidence: high
+  - tool: 'org-tools: restore a lead'
+    category: leads
+    rest:
+      - Leads_Unarchive
+    binding: semantic
+    confidence: high
+  - tool: 'org-tools: add lead tags'
+    category: leads
+    rest:
+      - Leads_AddTags
+    binding: semantic
+    confidence: high
+  - tool: 'org-tools: replace lead tags'
+    category: leads
+    rest:
+      - Leads_ReplaceTags
+    binding: semantic
+    confidence: high
+  - tool: 'org-tools: remove a lead tag'
+    category: leads
+    rest:
+      - Leads_RemoveTag
+    binding: semantic
+    confidence: high
+  - tool: 'org-tools: permanently delete a lead'
+    category: leads
+    rest:
+      - Leads_Delete
+    binding: semantic
+    confidence: high
+    note: Docs flag this as consequential and requiring explicit confirmation.
+  - tool: 'org-tools: list conversations'
+    category: conversations
+    rest:
+      - Conversations_GetAllForCurrentUser
+    binding: semantic
+    confidence: high
+  - tool: 'org-tools: list conversations for a lead'
+    category: conversations
+    rest:
+      - Conversations_GetConversationsByLead
+    binding: semantic
+    confidence: high
+  - tool: 'org-tools: list events'
+    category: events
+    rest:
+      - Events_GetAllForCurrentUser
+      - Events_GetAllForOrganization
+    binding: semantic
+    confidence: medium
+  - tool: 'org-tools: list lead events'
+    category: events
+    rest:
+      - Events_GetAllForLead
+    binding: semantic
+    confidence: high
+  - tool: 'org-tools: read event details'
+    category: events
+    rest:
+      - Events_GetById
+      - Events_GetDetailById
+    binding: semantic
+    confidence: medium
+  - tool: 'org-tools: list sources'
+    category: sources
+    rest:
+      - Sources_GetAllForCurrentUser
+    binding: semantic
+    confidence: high
+  - tool: 'org-tools: read a source'
+    category: sources
+    rest:
+      - Sources_Get
+    binding: semantic
+    confidence: high
+  - tool: 'org-tools: read source metrics'
+    category: sources
+    rest:
+      - Sources_GetMetrics
+    binding: semantic
+    confidence: high
+mcp_only:
+  - tool: search_leadping_docs
+    server: https://leadping.ai/docs/mcp
+    reason: Documentation retrieval over the Mintlify docs index. No REST equivalent.
+  - tool: query_docs_filesystem_leadping_docs
+    server: https://leadping.ai/docs/mcp
+    reason: Virtual docs filesystem query. No REST equivalent.
+  - tool: submit_feedback
+    server: https://leadping.ai/docs/mcp
+    reason: >-
+      Docs-team feedback channel. Distinct from the REST Feedback_Create operation, which files product
+      feedback against an organization.
+  - tool: leadping.get_public_resources
+    server: webmcp
+    reason: Browser-side resource lookup. No REST equivalent.
+  - tool: leadping.get_authentication_guidance
+    server: webmcp
+    reason: Browser-side static guidance. No REST equivalent.
+  - tool: leadping.open_public_page
+    server: webmcp
+    reason: Browser navigation action. No REST equivalent.
+  - tool: leadping.open_agent_resource
+    server: webmcp
+    reason: Browser navigation / resource fetch action. No REST equivalent.
+rest_only:
+  summary: >-
+    The organization-tools MCP server covers leads, conversations, events, sources and organization
+    context. Everything else in the 137-operation REST contract has no documented tool: the whole
+    communications surface (Sms, Calls, CallEvents, SmsEvents, Telephony, PhoneNumbers,
+    OutboundDelivery), compliance (Suppressions), workflow (Automations, LeadStatuses,
+    LeadStatusChanges, Tags CRUD), billing (PaymentMethods, Transactions, Usage, Wallets), plus
+    Analytics, Notifications, Users, UserDataExports, Feedback and Contact.
+  tags_with_no_tool:
+    - Analytics
+    - Automations
+    - CallEvents
+    - Calls
+    - Contact
+    - Feedback
+    - LeadStatusChanges
+    - LeadStatuses
+    - Notifications
+    - OutboundDelivery
+    - PaymentMethods
+    - PhoneNumbers
+    - Sms
+    - SmsEvents
+    - Suppressions
+    - Tags
+    - Telephony
+    - Transactions
+    - Usage
+    - UserDataExports
+    - Users
+    - Wallets
+coverage:
+  rest_operations: 137
+  mcp_tools_mapped: 20
+  mcp_only_tools: 7
+  rest_tags_total: 27
+  rest_tags_covered_by_mcp: 5
+  note: >-
+    Tool counts for the organization-tools server are capability groups read from documentation, not a
+    live tool count. An authenticated tools/list is required to make these exact.

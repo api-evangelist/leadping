@@ -1,0 +1,588 @@
+openapi: 3.2.0
+info:
+  title: Leadping Calls API
+  description: The Leadping API helps businesses capture and manage leads, automate follow-up, send SMS and MMS messages, place calls, track conversations, enforce contact suppression, and analyze communication workflows. Use this OpenAPI 3.1 contract to integrate lead sources, build organization tools, or generate a typed API client. Authenticate protected operations with a Leadping user access token or WorkOS organization API key. Lead intake operations also accept a Leadping source key.
+  termsOfService: https://leadping.ai/docs/terms-of-service
+  contact:
+    name: Leadping Support
+    url: https://leadping.ai/contact
+    email: support@leadping.ai
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: v1
+  summary: Lead management, messaging, calling, and automation API
+servers:
+- url: https://api.leadping.ai
+  description: Production
+tags:
+- name: Calls
+  description: Manages outbound Leadping calls and active call-control workflows. Use these endpoints to initiate or cancel a call, retrieve call state, and transfer an active call within supported telephony flows.
+paths:
+  /phone-call/initiate:
+    post:
+      tags:
+      - Calls
+      summary: Initiate a Leadping phone call
+      description: Starts an outbound Leadping phone call for an authenticated user and returns the provider call identifiers, status, and routing details.
+      operationId: Calls_InitiateCall
+      requestBody:
+        description: The call initiation request containing phone number and optional metadata.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/InitiateCallRequest'
+              description: Defines the fields clients can send when working with phone call initiation.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/InitiateCallRequest'
+              description: Defines the fields clients can send when working with phone call initiation.
+        required: true
+      responses:
+        '200':
+          description: Calls was successfully initiated.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/PhoneCallResponse'
+                description: Describes a Leadping phone call, including participants, direction, provider state, timing, recording, and billing details.
+        '400':
+          description: The request was invalid or malformed.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /phone-call/{callId}/hangup:
+    post:
+      tags:
+      - Calls
+      summary: End an active Leadping phone call
+      description: Ends an active Leadping phone call by call ID and returns the updated call record, including status and provider routing details.
+      operationId: Calls_HangupCall
+      parameters:
+      - name: callId
+        in: path
+        description: The unique identifier of the call to end.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Calls was successfully ended.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/PhoneCallResponse'
+                description: Describes a Leadping phone call, including participants, direction, provider state, timing, recording, and billing details.
+        '400':
+          description: The request was invalid or malformed.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '404':
+          description: The specified call was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /phone-call/{callId}/status:
+    get:
+      tags:
+      - Calls
+      summary: Get the status of a Leadping phone call
+      description: Retrieves the latest status for a Leadping phone call by call ID, including provider state and call details for tracking progress.
+      operationId: Calls_GetCallStatus
+      parameters:
+      - name: callId
+        in: path
+        description: The unique identifier of the call to check.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Calls status was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/PhoneCallResponse'
+                description: Describes a Leadping phone call, including participants, direction, provider state, timing, recording, and billing details.
+        '400':
+          description: The request was invalid or malformed.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+  /phone-call/{callId}/transfer:
+    post:
+      tags:
+      - Calls
+      summary: Transfer an active Leadping phone call
+      description: Transfers an active Leadping phone call to a new phone number and returns the updated call record with status and routing details.
+      operationId: Calls_TransferCall
+      parameters:
+      - name: callId
+        in: path
+        description: The unique identifier of the call to transfer.
+        required: true
+        schema:
+          type: string
+      - name: newPhoneNumber
+        in: query
+        description: The phone number to transfer the call to.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Calls was successfully transferred.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/PhoneCallResponse'
+                description: Describes a Leadping phone call, including participants, direction, provider state, timing, recording, and billing details.
+        '400':
+          description: The request was invalid or malformed.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '404':
+          description: The specified call was not found.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+components:
+  schemas:
+    CommunicationConsoleEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of this diagnostic console entry.
+        stage:
+          type: string
+          description: Communication-processing stage that produced the entry, such as validation, routing, or provider delivery.
+        status:
+          type: string
+          description: Outcome or state recorded for this processing stage.
+        message:
+          type: string
+          description: User-safe diagnostic message describing what occurred at this stage.
+        occurredAt:
+          type: string
+          description: UTC timestamp when this communication-processing event occurred.
+          format: date-time
+      description: Describes one durable diagnostic entry from the processing of a communication.
+    PhoneCallResponse:
+      type: object
+      properties:
+        status:
+          allOf:
+          - $ref: '#/components/schemas/PhoneCallStatus'
+          description: Current lifecycle status for this phone call in the Leadping API.
+        statusReason:
+          type:
+          - 'null'
+          - string
+          description: Human-readable reason explaining the current status of this phone call.
+        direction:
+          type:
+          - 'null'
+          - string
+          description: Communication direction for this phone call, such as inbound or outbound.
+        conversationId:
+          type:
+          - 'null'
+          - string
+          description: Conversation ID that links this phone call to the Leadping inbox thread.
+        leadId:
+          type:
+          - 'null'
+          - string
+          description: Lead ID associated with the call conversation or outreach attempt.
+        phoneNumber:
+          type: string
+          description: Phone number used by this phone call for calls, SMS, lookup, or routing.
+        toPhoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Recipient phone number used for this communication.
+        fromPhoneNumberId:
+          type:
+          - 'null'
+          - string
+          description: Sender phone number ID used for this outbound SMS or call.
+        fromPhoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Sender phone number used for this communication.
+        callerId:
+          type:
+          - 'null'
+          - string
+          description: Caller ID phone number presented during the outbound call.
+        selectionReason:
+          enum:
+          - StickyConversation
+          - LeadAssigned
+          - CampaignOrSource
+          - Preferred
+          - LocalArea
+          - HealthyPool
+          - FallbackDefault
+          - ManualOverride
+          type:
+          - 'null'
+          - string
+          description: Explains why Leadping selected, rejected, or substituted an outgoing caller or messaging number.
+        wasManuallyOverridden:
+          type: boolean
+          description: Indicates whether a user manually overrode Leadping's automatic number selection for this phone call.
+        campaignId:
+          type:
+          - 'null'
+          - string
+          description: Messaging campaign identifier associated with this phone call.
+        sourceId:
+          type:
+          - 'null'
+          - string
+          description: Lead source ID used for attribution and routing on this call.
+        endedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the call ended.
+          format: date-time
+        queuedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping queued this phone call for processing.
+          format: date-time
+        ringingAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the call started ringing.
+          format: date-time
+        answeredAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the call was answered.
+          format: date-time
+        durationSeconds:
+          type:
+          - 'null'
+          - integer
+          description: Call duration in seconds.
+          format: int32
+        billingStatus:
+          type:
+          - 'null'
+          - string
+          description: Billing state for this communication, charge, or transaction.
+        billableAmount:
+          type:
+          - 'null'
+          - number
+          description: Monetary amount billed for this Leadping communication or transaction.
+          format: double
+        recordingUrl:
+          type:
+          - 'null'
+          - string
+          description: URL for the call recording, when the provider makes one available.
+          format: uri
+        consoleEntries:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/CommunicationConsoleEntry'
+            description: Describes one durable diagnostic entry from the processing of a communication.
+          description: Ordered diagnostic entries recorded while Leadping processed this call.
+        id:
+          type: string
+          description: Stable unique identifier of the resource.
+        createdAt:
+          type: string
+          description: UTC timestamp when the resource was created.
+          format: date-time
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
+          format: date-time
+      description: Describes a Leadping phone call, including participants, direction, provider state, timing, recording, and billing details.
+    InitiateCallRequest:
+      required:
+      - leadId
+      type: object
+      properties:
+        fromPhoneNumberId:
+          type:
+          - 'null'
+          - string
+          description: Sender phone number ID used for this outbound SMS or call.
+        conversationId:
+          type:
+          - 'null'
+          - string
+          description: Conversation ID that links this phone call initiation request to the Leadping inbox thread.
+        leadId:
+          type: string
+          description: Lead ID associated with the outbound call request.
+        wasManuallyOverridden:
+          type: boolean
+          description: Indicates whether a user manually overrode Leadping's automatic number selection for this phone call initiation request.
+        campaignId:
+          type:
+          - 'null'
+          - string
+          description: Messaging campaign identifier associated with this phone call initiation request.
+        sourceId:
+          type:
+          - 'null'
+          - string
+          description: Lead source ID used for call attribution and sender selection.
+        outboundIdempotencyKey:
+          type:
+          - 'null'
+          - string
+          description: Idempotency key used to prevent duplicate outbound delivery.
+      description: Defines the fields clients can send when working with phone call initiation.
+      example:
+        leadId: lead-123
+        conversationId: conversation-123
+        wasManuallyOverridden: false
+        outboundIdempotencyKey: call-example-001
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
+    PhoneCallStatus:
+      enum:
+      - scheduled
+      - queued
+      - initiated
+      - ringing
+      - in_progress
+      - active
+      - completed
+      - ended
+      - busy
+      - no_answer
+      - failed
+      - canceled
+      - missed
+      - transferred
+      - voicemail
+      - blocked_billing
+      - blocked_phone_number_status
+      - blocked_configuration
+      - blocked_permission
+      - configuration_required
+      type: string
+      description: Describes the durable business outcome of a Leadping phone call after provider status normalization.
+  securitySchemes:
+    Bearer:
+      type: http
+      description: Authorization header using the Bearer scheme. Accepted values are Leadping user JWT access tokens and WorkOS organization API keys beginning with sk_.
+      scheme: bearer
+      bearerFormat: JWT or organization API key
+    SourceKey:
+      type: http
+      description: 'Leadping source key for lead ingestion endpoints only using the Authorization header. Example: "Authorization: Bearer lp_src_...".'
+      scheme: bearer
+      bearerFormat: Leadping source key
+externalDocs:
+  description: Leadping API documentation, authentication guide, concepts, and integration guidance.
+  url: https://leadping.ai/docs/api-reference

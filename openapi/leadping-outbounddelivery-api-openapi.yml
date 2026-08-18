@@ -1,0 +1,424 @@
+openapi: 3.2.0
+info:
+  title: Leadping Outbound Delivery API
+  description: The Leadping API helps businesses capture and manage leads, automate follow-up, send SMS and MMS messages, place calls, track conversations, enforce contact suppression, and analyze communication workflows. Use this OpenAPI 3.1 contract to integrate lead sources, build organization tools, or generate a typed API client. Authenticate protected operations with a Leadping user access token or WorkOS organization API key. Lead intake operations also accept a Leadping source key.
+  termsOfService: https://leadping.ai/docs/terms-of-service
+  contact:
+    name: Leadping Support
+    url: https://leadping.ai/contact
+    email: support@leadping.ai
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: v1
+  summary: Lead management, messaging, calling, and automation API
+servers:
+- url: https://api.leadping.ai
+  description: Production
+tags:
+- name: OutboundDelivery
+  description: Reports outbound delivery pacing and sending capacity for the current organization. Use these endpoints to determine whether outbound communications can proceed and to understand active throttles, limits, or capacity constraints.
+paths:
+  /outbound/overview:
+    get:
+      tags:
+      - OutboundDelivery
+      summary: Get organization outbound delivery overview
+      description: Returns current-organization outbound capacity, scheduled work, and pacing decisions used to control lead communication delivery.
+      operationId: OutboundDelivery_GetCurrentOrganizationOverview
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/OutboundCapacityOverview'
+                description: Summarizes organization-wide SMS and voice sending capacity, phone-number health, and recent outbound pacing decisions.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      security:
+      - Bearer: []
+components:
+  schemas:
+    OutboundDeliverySource:
+      enum:
+      - manual
+      - automation
+      - campaign
+      - import
+      - api
+      - system_notification
+      - warmup
+      - retry
+      type: string
+      description: Defines the source that requested outbound delivery.
+    OutboundQueueItem:
+      type: object
+      properties:
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique Leadping identifier for the outbound queue item.
+        channel:
+          allOf:
+          - $ref: '#/components/schemas/OutboundDeliveryChannel'
+          description: Channel classification for this Leadping outbound queue item.
+        source:
+          allOf:
+          - $ref: '#/components/schemas/OutboundDeliverySource'
+          description: Source classification for this Leadping outbound queue item.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/OutboundDeliveryStatus'
+          description: Current status for this Leadping outbound queue item.
+        reasonCode:
+          enum:
+          - allowed
+          - no_eligible_phone_number
+          - ten_dlc_not_approved
+          - phone_number_daily_limit_reached
+          - phone_number_hourly_limit_reached
+          - phone_number_minute_limit_reached
+          - lead_daily_limit_reached
+          - lead_hourly_limit_reached
+          - lead_recently_contacted
+          - lead_archived
+          - quiet_hours
+          - wallet_insufficient
+          - contact_opted_out
+          - imported_lead_requires_consent
+          - automation_bulk_import_disabled
+          - number_cooling_down
+          - number_health_blocked
+          - provider_failure_backoff
+          - campaign_daily_limit_reached
+          - reservation_unavailable
+          type:
+          - 'null'
+          - string
+          description: Structured reason codes for outbound pacing and blocking decisions.
+        reason:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation for the current outbound queue item outcome.
+        scheduledSendAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when this Leadping outbound queue item was scheduled send.
+          format: date-time
+        phoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Phone number associated with this Leadping outbound queue item.
+      description: Describes a queued or recently evaluated outbound delivery request and the pacing decision that controls when it may be sent.
+    OutboundPhoneNumberCapacity:
+      type: object
+      properties:
+        capacityAvailable:
+          type: boolean
+          description: Indicates whether Leadping successfully calculated capacity for this phone number.
+        phoneNumberId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the phone number associated with this Leadping outbound phone number capacity.
+        phoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Phone number associated with this Leadping outbound phone number capacity.
+        healthStatus:
+          allOf:
+          - $ref: '#/components/schemas/PhoneNumberOutboundHealthStatus'
+          description: Current health status for this Leadping outbound phone number capacity.
+        healthReason:
+          type:
+          - 'null'
+          - string
+          description: Human-readable reason for the current phone-number health state.
+        smsApproved:
+          type: boolean
+          description: Indicates whether this phone number has an approved 10DLC messaging campaign assignment.
+        smsRamping:
+          type: boolean
+          description: Indicates whether SMS limits for this phone number are still ramping up.
+        smsRemainingThisMinute:
+          type: integer
+          description: SMS remaining in the current rolling minute.
+          format: int32
+        smsUsedThisMinute:
+          type: integer
+          description: SMS used in the current rolling minute.
+          format: int32
+        smsLimitThisMinute:
+          type: integer
+          description: SMS limit for one rolling minute.
+          format: int32
+        smsMinutelyResetsAt:
+          type:
+          - 'null'
+          - string
+          description: The next time SMS capacity becomes available in the rolling minute window.
+          format: date-time
+        smsRemainingToday:
+          type: integer
+          description: SMS remaining today for the applicable messaging or voice capacity window.
+          format: int32
+        smsUsedToday:
+          type: integer
+          description: SMS used today for the applicable messaging or voice capacity window.
+          format: int32
+        smsLimitToday:
+          type: integer
+          description: Number of SMS limit today represented by this Leadping outbound phone number capacity.
+          format: int32
+        smsDailyResetsAt:
+          type:
+          - 'null'
+          - string
+          description: Next midnight Eastern time, when SMS daily capacity resets.
+          format: date-time
+        smsRemainingThisHour:
+          type: integer
+          description: SMS remaining this hour for the applicable messaging or voice capacity window.
+          format: int32
+        smsUsedThisHour:
+          type: integer
+          description: SMS used this hour for the applicable messaging or voice capacity window.
+          format: int32
+        smsLimitThisHour:
+          type: integer
+          description: Number of SMS limit this hour represented by this Leadping outbound phone number capacity.
+          format: int32
+        smsHourlyResetsAt:
+          type:
+          - 'null'
+          - string
+          description: Start of the next Eastern time hour, when SMS hourly capacity resets.
+          format: date-time
+        voiceRamping:
+          type: boolean
+          description: Indicates whether call limits for this phone number are still ramping up.
+        voiceRemainingThisMinute:
+          type: integer
+          description: Voice remaining in the current rolling minute.
+          format: int32
+        voiceUsedThisMinute:
+          type: integer
+          description: Voice used in the current rolling minute.
+          format: int32
+        voiceLimitThisMinute:
+          type: integer
+          description: Voice limit for one rolling minute.
+          format: int32
+        voiceMinutelyResetsAt:
+          type:
+          - 'null'
+          - string
+          description: The next time voice capacity becomes available in the rolling minute window.
+          format: date-time
+        voiceRemainingToday:
+          type: integer
+          description: Voice remaining today for the applicable messaging or voice capacity window.
+          format: int32
+        voiceUsedToday:
+          type: integer
+          description: Voice used today for the applicable messaging or voice capacity window.
+          format: int32
+        voiceLimitToday:
+          type: integer
+          description: Voice limit today associated with this Leadping outbound phone number capacity.
+          format: int32
+        voiceDailyResetsAt:
+          type:
+          - 'null'
+          - string
+          description: Next midnight Eastern time, when voice daily capacity resets.
+          format: date-time
+        voiceRemainingThisHour:
+          type: integer
+          description: Voice remaining this hour for the applicable messaging or voice capacity window.
+          format: int32
+        voiceUsedThisHour:
+          type: integer
+          description: Voice used this hour for the applicable messaging or voice capacity window.
+          format: int32
+        voiceLimitThisHour:
+          type: integer
+          description: Voice limit this hour associated with this Leadping outbound phone number capacity.
+          format: int32
+        voiceHourlyResetsAt:
+          type:
+          - 'null'
+          - string
+          description: Start of the next Eastern time hour, when voice hourly capacity resets.
+          format: date-time
+      description: Reports the sending capacity, current load, and availability of a phone number considered for outbound delivery.
+    PhoneNumberOutboundHealthStatus:
+      enum:
+      - unknown
+      - new
+      - healthy
+      - warmup
+      - limited
+      - cooling_down
+      - suspended
+      - disabled
+      type: string
+      description: Defines phone-number outbound health states used by pacing.
+    OutboundDeliveryStatus:
+      enum:
+      - pending
+      - scheduled
+      - reserved
+      - sending
+      - sent
+      - failed
+      - skipped
+      - blocked
+      - cancelled
+      type: string
+      description: Defines durable outbound delivery request statuses.
+    OutboundDeliveryChannel:
+      enum:
+      - sms
+      - voice
+      - email
+      - webhook
+      - internal_notification
+      type: string
+      description: Defines outbound delivery channels protected by delivery control.
+    OutboundCapacityOverview:
+      type: object
+      properties:
+        smsCapacityRemainingToday:
+          type: integer
+          description: SMS capacity remaining today for the applicable messaging or voice capacity window.
+          format: int32
+        voiceCapacityRemainingToday:
+          type: integer
+          description: Voice capacity remaining today for the applicable messaging or voice capacity window.
+          format: int32
+        healthyPhoneNumbers:
+          type: integer
+          description: Number of healthy phone numbers represented by this Leadping outbound capacity overview.
+          format: int32
+        limitedPhoneNumbers:
+          type: integer
+          description: Number of limited phone numbers represented by this Leadping outbound capacity overview.
+          format: int32
+        coolingPhoneNumbers:
+          type: integer
+          description: Number of cooling phone numbers represented by this Leadping outbound capacity overview.
+          format: int32
+        rampingPhoneNumbers:
+          type: integer
+          description: Number of phone numbers whose SMS or calling capacity is still ramping up.
+          format: int32
+        scheduledCount:
+          type: integer
+          description: Total number of scheduled records represented by this Leadping outbound capacity overview.
+          format: int32
+        blockedCount:
+          type: integer
+          description: Total number of blocked records represented by this Leadping outbound capacity overview.
+          format: int32
+        phoneNumbers:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/OutboundPhoneNumberCapacity'
+            description: Reports the sending capacity, current load, and availability of a phone number considered for outbound delivery.
+          description: Collection of phone numbers included with this Leadping outbound capacity overview.
+        recentDecisions:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/OutboundQueueItem'
+            description: Describes a queued or recently evaluated outbound delivery request and the pacing decision that controls when it may be sent.
+          description: Collection of recent decisions included with this Leadping outbound capacity overview.
+      description: Summarizes organization-wide SMS and voice sending capacity, phone-number health, and recent outbound pacing decisions.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
+  securitySchemes:
+    Bearer:
+      type: http
+      description: Authorization header using the Bearer scheme. Accepted values are Leadping user JWT access tokens and WorkOS organization API keys beginning with sk_.
+      scheme: bearer
+      bearerFormat: JWT or organization API key
+    SourceKey:
+      type: http
+      description: 'Leadping source key for lead ingestion endpoints only using the Authorization header. Example: "Authorization: Bearer lp_src_...".'
+      scheme: bearer
+      bearerFormat: Leadping source key
+externalDocs:
+  description: Leadping API documentation, authentication guide, concepts, and integration guidance.
+  url: https://leadping.ai/docs/api-reference

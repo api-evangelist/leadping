@@ -1,0 +1,117 @@
+{
+  "title": "Leadping API Vocabulary",
+  "description": "Controlled terms used across Leadping's API contracts, documentation, events, and agent integrations.",
+  "version": "1.0",
+  "updated": "2026-08-17",
+  "namespace": "https://api.leadping.ai/vocabulary#",
+  "terms": [
+    {
+      "id": "organization",
+      "label": "Organization",
+      "kind": "resource",
+      "description": "A tenant that owns Leadping users, leads, sources, conversations, automations, and billing resources."
+    },
+    {
+      "id": "lead",
+      "label": "Lead",
+      "kind": "resource",
+      "description": "A prospective customer and the contact, source, consent, status, and engagement information associated with that prospect."
+    },
+    {
+      "id": "source",
+      "label": "Source",
+      "kind": "resource",
+      "description": "An authenticated intake origin through which external systems submit leads to an organization."
+    },
+    {
+      "id": "conversation",
+      "label": "Conversation",
+      "kind": "resource",
+      "description": "The communication history connecting a lead and an organization across supported channels."
+    },
+    {
+      "id": "message",
+      "label": "Message",
+      "kind": "resource",
+      "description": "An inbound or outbound communication item associated with a conversation."
+    },
+    {
+      "id": "call",
+      "label": "Call",
+      "kind": "resource",
+      "description": "A voice communication session associated with an organization, lead, and conversation."
+    },
+    {
+      "id": "automation",
+      "label": "Automation",
+      "kind": "resource",
+      "description": "A configured workflow that evaluates triggers and performs follow-up actions."
+    },
+    {
+      "id": "event",
+      "label": "Event",
+      "kind": "resource",
+      "description": "A durable record of a business or communication occurrence within Leadping."
+    },
+    {
+      "id": "webhook",
+      "label": "Webhook",
+      "kind": "integration",
+      "description": "A signed HTTPS delivery that notifies an external consumer about a Leadping event."
+    },
+    {
+      "id": "mcp-server",
+      "label": "MCP Server",
+      "kind": "integration",
+      "description": "Leadping's authenticated Model Context Protocol tool surface for AI agents."
+    },
+    {
+      "id": "organization-api-key",
+      "label": "Organization API Key",
+      "kind": "credential",
+      "description": "A credential granting scoped access to an organization's API resources."
+    },
+    {
+      "id": "source-key",
+      "label": "Source Key",
+      "kind": "credential",
+      "description": "A credential scoped to submitting leads through a specific intake source."
+    },
+    {
+      "id": "oauth-access-token",
+      "label": "OAuth Access Token",
+      "kind": "credential",
+      "description": "A scoped bearer token issued for access to protected Leadping resources."
+    },
+    {
+      "id": "sms",
+      "label": "SMS",
+      "kind": "channel",
+      "description": "Short Message Service communication sent or received through Leadping."
+    },
+    {
+      "id": "voice",
+      "label": "Voice",
+      "kind": "channel",
+      "description": "Telephone calling communication initiated, received, or recorded through Leadping."
+    },
+    {
+      "id": "idempotency-key",
+      "label": "Idempotency Key",
+      "kind": "request-control",
+      "description": "A caller-supplied identifier used to make a retried mutation safe from duplicate execution."
+    },
+    {
+      "id": "rate-limit",
+      "label": "Rate Limit",
+      "kind": "operational-control",
+      "description": "A request quota applied to a caller, organization, source, user, or network address."
+    },
+    {
+      "id": "consent",
+      "label": "Consent",
+      "kind": "compliance",
+      "description": "Evidence and permissions governing whether and how a lead may be contacted."
+    }
+  ]
+}
