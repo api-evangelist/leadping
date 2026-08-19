@@ -14,7 +14,7 @@ image: https://leadping.ai/img/favicon/leadpinglogo1024x1024.png
 url: https://leadping.apievangelist.com/apis.yml
 created: '2026-08-18'
 modified: '2026-08-18'
-specificationVersion: '0.21'
+specificationVersion: '0.23'
 tags:
 - Lead management
 - Sales & marketing automation
