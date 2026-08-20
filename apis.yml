@@ -16,6 +16,22 @@ created: '2026-08-18'
 modified: '2026-08-18'
 specificationVersion: '0.23'
 tags:
+- Lead Management
+- Sales & marketing automation
+- SMS Messaging
+- A2P 10DLC
+- CPaaS
+- Communications
+- Voice/calling
+- Compliance & consent
+- agent-native
+- MCP
+- Lead intake
+- Conversations
+- Automations
+- Suppression & opt-out
+- Webhook
+tags_raw:
 - Lead management
 - Sales & marketing automation
 - SMS/messaging
@@ -42,6 +58,10 @@ apis:
   baseURL: https://api.leadping.ai/mcp
   tags:
   - MCP
+  - agent-native
+  - Lead Management
+  tags_raw:
+  - MCP
   - Agent-native
   - Lead management
   properties:
@@ -65,6 +85,10 @@ apis:
   humanURL: https://leadping.ai/docs/validating-webhooks
   baseURL: https://api.leadping.ai
   tags:
+  - Webhook
+  - Communications
+  - Automations
+  tags_raw:
   - Webhooks
   - Communications
   - Automations
@@ -145,6 +169,8 @@ apis:
   humanURL: https://leadping.ai/docs/api-reference
   baseURL: https://api.leadping.ai
   tags:
+  - Call Events
+  tags_raw:
   - CallEvents
   properties:
   - type: OpenAPI
@@ -273,6 +299,8 @@ apis:
   humanURL: https://leadping.ai/docs/api-reference
   baseURL: https://api.leadping.ai
   tags:
+  - Event
+  tags_raw:
   - Events
   properties:
   - type: OpenAPI
@@ -401,6 +429,8 @@ apis:
   humanURL: https://leadping.ai/docs/api-reference
   baseURL: https://api.leadping.ai
   tags:
+  - Lead Statuses
+  tags_raw:
   - LeadStatuses
   properties:
   - type: OpenAPI
@@ -433,6 +463,8 @@ apis:
   humanURL: https://leadping.ai/docs/api-reference
   baseURL: https://api.leadping.ai
   tags:
+  - Notification
+  tags_raw:
   - Notifications
   properties:
   - type: OpenAPI
@@ -465,6 +497,8 @@ apis:
   humanURL: https://leadping.ai/docs/api-reference
   baseURL: https://api.leadping.ai
   tags:
+  - Organization
+  tags_raw:
   - Organizations
   properties:
   - type: OpenAPI
@@ -529,6 +563,8 @@ apis:
   humanURL: https://leadping.ai/docs/api-reference
   baseURL: https://api.leadping.ai
   tags:
+  - Payment Methods
+  tags_raw:
   - PaymentMethods
   properties:
   - type: OpenAPI
@@ -561,6 +597,8 @@ apis:
   humanURL: https://leadping.ai/docs/api-reference
   baseURL: https://api.leadping.ai
   tags:
+  - Phone Numbers
+  tags_raw:
   - PhoneNumbers
   properties:
   - type: OpenAPI
@@ -593,6 +631,8 @@ apis:
   humanURL: https://leadping.ai/docs/api-reference
   baseURL: https://api.leadping.ai
   tags:
+  - SMS
+  tags_raw:
   - Sms
   properties:
   - type: OpenAPI
@@ -785,6 +825,8 @@ apis:
   humanURL: https://leadping.ai/docs/api-reference
   baseURL: https://api.leadping.ai
   tags:
+  - Transaction
+  tags_raw:
   - Transactions
   properties:
   - type: OpenAPI
@@ -880,6 +922,8 @@ apis:
   humanURL: https://leadping.ai/docs/api-reference
   baseURL: https://api.leadping.ai
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
