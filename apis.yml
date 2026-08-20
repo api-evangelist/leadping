@@ -11,9 +11,9 @@ description: Leadping is a lead-management and responsible-outreach platform for
   including APIs.json, an RFC 9727 API catalog, RFC 9728 protected-resource metadata, llms.txt and an
   agent-skill index.
 image: https://leadping.ai/img/favicon/leadpinglogo1024x1024.png
-url: https://leadping.apievangelist.com/apis.yml
+url: https://api.leadping.ai/apis.json
 created: '2026-08-18'
-modified: '2026-08-18'
+modified: '2026-08-20'
 specificationVersion: '0.23'
 tags:
 - Lead management
@@ -968,6 +968,8 @@ common:
   url: lifecycle/leadping-lifecycle.yml
 - type: Authentication
   url: authentication/leadping-authentication.yml
+- type: OAuthScopes
+  url: https://leadping.ai/.well-known/oauth-authorization-server
 - type: Conventions
   url: conventions/leadping-conventions.yml
 - type: Idempotency
@@ -990,6 +992,20 @@ common:
   url: packages/leadping-packages.yml
 - type: SDKs
   url: https://leadping.ai/docs/sdks/overview
+- type: SDK
+  url: https://www.npmjs.com/package/@leadping/sdk
+- type: SDK
+  url: https://pypi.org/project/leadping/
+- type: SDK
+  url: https://www.nuget.org/packages/Leadping.OpenApiClient
+- type: SDK
+  url: https://pkg.go.dev/github.com/leadpingai/leadping-go
+- type: SDK
+  url: https://packagist.org/packages/leadpingai/sdk
+- type: SDK
+  url: https://repo1.maven.org/maven2/ai/leadping/leadping/
+- type: Examples
+  url: https://leadping.ai/docs/sending-leads-to-leadping
 - type: MCPServer
   url: mcp/leadping-mcp.yml
 - type: ToolCrosswalk
@@ -1018,6 +1034,8 @@ common:
   url: security/leadping-trust-center.yml
 - type: Conformance
   url: conformance/leadping-conformance.yml
+- type: Rules
+  url: rules/leadping-openapi.spectral.json
 - type: Compliance
   url: https://leadping.ai/docs/compliance
 - type: Overlay

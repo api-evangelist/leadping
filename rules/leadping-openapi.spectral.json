@@ -1,0 +1,38 @@
+{
+  "extends": [
+    "spectral:oas"
+  ],
+  "documentationUrl": "https://leadping.ai/docs/api-reference",
+  "rules": {
+    "duplicated-entry-in-enum": "warn",
+    "info-contact": "error",
+    "info-description": "error",
+    "info-license": "warn",
+    "license-url": "warn",
+    "no-$ref-siblings": "warn",
+    "no-eval-in-markdown": "warn",
+    "no-script-tags-in-markdown": "warn",
+    "oas3-api-servers": "error",
+    "oas3-examples-value-or-externalValue": "warn",
+    "oas3-operation-security-defined": "warn",
+    "oas3-parameter-description": "warn",
+    "oas3-server-not-example.com": "error",
+    "oas3-unused-component": "warn",
+    "oas3-valid-media-example": "warn",
+    "oas3-valid-schema-example": "warn",
+    "openapi-tags": "warn",
+    "operation-description": "error",
+    "operation-operationId": "error",
+    "operation-operationId-unique": "error",
+    "operation-parameters": "warn",
+    "operation-success-response": "error",
+    "operation-tag-defined": "warn",
+    "operation-tags": "warn",
+    "path-declarations-must-exist": "error",
+    "path-keys-no-trailing-slash": "warn",
+    "path-not-include-query": "error",
+    "path-params": "error",
+    "tag-description": "info",
+    "typed-enum": "warn"
+  }
+}
