@@ -1,0 +1,56 @@
+slug: leadping
+provider: Leadping
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Telecommunications
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 4
+edges:
+- tag: Leads
+  spec_file: leadping-leads-api-openapi.yml
+  capability_id: BC-410.30
+  capability_id_l1: BC-410
+  capability_name: Opportunity & Pipeline Management
+  confidence: 0.85
+  evidence: Leads_CreateExternal  Create a lead record from an external source; Leads_Update  Update an
+    organization lead record and status
+  reason: Core lead record lifecycle (create from source, update status, archive, tag) is lead/opportunity
+    pipeline management in a sales context.
+- tag: LeadStatusChanges
+  spec_file: leadping-leadstatuschanges-api-openapi.yml
+  capability_id: BC-410.30
+  capability_id_l1: BC-410
+  capability_name: Opportunity & Pipeline Management
+  confidence: 0.8
+  evidence: PUT /leads/{leadId}/status "Set a lead's current status"; GET /leads/{leadId}/status-history
+    "List a lead's status history"
+  reason: Directly manages lead status and its history — the lead lifecycle stage progression at the heart
+    of Opportunity & Pipeline Management.
+- tag: Usage
+  spec_file: leadping-usage-api-openapi.yml
+  capability_id: BC-4250.10
+  capability_id_l1: BC-4250
+  capability_name: Usage Metering
+  confidence: 0.75
+  evidence: 'POST /usage/all/my  Usage_GetAllForCurrentOrganization  List organization messaging usage
+    ledger entries; schemas: BillableUnit, UsageChannel, UsageCounterLine'
+  reason: 'Aggregation and reporting of billable messaging usage per organisation — ingestion/aggregation
+    of usage events feeding billing, i.e. usage metering for a SaaS commercial model. Not telecom usage
+    mediation: this is the vendor''s own SaaS metering ledger, not network CDR collection.'
+- tag: PaymentMethods
+  spec_file: leadping-paymentmethods-api-openapi.yml
+  capability_id: BC-4250.40
+  capability_id_l1: BC-4250
+  capability_name: Payment Collection & Dunning
+  confidence: 0.72
+  evidence: PaymentMethods_GetInvoices  List current-organization Stripe invoices; PaymentMethods_MakeDefault  Set
+    default payment method; schema StripePaymentMethodResponse
+  reason: Payment-method stewardship and invoice retrieval for the SaaS subscription — payment collection
+    side of subscription billing. Mixed with invoice presentment, hence not higher.

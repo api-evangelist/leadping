@@ -992,6 +992,9 @@ apis:
   - type: Vocabulary
     url: vocabulary/leadping-vocabulary.json
 common:
+- type: CapabilityMap
+  url: capabilities/leadping-capability-edges.yml
+  name: Leadping Business Capability Map
 - type: Website
   url: https://leadping.ai/
 - type: DeveloperPortal
