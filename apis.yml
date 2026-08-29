@@ -10,6 +10,18 @@ description: Leadping is a lead-management and responsible-outreach platform for
   MCP servers, Standard Webhooks signing, and an unusually complete machine-readable discovery surface
   including APIs.json, an RFC 9727 API catalog, RFC 9728 protected-resource metadata, llms.txt and an
   agent-skill index.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://leadping.ai/img/favicon/leadpinglogo1024x1024.png
 url: https://leadping.apievangelist.com/apis.yml
 created: '2026-08-18'
