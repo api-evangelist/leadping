@@ -30,13 +30,13 @@ specificationVersion: '0.23'
 tags:
 - Lead Management
 - Sales & marketing automation
-- SMS Messaging
+- SMS/messaging
 - A2P 10DLC
 - CPaaS
 - Communications
 - Voice/calling
 - Compliance & consent
-- agent-native
+- Agent-native
 - MCP
 - Lead intake
 - Conversations
@@ -70,7 +70,7 @@ apis:
   baseURL: https://api.leadping.ai/mcp
   tags:
   - MCP
-  - agent-native
+  - Agent-native
   - Lead Management
   tags_raw:
   - MCP
@@ -181,7 +181,7 @@ apis:
   humanURL: https://leadping.ai/docs/api-reference
   baseURL: https://api.leadping.ai
   tags:
-  - Call Events
+  - CallEvents
   tags_raw:
   - CallEvents
   properties:
@@ -441,7 +441,7 @@ apis:
   humanURL: https://leadping.ai/docs/api-reference
   baseURL: https://api.leadping.ai
   tags:
-  - Lead Statuses
+  - LeadStatuses
   tags_raw:
   - LeadStatuses
   properties:
@@ -575,7 +575,7 @@ apis:
   humanURL: https://leadping.ai/docs/api-reference
   baseURL: https://api.leadping.ai
   tags:
-  - Payment Methods
+  - PaymentMethods
   tags_raw:
   - PaymentMethods
   properties:
