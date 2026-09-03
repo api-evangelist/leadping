@@ -334,6 +334,48 @@ components:
           description: Date and time when the lead status was last modified.
           format: date-time
       description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
+    LeadStatusCategory:
+      enum:
+      - Open
+      - Qualified
+      - Converted
+      - Lost
+      - Invalid
+      - Duplicate
+      type: string
+      description: Controlled lead status change categories used for reporting, automation, and analytics.
+    LeadStatusRequest:
+      type: object
+      properties:
+        name:
+          type:
+          - 'null'
+          - string
+          description: Display name for the lead status.
+        color:
+          type:
+          - 'null'
+          - string
+          description: Display color for the lead status.
+        category:
+          enum:
+          - Open
+          - Qualified
+          - Converted
+          - Lost
+          - Invalid
+          - Duplicate
+          type:
+          - 'null'
+          - string
+          description: Controlled lead status change categories used for reporting, automation, and analytics.
+        sortOrder:
+          type:
+          - 'null'
+          - integer
+          description: Relative display order for the lead status.
+          format: int32
+      description: Defines the editable values used to create or update a lead status.
     ProblemDetails:
       type: object
       properties:
@@ -370,48 +412,6 @@ components:
         status: 400
         detail: One or more request fields are invalid.
         instance: /leads/intake
-    LeadStatusRequest:
-      type: object
-      properties:
-        name:
-          type:
-          - 'null'
-          - string
-          description: Display name for the lead status.
-        color:
-          type:
-          - 'null'
-          - string
-          description: Display color for the lead status.
-        category:
-          enum:
-          - Open
-          - Qualified
-          - Converted
-          - Lost
-          - Invalid
-          - Duplicate
-          type:
-          - 'null'
-          - string
-          description: Controlled lead status change categories used for reporting, automation, and analytics.
-        sortOrder:
-          type:
-          - 'null'
-          - integer
-          description: Relative display order for the lead status.
-          format: int32
-      description: Defines the editable values used to create or update a lead status.
-    LeadStatusCategory:
-      enum:
-      - Open
-      - Qualified
-      - Converted
-      - Lost
-      - Invalid
-      - Duplicate
-      type: string
-      description: Controlled lead status change categories used for reporting, automation, and analytics.
   securitySchemes:
     Bearer:
       type: http

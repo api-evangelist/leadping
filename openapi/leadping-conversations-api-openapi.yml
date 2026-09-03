@@ -282,63 +282,6 @@ paths:
       - Bearer: []
 components:
   schemas:
-    RequestDataOptions:
-      type: object
-      properties:
-        pageSize:
-          type: integer
-          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
-        orderBy:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/OrderByOption'
-            description: Defines one field and direction used to order an API query result set.
-          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
-        includeCount:
-          type:
-          - 'null'
-          - boolean
-          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
-        search:
-          type:
-          - 'null'
-          - string
-          description: Free-text search term applied to the configured SearchFields.
-        searchFields:
-          type:
-          - 'null'
-          - array
-          items:
-            type: string
-          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
-        filters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/ExactMatchFilter'
-            description: Selects records whose named field equals a supplied scalar value.
-          description: Exact-match conditions that require each named field to equal its supplied value.
-        rangeFilters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/RangeFilter'
-            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
-          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
-      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
     CurrentLeadStatusSummary:
       type: object
       properties:
@@ -395,92 +338,6 @@ components:
           - string
           description: Known sources that can change a lead's current lead status change.
       description: Summary schema for Leadping API current lead status change summary data used in dashboards and reports.
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - 'null'
-          - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
-          type:
-          - 'null'
-          - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-      example:
-        type: https://leadping.ai/docs/errors/validation
-        title: Request validation failed
-        status: 400
-        detail: One or more request fields are invalid.
-        instance: /leads/intake
-    OrderByOption:
-      type: object
-      properties:
-        field:
-          type: string
-          description: Serializable field name used for sorting; supported names are determined by the queried resource.
-        direction:
-          enum:
-          - asc
-          - desc
-          type:
-          - 'null'
-          - string
-          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
-      description: Defines one field and direction used to order an API query result set.
-    ExactMatchFilter:
-      type: object
-      properties:
-        value:
-          description: Scalar value the target field must equal; its JSON type should match the field being queried.
-        field:
-          type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records whose named field equals a supplied scalar value.
-    PagedResultOfConversationResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/ConversationResponse'
-            description: Describes conversation data returned by Leadping.
-          description: Items included in the current page, in the order determined by the query.
-        pageSize:
-          type: integer
-          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
-      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
     ConversationResponse:
       type: object
       properties:
@@ -605,21 +462,113 @@ components:
           - string
           description: Phone number ID currently active for outbound delivery.
       description: Describes conversation data returned by Leadping.
-    RangeFilter:
+    PagedResultOfConversationResponse:
       type: object
       properties:
-        greaterThan:
-          description: Exclusive lower bound; matching field values must be greater than this value.
-        greaterThanOrEqual:
-          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
-        lessThan:
-          description: Exclusive upper bound; matching field values must be less than this value.
-        lessThanOrEqual:
-          description: Inclusive upper bound; matching field values must be less than or equal to this value.
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ConversationResponse'
+            description: Describes conversation data returned by Leadping.
+          description: Items included in the current page, in the order determined by the query.
+        pageSize:
+          type: integer
+          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
+      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+    OrderByOption:
+      type: object
+      properties:
+        field:
+          type: string
+          description: Serializable field name used for sorting; supported names are determined by the queried resource.
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
+          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
+      description: Defines one field and direction used to order an API query result set.
+    ExactMatchFilter:
+      type: object
+      properties:
+        value:
+          description: Scalar value the target field must equal; its JSON type should match the field being queried.
         field:
           type: string
           description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+      description: Selects records whose named field equals a supplied scalar value.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/OrderByOption'
+            description: Defines one field and direction used to order an API query result set.
+          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
+        search:
+          type:
+          - 'null'
+          - string
+          description: Free-text search term applied to the configured SearchFields.
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ExactMatchFilter'
+            description: Selects records whose named field equals a supplied scalar value.
+          description: Exact-match conditions that require each named field to equal its supplied value.
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/RangeFilter'
+            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
+      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
     IdNameValue:
       required:
       - id
@@ -638,6 +587,57 @@ components:
           type: string
           description: Human-readable display name of the referenced resource.
       description: Extends an identifier-and-name resource reference with an optional string value used for display or selection metadata.
+    RangeFilter:
+      type: object
+      properties:
+        greaterThan:
+          description: Exclusive lower bound; matching field values must be greater than this value.
+        greaterThanOrEqual:
+          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
+        lessThan:
+          description: Exclusive upper bound; matching field values must be less than this value.
+        lessThanOrEqual:
+          description: Inclusive upper bound; matching field values must be less than or equal to this value.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
   securitySchemes:
     Bearer:
       type: http

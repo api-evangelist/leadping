@@ -25,6 +25,11 @@
       ],
       "service-meta": [
         {
+          "href": "https://api.leadping.ai/.well-known/agent-card.json",
+          "type": "application/json",
+          "title": "Leadping A2A Agent Card"
+        },
+        {
           "href": "https://api.leadping.ai/apis.json",
           "type": "application/json",
           "title": "Leadping APIs.json index"

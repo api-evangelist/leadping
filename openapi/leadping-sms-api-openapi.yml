@@ -268,112 +268,6 @@ paths:
       - Bearer: []
 components:
   schemas:
-    CommunicationConsoleEntry:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier of this diagnostic console entry.
-        stage:
-          type: string
-          description: Communication-processing stage that produced the entry, such as validation, routing, or provider delivery.
-        status:
-          type: string
-          description: Outcome or state recorded for this processing stage.
-        message:
-          type: string
-          description: User-safe diagnostic message describing what occurred at this stage.
-        occurredAt:
-          type: string
-          description: UTC timestamp when this communication-processing event occurred.
-          format: date-time
-      description: Describes one durable diagnostic entry from the processing of a communication.
-    SendSmsRequest:
-      required:
-      - conversationId
-      - text
-      type: object
-      properties:
-        smsEventId:
-          type:
-          - 'null'
-          - string
-          description: Existing SMS event ID to reuse or update when retrying a send request.
-        scheduledFor:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when Leadping should send the SMS message.
-          format: date-time
-        conversationId:
-          type: string
-          description: Conversation ID that links this SMS send request to the Leadping inbox thread.
-        fromPhoneNumberId:
-          type:
-          - 'null'
-          - string
-          description: Sender phone number ID used for this outbound SMS or call.
-        wasManuallyOverridden:
-          type: boolean
-          description: Indicates whether a user manually overrode Leadping's automatic number selection for this SMS send request.
-        campaignId:
-          type:
-          - 'null'
-          - string
-          description: Messaging campaign identifier associated with this SMS send request.
-        sourceId:
-          type:
-          - 'null'
-          - string
-          description: Lead source ID used for attribution and sender selection.
-        text:
-          type: string
-          description: Body text for the SMS message or communication represented by this SMS send request.
-        mediaUrls:
-          type: array
-          items:
-            type: string
-          description: Public HTTPS media URLs to attach. Supplying at least one URL sends the message as MMS.
-        outboundIdempotencyKey:
-          type:
-          - 'null'
-          - string
-          description: Idempotency key used to prevent duplicate outbound delivery.
-      description: Defines the fields clients can send when working with SMS send.
-      example:
-        conversationId: conversation-123
-        text: Thanks for your interest. When is a good time to talk?
-        mediaUrls: []
-        outboundIdempotencyKey: sms-example-001
-    MessageMediaAttachment:
-      type: object
-      properties:
-        url:
-          type: string
-          description: URL from which the media attachment can be retrieved.
-          format: uri
-        contentType:
-          type:
-          - 'null'
-          - string
-          description: MIME content type of the media attachment.
-        size:
-          type:
-          - 'null'
-          - integer
-          description: Size of the media attachment in bytes.
-          format: int64
-        sha256:
-          type:
-          - 'null'
-          - string
-          description: SHA-256 digest of the media content, when available.
-        fileName:
-          type:
-          - 'null'
-          - string
-          description: Original file name of the media attachment, when available.
-      description: Media attached to an SMS/MMS conversation event.
     SmsResponse:
       type: object
       properties:
@@ -594,6 +488,26 @@ components:
           description: UTC timestamp when the resource was last modified, or null when it has not been updated.
           format: date-time
       description: Describes an SMS or MMS message, including participants, delivery state, scheduling, media, and billing details.
+    CommunicationConsoleEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of this diagnostic console entry.
+        stage:
+          type: string
+          description: Communication-processing stage that produced the entry, such as validation, routing, or provider delivery.
+        status:
+          type: string
+          description: Outcome or state recorded for this processing stage.
+        message:
+          type: string
+          description: User-safe diagnostic message describing what occurred at this stage.
+        occurredAt:
+          type: string
+          description: UTC timestamp when this communication-processing event occurred.
+          format: date-time
+      description: Describes one durable diagnostic entry from the processing of a communication.
     ProblemDetails:
       type: object
       properties:
@@ -630,6 +544,92 @@ components:
         status: 400
         detail: One or more request fields are invalid.
         instance: /leads/intake
+    SendSmsRequest:
+      required:
+      - conversationId
+      - text
+      type: object
+      properties:
+        smsEventId:
+          type:
+          - 'null'
+          - string
+          description: Existing SMS event ID to reuse or update when retrying a send request.
+        scheduledFor:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping should send the SMS message.
+          format: date-time
+        conversationId:
+          type: string
+          description: Conversation ID that links this SMS send request to the Leadping inbox thread.
+        fromPhoneNumberId:
+          type:
+          - 'null'
+          - string
+          description: Sender phone number ID used for this outbound SMS or call.
+        wasManuallyOverridden:
+          type: boolean
+          description: Indicates whether a user manually overrode Leadping's automatic number selection for this SMS send request.
+        campaignId:
+          type:
+          - 'null'
+          - string
+          description: Messaging campaign identifier associated with this SMS send request.
+        sourceId:
+          type:
+          - 'null'
+          - string
+          description: Lead source ID used for attribution and sender selection.
+        text:
+          type: string
+          description: Body text for the SMS message or communication represented by this SMS send request.
+        mediaUrls:
+          type: array
+          items:
+            type: string
+          description: Public HTTPS media URLs to attach. Supplying at least one URL sends the message as MMS.
+        outboundIdempotencyKey:
+          type:
+          - 'null'
+          - string
+          description: Idempotency key used to prevent duplicate outbound delivery.
+      description: Defines the fields clients can send when working with SMS send.
+      example:
+        conversationId: conversation-123
+        text: Thanks for your interest. When is a good time to talk?
+        mediaUrls: []
+        outboundIdempotencyKey: sms-example-001
+    MessageMediaAttachment:
+      type: object
+      properties:
+        url:
+          type: string
+          description: URL from which the media attachment can be retrieved.
+          format: uri
+        contentType:
+          type:
+          - 'null'
+          - string
+          description: MIME content type of the media attachment.
+        size:
+          type:
+          - 'null'
+          - integer
+          description: Size of the media attachment in bytes.
+          format: int64
+        sha256:
+          type:
+          - 'null'
+          - string
+          description: SHA-256 digest of the media content, when available.
+        fileName:
+          type:
+          - 'null'
+          - string
+          description: Original file name of the media attachment, when available.
+      description: Media attached to an SMS/MMS conversation event.
   securitySchemes:
     Bearer:
       type: http

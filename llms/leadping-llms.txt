@@ -1,14 +1,16 @@
 # Leadping
 
-> Leadping helps teams respond to new inbound leads fast with SMS, voice, alerts, and follow-up workflows.
+> Leadping protects phone-number health as lead volume grows by selecting eligible senders, reserving SMS and call capacity, pacing traffic, and enforcing communication guardrails.
 
-Leadping helps organizations move new inbound leads from source to first touch, organization handoff, conversation history, and follow-up without stitching together separate tools. This file contains public product and documentation links only.
+Leadping is the traffic-control layer for lead communication. It works beside a CRM, automation system, and telecom provider to decide whether, when, and from which number a text or call should move while keeping the resulting conversation and decision history visible. This file contains public product and documentation links only.
 
 ## Core Pages
 
-- [Home](https://leadping.ai/): Inbound lead response overview.
-- [Platform](https://leadping.ai/platform): Source-to-response workflows with SMS, voice, alerts, follow-up, records, and public guardrails.
-- [Pricing](https://leadping.ai/pricing): Monthly and annual plans, prepaid usage credits, provider usage, carrier, and setup pricing.
+- [Home](https://leadping.ai/): Phone-number health and lead traffic orchestration overview.
+- [Phone Number Health](https://leadping.ai/phone-number-health): How sender readiness, restrictions, capacity, pacing, consent, and lead context shape each SMS and call traffic decision.
+- [Platform](https://leadping.ai/platform): Eligible sender selection, SMS and call capacity, pacing, visible traffic decisions, and the response workflow around them.
+- [Pricing](https://leadping.ai/pricing): Monthly and annual plans, included traffic controls, prepaid usage credits, provider usage, carrier, and setup pricing.
+- [Plan Your Setup](https://leadping.ai/request-access): Request a practical setup path for sender readiness, number capacity, traffic pacing, SMS, calls, and follow-up.
 - [About](https://leadping.ai/about): Leadping's product direction and operating principles.
 - [Contact](https://leadping.ai/contact): Sales, support, security, careers, and product questions.
 - [Status](https://status.leadping.ai): Leadping service status.
@@ -29,12 +31,14 @@ Leadping helps organizations move new inbound leads from source to first touch, 
 
 - [OpenAPI](https://leadping.ai/docs/openapi.json): Leadping API OpenAPI document.
 - [API catalog](https://leadping.ai/.well-known/api-catalog): Linkset for the Leadping API description, docs, and status.
+- [AI capability catalog](https://leadping.ai/.well-known/ai-catalog.json): ARD manifest for Leadping's MCP, A2A, OpenAPI, and agent skill resources.
 - [Agent authentication guide](https://leadping.ai/auth.md): Agent-readable authentication and API-key registration instructions.
 - [OAuth protected resource metadata](https://leadping.ai/.well-known/oauth-protected-resource): Public site resource metadata.
 - [API OAuth protected resource metadata](https://api.leadping.ai/.well-known/oauth-protected-resource): Public API resource metadata.
 - [OAuth authorization server metadata](https://leadping.ai/.well-known/oauth-authorization-server): Public authorization server metadata.
 - [OpenID configuration](https://leadping.ai/.well-known/openid-configuration): Public OpenID Connect discovery metadata.
 - [Automation resource index](https://leadping.ai/.well-known/agents.json): Index of public agent, API, MCP, and LLM-readable resources.
+- [A2A Agent Card](https://api.leadping.ai/.well-known/agent-card.json): Capabilities and connection metadata for Leadping's authenticated A2A agent at `https://api.leadping.ai/a2a`.
 - [MCP server card](https://leadping.ai/.well-known/mcp/server-card.json): Public WebMCP server metadata.
 - [Agent skill index](https://leadping.ai/.well-known/agent-skills/index.json): Public agent-skill discovery.
 

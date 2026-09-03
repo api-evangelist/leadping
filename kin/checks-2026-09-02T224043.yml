@@ -1,25 +1,21 @@
 ---
 kin_checks:
   slug: leadping
-  schema_version: 0.17.2
-  scored_at: '2026-09-01'
-  run_ts: 2026-09-01T063623
+  schema_version: 0.18.0
+  scored_at: '2026-09-02'
+  run_ts: 2026-09-02T224043
   note: Actionable checks only (missed + partial). earned/na are every other check
-    in rubric/scoring-0.17.2.yml; counts below let you verify that.
+    in rubric/scoring-0.18.0.yml; counts below let you verify that.
   counts:
-    total: 130
-    earned: 54
-    partial: 10
-    missed: 46
-    na: 20
+    total: 132
+    earned: 56
+    partial: 11
+    missed: 44
+    na: 21
   checks:
   - id: maintainer_present
     status: missed
   - id: multiple_apis
-    status: missed
-  - id: human_url_per_api
-    status: missed
-  - id: base_url_per_api
     status: missed
   - id: apis_json_self_hosted
     status: missed
@@ -34,6 +30,8 @@ kin_checks:
   - id: webhooks_or_callbacks
     status: missed
     detail: 0 of 27 openapi documents pass
+  - id: inbound_contract_published
+    status: missed
   - id: json_schema_present
     status: missed
   - id: json_schema_per_resource
@@ -43,8 +41,6 @@ kin_checks:
   - id: json_ld_class_depth
     status: missed
   - id: json_ld_property_depth
-    status: missed
-  - id: lifecycle_documented
     status: missed
   - id: domain_standard_conformance
     status: missed
@@ -121,6 +117,9 @@ kin_checks:
     status: partial
     earned: 2.89
     detail: 26 of 27 openapi documents pass
+  - id: lifecycle_documented
+    status: partial
+    earned: 2.41
   - id: github_org_present
     status: partial
     earned: 1.0

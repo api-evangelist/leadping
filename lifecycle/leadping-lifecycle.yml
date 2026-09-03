@@ -1,11 +1,11 @@
-generated: '2026-08-18'
+generated: '2026-09-03'
 method: searched
 source: https://leadping.ai/docs/api-reference
-derived_from: openapi/leadping-openapi.json
+derived_from: openapi/_original/leadping-openapi.json
 versioning:
   scheme: single unversioned base host; version carried in the document, not the path
   current_version: v1
-  spec_url: https://api.leadping.ai/openapi/v1.json
+  spec_url: https://api.leadping.ai/openapi.json
   base_url: https://api.leadping.ai
   policy_published: false
   note: >-
@@ -17,11 +17,43 @@ deprecation:
   deprecation_header: false
   rfc8594: false
   deprecated_operations: []
+  removed_without_deprecation:
+    observed_between: ['2026-08-18', '2026-09-03']
+    method: >-
+      Diff of operationIds between the contract harvested 2026-08-18 and the contract re-harvested
+      2026-09-03 from https://api.leadping.ai/openapi.json.
+    operations:
+      - Contact_Submit
+      - Contact_SubmitWebsite
+      - Leads_CreateIntakeFromQuery
+      - Organizations_AcceptInvitation
+      - Organizations_GetInvitationByToken
+    added_in_same_window:
+      - A2A_GetAgentCard
+      - A2A_HandleRequest
+      - BlogArticles_GetPublished
+      - BlogArticles_GetPublishedBySlug
+      - Conversations_MarkAsRead
+      - Leads_Assign
+      - Organizations_DeleteApiKey
+      - Organizations_GetApiKey
+      - Organizations_IssueApiKey
+      - Organizations_LeaveCurrentOrganization
+      - Sources_RotateApiKey
+      - Users_UpdateNotificationPreferencesForCurrentUser
   note: >-
-    Zero of 137 operations carry "deprecated: true" in the OpenAPI document, and no Sunset or Deprecation
-    response header is declared anywhere in the contract. There is no deprecation policy page. The
-    contract is nine days old (published 2026-08-17), so an absent deprecation record is expected rather
-    than a signal of neglect — but a consumer has nothing to plan against.
+    Re-checked 2026-09-03 against the re-harvested contract: zero of 144 operations carry
+    "deprecated: true", and no Sunset or Deprecation response header is declared anywhere (the only
+    declared response headers in the whole contract are Retry-After and WWW-Authenticate). There is
+    still no deprecation policy page.
+
+    But the absence is no longer neutral. Between 2026-08-18 and 2026-09-03 the contract removed FIVE
+    operations outright — Contact_Submit, Contact_SubmitWebsite, Leads_CreateIntakeFromQuery,
+    Organizations_AcceptInvitation and Organizations_GetInvitationByToken — with no deprecation
+    marking, no Sunset header, no changelog entry naming them and no policy stating a notice period.
+    Leadping is now demonstrably removing published operations silently, so a consumer pinned to any
+    of those five discovered the change by breakage. That is a real deprecation gap, not a young-API
+    artefact.
 status_page:
   url: https://status.leadping.ai
   status: 200

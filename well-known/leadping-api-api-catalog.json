@@ -1,0 +1,102 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://api.leadping.ai/.well-known/api-catalog",
+      "item": [
+        {
+          "href": "https://api.leadping.ai/"
+        }
+      ],
+      "service-desc": [
+        {
+          "href": "https://api.leadping.ai/openapi/v1.json",
+          "type": "application/vnd.oai.openapi+json;version=3.1",
+          "title": "Leadping OpenAPI 3.1 document"
+        },
+        {
+          "href": "https://api.leadping.ai/asyncapi/automation-webhooks.yml",
+          "type": "application/vnd.aai.asyncapi+yaml;version=3.0",
+          "title": "Leadping automation webhooks AsyncAPI 3.0 document"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://leadping.ai/docs/api-reference",
+          "type": "text/html",
+          "title": "Leadping API reference"
+        }
+      ],
+      "api-catalog": [
+        {
+          "href": "https://leadping.ai/.well-known/api-catalog"
+        }
+      ],
+      "oauth-protected-resource": [
+        {
+          "href": "https://api.leadping.ai/.well-known/oauth-protected-resource",
+          "type": "application/json",
+          "title": "Leadping OAuth protected resource metadata"
+        }
+      ],
+      "service-meta": [
+        {
+          "href": "https://api.leadping.ai/.well-known/agent-card.json",
+          "type": "application/json",
+          "title": "Leadping A2A Agent Card"
+        },
+        {
+          "href": "https://api.leadping.ai/agentic-access.json",
+          "type": "application/json",
+          "title": "Leadping agentic access contract"
+        },
+        {
+          "href": "https://api.leadping.ai/schemas/lead.schema.json",
+          "type": "application/schema+json",
+          "title": "Leadping lead JSON Schema"
+        },
+        {
+          "href": "https://api.leadping.ai/contexts/leadping.jsonld",
+          "type": "application/ld+json",
+          "title": "Leadping JSON-LD context"
+        },
+        {
+          "href": "https://api.leadping.ai/apis.json",
+          "type": "application/json",
+          "title": "Leadping APIs.json index"
+        },
+        {
+          "href": "https://api.leadping.ai/.well-known/api-onboarding",
+          "type": "application/json",
+          "title": "Leadping API onboarding descriptor"
+        },
+        {
+          "href": "https://api.leadping.ai/conformance.json",
+          "type": "application/json",
+          "title": "Leadping standards conformance profile"
+        },
+        {
+          "href": "https://api.leadping.ai/overlays/discovery.overlay.json",
+          "type": "application/json",
+          "title": "Leadping OpenAPI discovery overlay"
+        },
+        {
+          "href": "https://api.leadping.ai/deprecation.json",
+          "type": "application/json",
+          "title": "Leadping API deprecation policy"
+        },
+        {
+          "href": "https://api.leadping.ai/roadmap.json",
+          "type": "application/json",
+          "title": "Leadping API roadmap"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://status.leadping.ai",
+          "type": "text/html",
+          "title": "Leadping service status"
+        }
+      ]
+    }
+  ]
+}

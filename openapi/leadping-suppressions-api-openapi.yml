@@ -361,157 +361,6 @@ paths:
       - Bearer: []
 components:
   schemas:
-    PagedResultOfSuppressionEntryResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/SuppressionEntryResponse'
-            description: Describes a recipient suppression that prevents outreach through one or more communication channels.
-          description: Items included in the current page, in the order determined by the query.
-        pageSize:
-          type: integer
-          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
-      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
-    RequestDataOptions:
-      type: object
-      properties:
-        pageSize:
-          type: integer
-          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
-        orderBy:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/OrderByOption'
-            description: Defines one field and direction used to order an API query result set.
-          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
-        includeCount:
-          type:
-          - 'null'
-          - boolean
-          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
-        search:
-          type:
-          - 'null'
-          - string
-          description: Free-text search term applied to the configured SearchFields.
-        searchFields:
-          type:
-          - 'null'
-          - array
-          items:
-            type: string
-          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
-        filters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/ExactMatchFilter'
-            description: Selects records whose named field equals a supplied scalar value.
-          description: Exact-match conditions that require each named field to equal its supplied value.
-        rangeFilters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/RangeFilter'
-            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
-          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
-      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - 'null'
-          - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
-          type:
-          - 'null'
-          - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-      example:
-        type: https://leadping.ai/docs/errors/validation
-        title: Request validation failed
-        status: 400
-        detail: One or more request fields are invalid.
-        instance: /leads/intake
-    SuppressionEntryAudit:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for this suppression audit record.
-        status:
-          type: string
-          description: Suppression status established by this change, such as active or released.
-        source:
-          type: string
-          description: System or workflow that initiated the change.
-        timestamp:
-          type: string
-          description: UTC timestamp when the suppression change occurred.
-          format: date-time
-        actorId:
-          type:
-          - 'null'
-          - string
-          description: Identifier of the user or system actor responsible for the change.
-        reason:
-          type:
-          - 'null'
-          - string
-          description: Human-readable reason recorded for the suppression change.
-        safeMetadata:
-          type: object
-          additionalProperties:
-            type: string
-          description: Non-sensitive metadata that provides additional audit context.
-      description: Records one auditable change to a recipient suppression entry.
     SuppressionEntryResponse:
       type: object
       properties:
@@ -581,6 +430,137 @@ components:
             description: Records one auditable change to a recipient suppression entry.
           description: Chronological audit history of suppression and release changes.
       description: Describes a recipient suppression that prevents outreach through one or more communication channels.
+    SuppressionEntryRequest:
+      required:
+      - organizationId
+      type: object
+      properties:
+        organizationId:
+          type: string
+          description: Organization whose suppression list should be used.
+        recipientIdentifier:
+          type:
+          - 'null'
+          - string
+          description: Optional provider or customer identifier that uniquely identifies the recipient.
+        phoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Recipient phone number to suppress or check, preferably in E.164 format.
+        email:
+          type:
+          - 'null'
+          - string
+          description: Recipient email address to suppress or check.
+          format: email
+        channel:
+          type: string
+          description: Communication channel affected by the suppression, such as SMS, voice, email, or all channels.
+        reason:
+          type:
+          - 'null'
+          - string
+          description: Human-readable reason for creating or releasing the suppression.
+      description: Defines a recipient and communication channel to suppress, release, or check before Leadping sends outreach.
+    SuppressionEntryAudit:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this suppression audit record.
+        status:
+          type: string
+          description: Suppression status established by this change, such as active or released.
+        source:
+          type: string
+          description: System or workflow that initiated the change.
+        timestamp:
+          type: string
+          description: UTC timestamp when the suppression change occurred.
+          format: date-time
+        actorId:
+          type:
+          - 'null'
+          - string
+          description: Identifier of the user or system actor responsible for the change.
+        reason:
+          type:
+          - 'null'
+          - string
+          description: Human-readable reason recorded for the suppression change.
+        safeMetadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: Non-sensitive metadata that provides additional audit context.
+      description: Records one auditable change to a recipient suppression entry.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/OrderByOption'
+            description: Defines one field and direction used to order an API query result set.
+          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
+        search:
+          type:
+          - 'null'
+          - string
+          description: Free-text search term applied to the configured SearchFields.
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ExactMatchFilter'
+            description: Selects records whose named field equals a supplied scalar value.
+          description: Exact-match conditions that require each named field to equal its supplied value.
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/RangeFilter'
+            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
+      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+    ExactMatchFilter:
+      type: object
+      properties:
+        value:
+          description: Scalar value the target field must equal; its JSON type should match the field being queried.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records whose named field equals a supplied scalar value.
     OrderByOption:
       type: object
       properties:
@@ -596,6 +576,47 @@ components:
           - string
           description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
       description: Defines one field and direction used to order an API query result set.
+    PagedResultOfSuppressionEntryResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/SuppressionEntryResponse'
+            description: Describes a recipient suppression that prevents outreach through one or more communication channels.
+          description: Items included in the current page, in the order determined by the query.
+        pageSize:
+          type: integer
+          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
+      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+    RangeFilter:
+      type: object
+      properties:
+        greaterThan:
+          description: Exclusive lower bound; matching field values must be greater than this value.
+        greaterThanOrEqual:
+          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
+        lessThan:
+          description: Exclusive upper bound; matching field values must be less than this value.
+        lessThanOrEqual:
+          description: Inclusive upper bound; matching field values must be less than or equal to this value.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
     SuppressionCheckResult:
       type: object
       properties:
@@ -650,63 +671,42 @@ components:
           - string
           description: Customer-safe explanation of why contact is blocked or allowed.
       description: Reports whether Leadping may contact a recipient and identifies the active suppression when contact is blocked.
-    ExactMatchFilter:
+    ProblemDetails:
       type: object
       properties:
-        value:
-          description: Scalar value the target field must equal; its JSON type should match the field being queried.
-        field:
-          type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records whose named field equals a supplied scalar value.
-    SuppressionEntryRequest:
-      required:
-      - organizationId
-      type: object
-      properties:
-        organizationId:
-          type: string
-          description: Organization whose suppression list should be used.
-        recipientIdentifier:
+        type:
           type:
           - 'null'
           - string
-          description: Optional provider or customer identifier that uniquely identifies the recipient.
-        phoneNumber:
+          description: URI reference that identifies the problem type.
+        title:
           type:
           - 'null'
           - string
-          description: Recipient phone number to suppress or check, preferably in E.164 format.
-        email:
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
           type:
           - 'null'
           - string
-          description: Recipient email address to suppress or check.
-          format: email
-        channel:
-          type: string
-          description: Communication channel affected by the suppression, such as SMS, voice, email, or all channels.
-        reason:
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
           type:
           - 'null'
           - string
-          description: Human-readable reason for creating or releasing the suppression.
-      description: Defines a recipient and communication channel to suppress, release, or check before Leadping sends outreach.
-    RangeFilter:
-      type: object
-      properties:
-        greaterThan:
-          description: Exclusive lower bound; matching field values must be greater than this value.
-        greaterThanOrEqual:
-          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
-        lessThan:
-          description: Exclusive upper bound; matching field values must be less than this value.
-        lessThanOrEqual:
-          description: Inclusive upper bound; matching field values must be less than or equal to this value.
-        field:
-          type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
   securitySchemes:
     Bearer:
       type: http

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "name": "Leadping Agent Discovery",
-  "description": "Public index of Leadping documentation, API, authentication, compliance, legal, contact, and automation resources.",
+  "description": "Public index of Leadping agents, documentation, API, authentication, compliance, legal, contact, and automation resources.",
   "url": "https://leadping.ai/.well-known/agents.json",
   "publisher": {
     "name": "Leadping",
@@ -70,6 +70,42 @@
           "type": "api-catalog",
           "url": "https://leadping.ai/.well-known/api-catalog",
           "contentType": "application/linkset+json"
+        },
+        {
+          "type": "ai-catalog",
+          "url": "https://leadping.ai/.well-known/ai-catalog.json",
+          "contentType": "application/json"
+        }
+      ]
+    },
+    {
+      "id": "leadping-lead-research",
+      "name": "Leadping Lead Research Agent",
+      "description": "Provides authenticated, organization-scoped lead research through the Agent2Agent protocol.",
+      "requiresAuthentication": true,
+      "agentCard": "https://api.leadping.ai/.well-known/agent-card.json",
+      "skills": [
+        {
+          "id": "lead-research",
+          "name": "Lead research",
+          "tags": [
+            "leadping",
+            "A2A",
+            "lead research",
+            "read-only"
+          ]
+        }
+      ],
+      "interfaces": [
+        {
+          "type": "a2a-agent-card",
+          "url": "https://api.leadping.ai/.well-known/agent-card.json",
+          "contentType": "application/json"
+        },
+        {
+          "type": "a2a-jsonrpc",
+          "url": "https://api.leadping.ai/a2a",
+          "contentType": "application/json"
         }
       ]
     }
@@ -83,11 +119,14 @@
     "leadIntakeGuide": "https://leadping.ai/docs/sending-leads-to-leadping",
     "openApi": "https://leadping.ai/docs/openapi.json",
     "apiCatalog": "https://leadping.ai/.well-known/api-catalog",
+    "aiCatalog": "https://leadping.ai/.well-known/ai-catalog.json",
     "authMd": "https://leadping.ai/auth.md",
     "openIdConfiguration": "https://leadping.ai/.well-known/openid-configuration",
     "oauthAuthorizationServer": "https://leadping.ai/.well-known/oauth-authorization-server",
     "oauthProtectedResource": "https://leadping.ai/.well-known/oauth-protected-resource",
     "apiOauthProtectedResource": "https://api.leadping.ai/.well-known/oauth-protected-resource",
+    "a2aAgentCard": "https://api.leadping.ai/.well-known/agent-card.json",
+    "a2aEndpoint": "https://api.leadping.ai/a2a",
     "mcpServerCard": "https://leadping.ai/.well-known/mcp/server-card.json",
     "agentSkillIndex": "https://leadping.ai/.well-known/agent-skills/index.json",
     "llmsTxt": "https://leadping.ai/llms.txt",

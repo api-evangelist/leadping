@@ -1,141 +1,192 @@
-generated: '2026-08-18'
+generated: '2026-09-03'
 method: probed
-source: live GET probes of /.well-known/* on leadping.ai and api.leadping.ai (2026-08-18)
+source: >-
+  Live GET probes of the named /.well-known/* path list on leadping.ai and api.leadping.ai,
+  2026-09-03. Every row below is a request that was actually issued; every status is the one
+  returned.
 summary:
   hosts_probed: 2
-  documents_served: 8
+  paths_probed: 28
+  documents_served: 13
   note: >-
-    Leadping serves an unusually complete well-known surface, including an RFC 9727 API catalog linkset
-    that names the OpenAPI document, the docs, the status endpoint and an APIs.json index. leadping.ai
-    answers 200 with the SPA HTML shell for unknown /.well-known/* paths, so the ai-plugin.json,
-    agent-card.json and agent.json rows below are recorded as MISSES despite their 200 status — the body
-    is the site's <!DOCTYPE html> shell, not a document. api.leadping.ai correctly 404s those paths.
-probes:
+    Leadping serves an unusually complete well-known surface across two hosts: an RFC 9727 API catalog
+    linkset on BOTH hosts, RFC 8414 authorization-server metadata, RFC 9728 protected-resource metadata
+    on both, OpenID Connect discovery, an RFC 9116 security.txt on both, an A2A Agent Card, a WebMCP
+    server card, an agent-skill index, an ARD/AIR AI capability catalog, an API Onboarding Descriptor,
+    and a non-standard agents.json automation index.
+  changes_since_2026_08_18: >-
+    THREE material changes since the previous round. (1) api.leadping.ai/.well-known/agent-card.json
+    now returns a real A2A Agent Card (was 404) — captured in a2a/. (2) leadping.ai now returns a real
+    404 for unknown /.well-known/* paths; the previous round had to reject 200-with-HTML-shell
+    responses as false positives, and that edge behaviour is fixed. (3) A new
+    /.well-known/ai-catalog.json ARD manifest appeared, and api.leadping.ai now serves security.txt.
+  shape_note: >-
+    This file was rewritten from a top-level `probes:` list into the hosts[] -> documents[] shape.
+    The scorer's well_known_docs() walks hosts[] -> documents[] and reads nothing else, so the
+    previous shape made all of Leadping's served documents invisible to scoring — a file recording a
+    dozen presences was being read as an absence.
+hosts:
   - host: leadping.ai
-    path: /.well-known/security.txt
-    status: 200
-    content_type: text/plain; charset=utf-8
-    hit: true
-    file: well-known/leadping-security.txt
-  - host: leadping.ai
-    path: /.well-known/openid-configuration
-    status: 200
-    content_type: application/json; charset=utf-8
-    hit: true
-    file: well-known/leadping-openid-configuration.json
-  - host: leadping.ai
-    path: /.well-known/oauth-authorization-server
-    status: 200
-    content_type: application/json; charset=utf-8
-    hit: true
-    file: well-known/leadping-oauth-authorization-server.json
-  - host: leadping.ai
-    path: /.well-known/oauth-protected-resource
-    status: 200
-    content_type: application/json; charset=utf-8
-    hit: true
-    file: well-known/leadping-oauth-protected-resource.json
-  - host: leadping.ai
-    path: /.well-known/api-catalog
-    status: 200
-    content_type: application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"
-    hit: true
-    file: well-known/leadping-api-catalog.json
-    standard: RFC 9727
-  - host: leadping.ai
-    path: /.well-known/agents.json
-    status: 200
-    content_type: application/json
-    hit: true
-    file: well-known/leadping-agents.json
-    note: Non-standard agent discovery index the provider links from llms.txt and its own APIs.json.
-  - host: leadping.ai
-    path: /.well-known/mcp/server-card.json
-    status: 200
-    content_type: application/json
-    hit: true
-    file: well-known/leadping-mcp-server-card.json
-    note: Browser WebMCP server card describing four tools registered on the Leadping homepage.
-  - host: leadping.ai
-    path: /.well-known/agent-skills/index.json
-    status: 200
-    content_type: application/json
-    hit: true
-    file: well-known/leadping-agent-skills-index.json
-    note: 'agentskills.io discovery 0.2.0; one skill, sha256-digested.'
-  - host: leadping.ai
-    path: /.well-known/agent-skills/leadping-website/SKILL.md
-    status: 200
-    hit: true
-    file: skills/leadping-public-website.md
-  - host: leadping.ai
-    path: /.well-known/ai-plugin.json
-    status: 200
-    content_type: text/html
-    hit: false
-    note: SPA catch-all HTML shell, not a plugin manifest. Treated as a miss.
-  - host: leadping.ai
-    path: /.well-known/agent-card.json
-    status: 200
-    content_type: text/html
-    hit: false
-    note: SPA catch-all HTML shell, not an AgentCard. Treated as a miss.
-  - host: leadping.ai
-    path: /.well-known/agent.json
-    status: 200
-    content_type: text/html
-    hit: false
-    note: SPA catch-all HTML shell, not an AgentCard. Treated as a miss.
+    role: Public website and documentation host
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        content_type: text/plain; charset=utf-8
+        file: well-known/leadping-security.txt
+        standard: RFC 9116
+      - path: /.well-known/openid-configuration
+        status: 200
+        content_type: application/json; charset=utf-8
+        file: well-known/leadping-openid-configuration.json
+        standard: OpenID Connect Discovery 1.0
+        note: Issuer is Leadping's WorkOS AuthKit tenant (motivated-run-93.authkit.app).
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        content_type: application/json; charset=utf-8
+        file: well-known/leadping-oauth-authorization-server.json
+        standard: RFC 8414
+        note: >-
+          Carries a non-standard "agent_auth" extension block naming an agent identity endpoint,
+          claim endpoint, revocation endpoint and a machine-readable auth skill at
+          https://leadping.ai/auth.md.
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        content_type: application/json; charset=utf-8
+        file: well-known/leadping-oauth-protected-resource.json
+        standard: RFC 9728
+      - path: /.well-known/api-catalog
+        status: 200
+        content_type: application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"
+        file: well-known/leadping-api-catalog.json
+        standard: RFC 9727
+        note: >-
+          Linkset naming service-desc (the OpenAPI), service-doc, service-meta, status and
+          oauth-protected-resource.
+      - path: /.well-known/ai-catalog.json
+        status: 200
+        content_type: application/json; charset=utf-8
+        file: well-known/leadping-ai-catalog.json
+        standard: ARD / AIR capability catalog specVersion 1.0
+        note: >-
+          New since 2026-08-18. Declares host identifier did:web:leadping.ai and four entries — the
+          MCP server card, the A2A agent card, the OpenAPI description and a website agent skill —
+          each with representativeQueries for agent routing.
+      - path: /.well-known/agents.json
+        status: 200
+        content_type: application/json; charset=utf-8
+        file: well-known/leadping-agents.json
+        standard: non-standard (schema_version 1.0.0)
+        note: Provider's own index of public agent, API, MCP and LLM-readable resources.
+      - path: /.well-known/mcp/server-card.json
+        status: 200
+        content_type: application/json; charset=utf-8
+        file: well-known/leadping-mcp-server-card.json
+        standard: MCP server card
+        note: Browser WebMCP server card describing tools registered on the Leadping site.
+      - path: /.well-known/agent-skills/index.json
+        status: 200
+        content_type: application/json; charset=utf-8
+        file: well-known/leadping-agent-skills-index.json
+        standard: agent-skill discovery index
+      - path: /.well-known/ai-plugin.json
+        status: 404
+        note: Real 404 ("Static asset not found."), not an SPA shell.
+      - path: /.well-known/agent-card.json
+        status: 404
+        note: >-
+          The apex serves no agent card. Leadping's card is on api.leadping.ai — see a2a/.
+      - path: /.well-known/agent.json
+        status: 404
+        note: Legacy pre-0.3 agent-card path. Not served.
+      - path: /.well-known/api-onboarding
+        status: 404
+        content_type: application/problem+json; charset=utf-8
+        note: Served on api.leadping.ai instead.
+      - path: /.well-known/aauth-resource.json
+        status: 404
+        note: >-
+          No AAuth resource document. Leadping's agent-identity affordances are carried inside the
+          RFC 8414 metadata's agent_auth extension instead.
   - host: api.leadping.ai
-    path: /.well-known/security.txt
-    status: 200
-    content_type: text/plain; charset=utf-8
-    hit: true
-    file: well-known/leadping-security.txt
-    note: Identical document to the one served on leadping.ai.
-  - host: api.leadping.ai
-    path: /.well-known/oauth-protected-resource
-    status: 200
-    hit: true
-    file: well-known/leadping-api-oauth-protected-resource.json
-  - host: api.leadping.ai
-    path: /.well-known/api-catalog
-    status: 200
-    content_type: application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"
-    hit: true
-    note: >-
-      Points back to the leadping.ai catalog and adds the API onboarding descriptor and APIs.json index.
-  - host: api.leadping.ai
-    path: /.well-known/api-onboarding
-    status: 200
-    hit: true
-    file: well-known/leadping-api-onboarding.json
-    note: 'API Onboarding Descriptor (aod 0.1) — account prerequisites, plans, verification, registration.'
-  - host: api.leadping.ai
-    path: /.well-known/openid-configuration
-    status: 404
-    hit: false
-  - host: api.leadping.ai
-    path: /.well-known/oauth-authorization-server
-    status: 404
-    hit: false
-  - host: api.leadping.ai
-    path: /.well-known/ai-plugin.json
-    status: 404
-    hit: false
-  - host: api.leadping.ai
-    path: /.well-known/agent-card.json
-    status: 404
-    hit: false
-  - host: api.leadping.ai
-    path: /.well-known/agent.json
-    status: 404
-    hit: false
+    role: Production API host (OpenAPI servers[], MCP endpoint, A2A endpoint)
+    documents:
+      - path: /.well-known/agent-card.json
+        status: 200
+        content_type: application/json; charset=utf-8
+        file: a2a/leadping-agent-card.json
+        standard: A2A 1.0.0 Agent Card
+        note: >-
+          NEW since 2026-08-18 (was 404). One read-only lead-research skill bound to a callable
+          JSONRPC interface at https://api.leadping.ai/a2a. Graded conformant in a2a/leadping-a2a.yml.
+      - path: /.well-known/api-catalog
+        status: 200
+        content_type: application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"
+        file: well-known/leadping-api-api-catalog.json
+        standard: RFC 9727
+        note: >-
+          A second, richer linkset than the apex one — adds the API onboarding descriptor and the
+          provider's APIs.json index.
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        content_type: application/json; charset=utf-8
+        file: well-known/leadping-api-oauth-protected-resource.json
+        standard: RFC 9728
+        note: >-
+          resource https://api.leadping.ai, two token issuers (the WorkOS user-management client and
+          the AuthKit tenant), bearer_methods_supported [header], scopes_supported
+          [openid, profile, email]. This is the document the MCP endpoint's 401 WWW-Authenticate
+          header points at via resource_metadata.
+      - path: /.well-known/api-onboarding
+        status: 200
+        content_type: application/json
+        file: well-known/leadping-api-onboarding.json
+        standard: API Onboarding Descriptor (aod 0.1)
+        note: Account prerequisites, plans, verification and registration steps.
+      - path: /.well-known/security.txt
+        status: 200
+        content_type: text/plain; charset=utf-8
+        file: well-known/leadping-api-security.txt
+        standard: RFC 9116
+        note: >-
+          NEW since 2026-08-18. Identical body to the apex copy — Contact security@leadping.ai,
+          Expires 2030-12-31.
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+        note: Served on leadping.ai; the API host points at it via oauth-protected-resource.
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /.well-known/agents.json
+        status: 404
+      - path: /.well-known/ai-catalog.json
+        status: 404
+      - path: /.well-known/mcp/server-card.json
+        status: 404
+      - path: /.well-known/agent-skills/index.json
+        status: 404
+      - path: /.well-known/aauth-resource.json
+        status: 404
 related_machine_readable:
   - url: https://api.leadping.ai/apis.json
     status: 200
     file: well-known/leadping-provider-apis.json
-    note: 'Provider-published APIs.json 0.22 index — the provider''s own catalog of its APIs.'
+    note: Provider-published APIs.json 0.22 index — the provider's own catalog of its APIs.
+  - url: https://api.leadping.ai/openapi.json
+    status: 200
+    file: openapi/_original/leadping-openapi.json
+    note: OpenAPI 3.1.1, 144 operations as of 2026-09-03.
+  - url: https://leadping.ai/llms.txt
+    status: 200
+    file: llms/leadping-llms.txt
+  - url: https://leadping.ai/docs/llms.txt
+    status: 200
+    file: llms/leadping-docs-llms.txt
+  - url: https://leadping.ai/auth.md
+    status: 200
+    note: Agent-readable authentication and API-key registration instructions.
   - url: https://api.leadping.ai/plans.json
     status: 200
     file: plans/leadping-plans-pricing.yml
@@ -152,7 +203,9 @@ related_machine_readable:
     status: 200
     file: vocabulary/leadping-vocabulary.json
 agent_card:
-  found: false
-  note: >-
-    No A2A Agent Card. /.well-known/agent-card.json and /.well-known/agent.json return the SPA HTML shell
-    on leadping.ai and 404 on api.leadping.ai. No a2a/ artifact was written.
+  found: true
+  host: api.leadping.ai
+  path: /.well-known/agent-card.json
+  file: a2a/leadping-agent-card.json
+  manifest: a2a/leadping-a2a.yml
+  grade: conformant

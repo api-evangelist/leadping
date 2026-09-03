@@ -1136,6 +1136,300 @@ paths:
       - Bearer: []
 components:
   schemas:
+    OutgoingNumberManualOverrideRequest:
+      required:
+      - fromPhoneNumberId
+      - selection
+      type: object
+      properties:
+        fromPhoneNumberId:
+          type: string
+          description: Sender phone number ID used for this outbound SMS or call.
+        selection:
+          allOf:
+          - $ref: '#/components/schemas/OutgoingNumberSelectionRequest'
+          description: Selected outgoing number and selection rationale returned by Leadping.
+      description: Defines the fields clients can send when working with outgoing number manual override.
+    PhoneNumberStatusResponse:
+      type: object
+      properties:
+        number:
+          type: string
+          description: E.164 phone number exposed by this phone number warmup status.
+        messagesPossible:
+          type: integer
+          description: Indicates whether this phone number can currently send SMS messages.
+          format: int32
+        callsPossible:
+          type: integer
+          description: Indicates whether this phone number can currently place outbound calls.
+          format: int32
+        smsWarmup:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/SmsReadinessStatusResponse'
+          description: SMS warmup status for this phone number.
+        outboundCapacity:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/OutboundPhoneNumberCapacity'
+          description: Current outbound SMS and voice capacity for this phone number.
+        optOutMetrics:
+          allOf:
+          - $ref: '#/components/schemas/PhoneNumberOptOutMetricsResponse'
+          description: Recent SMS opt-out metrics used to evaluate sender health and compliance risk.
+        trafficMetrics:
+          allOf:
+          - $ref: '#/components/schemas/PhoneNumberTrafficMetricsResponse'
+          description: Phone number traffic metrics for recent SMS and call activity.
+        recentEvents:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/PhoneNumberMessagingEventResponse'
+            description: Describes a messaging event used to calculate delivery, failure, and opt-out metrics for a phone number.
+          description: Recent workflow events returned for timeline and troubleshooting.
+      description: Describes a phone number's current warmup stage, limits, progress, and readiness for production traffic.
+    SmsReadinessHealthStatus:
+      enum:
+      - Not Evaluated
+      - Evaluating
+      - Healthy
+      - Needs Attention
+      - Blocked
+      type: string
+      description: Summarizes the severity of conditions affecting an organization's ability to send compliant SMS or MMS traffic.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/OrderByOption'
+            description: Defines one field and direction used to order an API query result set.
+          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
+        search:
+          type:
+          - 'null'
+          - string
+          description: Free-text search term applied to the configured SearchFields.
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ExactMatchFilter'
+            description: Selects records whose named field equals a supplied scalar value.
+          description: Exact-match conditions that require each named field to equal its supplied value.
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/RangeFilter'
+            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
+      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+    PhoneLocationSource:
+      type: object
+      properties:
+        method:
+          type: string
+          description: The resolution method, such as telnyx-city-state, coordinates, phone-number, or state-default.
+        query:
+          type:
+          - 'null'
+          - string
+          description: The city, state, coordinates, phone number, or representative ZIP used by the method.
+      description: Describes how a phone location value was resolved.
+    PhoneNumberTrafficMetricsResponse:
+      type: object
+      properties:
+        windowDays:
+          type: integer
+          description: Number of days included in the metrics reporting window.
+          format: int32
+        windowStartedAt:
+          type: string
+          description: UTC timestamp when the metrics reporting window starts.
+          format: date-time
+        smsSentCount:
+          type: integer
+          description: Number of SMS messages sent during this metrics window.
+          format: int32
+        smsFailedCount:
+          type: integer
+          description: Number of SMS messages that failed during this metrics window.
+          format: int32
+        mmsSentCount:
+          type: integer
+          description: Number of MMS messages sent during this metrics window.
+          format: int32
+        mmsFailedCount:
+          type: integer
+          description: Number of MMS messages that failed during this metrics window.
+          format: int32
+        callPlacedCount:
+          type: integer
+          description: Number of outbound calls placed during this metrics window.
+          format: int32
+        callFailedCount:
+          type: integer
+          description: Number of outbound calls that failed during this metrics window.
+          format: int32
+        callConnectedCount:
+          type: integer
+          description: Number of outbound calls that connected during this metrics window.
+          format: int32
+        callShortCount:
+          type: integer
+          description: Number of connected outbound calls shorter than 30 seconds during this metrics window.
+          format: int32
+        callInvalidNumberCount:
+          type: integer
+          description: Number of outbound calls that failed because the destination number was invalid during this metrics window.
+          format: int32
+        trend:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/PhoneNumberTrafficTrendPoint'
+            description: Time-series data point schema for Leadping API phone number traffic trend bucket charts and metrics.
+          description: Time-series buckets that show how the metric changes across the reporting window.
+      description: Describes phone number traffic metrics data returned by Leadping.
+    PhoneNumberSearchResult:
+      type: object
+      properties:
+        number:
+          type: string
+          description: E.164 phone number exposed by this phone number search result.
+        location:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneNumberLocation'
+          description: Geographic location metadata for the phone number, lead, or lookup result.
+      description: Result schema for the Leadping API phone number search result returned by lookup and validation endpoints.
+    PhoneNumberAvailabilityRequest:
+      required:
+      - phoneNumber
+      type: object
+      properties:
+        phoneNumber:
+          type: string
+          description: Phone number to check for availability, formatted for provider lookup.
+      description: Defines the phone number and capability requirements Leadping should verify before purchase or assignment.
+    OrderByOption:
+      type: object
+      properties:
+        field:
+          type: string
+          description: Serializable field name used for sorting; supported names are determined by the queried resource.
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
+          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
+      description: Defines one field and direction used to order an API query result set.
+    PagedResultOfPhoneNumberTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/PhoneNumberTableRow'
+            description: Summarizes phone number data in paginated and searchable results.
+          description: Items included in the current page, in the order determined by the query.
+        pageSize:
+          type: integer
+          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
+      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+    PhoneNumberTrafficTrendPoint:
+      type: object
+      properties:
+        startAt:
+          type: string
+          description: UTC timestamp when this reporting bucket starts.
+          format: date-time
+        endAt:
+          type: string
+          description: UTC timestamp when this reporting bucket ends.
+          format: date-time
+        label:
+          type: string
+          description: Short display label for this phone number traffic trend bucket, formatted for charts, filters, or list views.
+        smsSentCount:
+          type: integer
+          description: Number of SMS messages sent during this metrics window.
+          format: int32
+        smsFailedCount:
+          type: integer
+          description: Number of SMS messages that failed during this metrics window.
+          format: int32
+        mmsSentCount:
+          type: integer
+          description: Number of MMS messages sent during this metrics window.
+          format: int32
+        mmsFailedCount:
+          type: integer
+          description: Number of MMS messages that failed during this metrics window.
+          format: int32
+        callPlacedCount:
+          type: integer
+          description: Number of outbound calls placed during this metrics window.
+          format: int32
+        callFailedCount:
+          type: integer
+          description: Number of outbound calls that failed during this metrics window.
+          format: int32
+      description: Time-series data point schema for Leadping API phone number traffic trend bucket charts and metrics.
     OutboundPhoneNumberCapacity:
       type: object
       properties:
@@ -1279,6 +1573,29 @@ components:
           description: Start of the next Eastern time hour, when voice hourly capacity resets.
           format: date-time
       description: Reports the sending capacity, current load, and availability of a phone number considered for outbound delivery.
+    PhoneNumberSearchResponse:
+      type: object
+      properties:
+        numbers:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/PhoneNumberSearchResult'
+            description: Result schema for the Leadping API phone number search result returned by lookup and validation endpoints.
+          description: Phone numbers returned or evaluated by this phone number search response.
+      description: Describes phone number search data returned by Leadping.
+    OutgoingNumberSelectionReason:
+      enum:
+      - StickyConversation
+      - LeadAssigned
+      - CampaignOrSource
+      - Preferred
+      - LocalArea
+      - HealthyPool
+      - FallbackDefault
+      - ManualOverride
+      type: string
+      description: Explains why Leadping selected, rejected, or substituted an outgoing caller or messaging number.
     PhoneNumberRoutingMetadata:
       type: object
       properties:
@@ -1309,233 +1626,61 @@ components:
           - string
           description: Leadping 10DLC application entity associated with this phone number.
       description: Public Leadping API schema for phone number routing metadata data.
-    PhoneNumberOutboundHealthStatus:
-      enum:
-      - unknown
-      - new
-      - healthy
-      - warmup
-      - limited
-      - cooling_down
-      - suspended
-      - disabled
-      type: string
-      description: Defines phone-number outbound health states used by pacing.
-    PagedResultOfPhoneNumberTableRow:
+    PhoneNumberLocation:
       type: object
       properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/PhoneNumberTableRow'
-            description: Summarizes phone number data in paginated and searchable results.
-          description: Items included in the current page, in the order determined by the query.
-        pageSize:
-          type: integer
-          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
-      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
-    PhoneNumberReadiness:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: Indicates whether phone number warmup is enabled in Leadping.
-        state:
-          enum:
-          - Not Started
-          - In Progress
-          - Paused
-          - Blocked
-          - Ready
-          type:
-          - 'null'
-          - string
-          description: Describes whether an organization is configured and permitted to send SMS or MMS traffic through Leadping.
-        healthStatus:
-          enum:
-          - Not Evaluated
-          - Evaluating
-          - Healthy
-          - Needs Attention
-          - Blocked
-          type:
-          - 'null'
-          - string
-          description: Summarizes the severity of conditions affecting an organization's ability to send compliant SMS or MMS traffic.
-        healthScore:
-          type: integer
-          description: Current warmup health score used to assess phone number warmup.
-          format: int32
-        progressPercent:
-          type: integer
-          description: Warmup completion percentage, from 0 through 100.
-          format: int32
-        callStage:
-          enum:
-          - Stage 0
-          - Stage 1
-          - Stage 2
-          - Stage 3
-          - Stage 4
-          type:
-          - 'null'
-          - string
-          description: Identifies the current traffic-ramp stage of controlled voice warmup for a Leadping-managed phone number.
-      description: Messaging and calling warmup for a Leadping phone number.
-    PhoneNumberTrafficMetricsResponse:
-      type: object
-      properties:
-        windowDays:
-          type: integer
-          description: Number of days included in the metrics reporting window.
-          format: int32
-        windowStartedAt:
-          type: string
-          description: UTC timestamp when the metrics reporting window starts.
-          format: date-time
-        smsSentCount:
-          type: integer
-          description: Number of SMS messages sent during this metrics window.
-          format: int32
-        smsFailedCount:
-          type: integer
-          description: Number of SMS messages that failed during this metrics window.
-          format: int32
-        mmsSentCount:
-          type: integer
-          description: Number of MMS messages sent during this metrics window.
-          format: int32
-        mmsFailedCount:
-          type: integer
-          description: Number of MMS messages that failed during this metrics window.
-          format: int32
-        callPlacedCount:
-          type: integer
-          description: Number of outbound calls placed during this metrics window.
-          format: int32
-        callFailedCount:
-          type: integer
-          description: Number of outbound calls that failed during this metrics window.
-          format: int32
-        callConnectedCount:
-          type: integer
-          description: Number of outbound calls that connected during this metrics window.
-          format: int32
-        callShortCount:
-          type: integer
-          description: Number of connected outbound calls shorter than 30 seconds during this metrics window.
-          format: int32
-        callInvalidNumberCount:
-          type: integer
-          description: Number of outbound calls that failed because the destination number was invalid during this metrics window.
-          format: int32
-        trend:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/PhoneNumberTrafficTrendPoint'
-            description: Time-series data point schema for Leadping API phone number traffic trend bucket charts and metrics.
-          description: Time-series buckets that show how the metric changes across the reporting window.
-      description: Describes phone number traffic metrics data returned by Leadping.
-    Coordinate:
-      required:
-      - latitude
-      - longitude
-      type: object
-      properties:
-        latitude:
-          type: number
-          description: Latitude of the geographic coordinate in decimal degrees, from -90 through 90.
-          format: double
-        longitude:
-          type: number
-          description: Longitude of the geographic coordinate in decimal degrees, from -180 through 180.
-          format: double
-      description: Latitude and longitude coordinate for this lead contact profile.
-    PhoneNumberRequest:
-      required:
-      - name
-      - number
-      type: object
-      properties:
-        number:
-          type: string
-          description: E.164 phone number exposed by this phone number update request.
-        organizationId:
-          type:
-          - 'null'
-          - string
-          description: Organization ID that owns the phone number being created or updated.
-        enabled:
-          type: boolean
-          description: Indicates whether this phone number update request is active and available in the Leadping API.
-        name:
-          maxLength: 255
-          minLength: 0
-          type: string
-          description: Human-readable display name for the resource, subject to the API's maximum name length.
-        id:
-          type:
-          - 'null'
-          - string
-          description: Stable unique identifier of an existing resource to update; omit it when the API assigns an identifier during creation.
-      description: Defines the fields clients can send when working with phone number update.
-    PhoneNumberAvailabilityResponse:
-      type: object
-      properties:
-        phoneNumber:
-          type: string
-          description: Phone number used by this phone number availability result for calls, SMS, lookup, or routing.
-        isAvailable:
-          type: boolean
-          description: Indicates whether this phone number is available for purchase or assignment.
-        price:
-          type:
-          - 'null'
-          - number
-          description: Lead price or transaction price supplied to the Leadping API.
-          format: double
-        currency:
-          type:
-          - 'null'
-          - string
-          description: ISO currency code used for the monetary amounts in this phone number availability result.
         location:
+          type:
+          - 'null'
+          - string
+          description: Geographic location metadata for the phone number, lead, or lookup result.
+        state:
+          type:
+          - 'null'
+          - string
+          description: State, province, or region for the lead or organization postal address.
+        canonicalCity:
+          type:
+          - 'null'
+          - string
+          description: Canonical city resolved by Leadping from its ZIP-code geography data.
+        canonicalState:
+          type:
+          - 'null'
+          - string
+          description: Canonical state or territory abbreviation resolved by Leadping.
+        countryCode:
+          type:
+          - 'null'
+          - string
+          description: Country code for the phone number or location represented by this phone number location.
+        coordinate:
           type:
           - 'null'
           - object
           allOf:
-          - $ref: '#/components/schemas/PhoneNumberLocation'
-          description: Geographic location metadata for the phone number, lead, or lookup result.
-      description: Reports whether a phone number is available for purchase or assignment and explains any blocking condition.
-    OrderByOption:
-      type: object
-      properties:
-        field:
-          type: string
-          description: Serializable field name used for sorting; supported names are determined by the queried resource.
-        direction:
-          enum:
-          - asc
-          - desc
+          - $ref: '#/components/schemas/Coordinate'
+          description: Latitude and longitude coordinate for this phone number location.
+        coordinateSource:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLocationSource'
+          description: Describes how the coordinate was resolved.
+        timeZoneId:
           type:
           - 'null'
           - string
-          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
-      description: Defines one field and direction used to order an API query result set.
+          description: IANA or Windows time zone identifier used for local scheduling and reporting.
+        timeZoneSource:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLocationSource'
+          description: Describes how the time zone was resolved.
+      description: Public Leadping API schema for phone number location data.
     ProblemDetails:
       type: object
       properties:
@@ -1572,133 +1717,19 @@ components:
         status: 400
         detail: One or more request fields are invalid.
         instance: /leads/intake
-    PhoneNumberSearchResult:
-      type: object
-      properties:
-        number:
-          type: string
-          description: E.164 phone number exposed by this phone number search result.
-        location:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/PhoneNumberLocation'
-          description: Geographic location metadata for the phone number, lead, or lookup result.
-      description: Result schema for the Leadping API phone number search result returned by lookup and validation endpoints.
-    PhoneNumberMessagingEventResponse:
+    IdNamePair:
+      required:
+      - id
+      - name
       type: object
       properties:
         id:
           type: string
-          description: Unique Leadping identifier for this phone number messaging event.
-        createdAt:
+          description: Stable unique identifier of the referenced resource.
+        name:
           type: string
-          description: UTC timestamp when this phone number messaging event was created.
-          format: date-time
-        label:
-          type: string
-          description: Short display label for this phone number messaging event, formatted for charts, filters, or list views.
-        eventType:
-          type: string
-          description: Event type used to classify this timeline, SMS, call, or automation event.
-        direction:
-          type: string
-          description: Communication direction for this phone number messaging event, such as inbound or outbound.
-        fromPhoneNumber:
-          type: string
-          description: Sender phone number used for this communication.
-        toPhoneNumber:
-          type: string
-          description: Recipient phone number used for this communication.
-        textPreview:
-          type: string
-          description: Short preview of the SMS or conversation text for this phone number messaging event.
-        isOptOut:
-          type: boolean
-          description: Indicates whether the recipient has opted out of further SMS communication.
-      description: Describes a messaging event used to calculate delivery, failure, and opt-out metrics for a phone number.
-    RequestDataOptions:
-      type: object
-      properties:
-        pageSize:
-          type: integer
-          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
-        orderBy:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/OrderByOption'
-            description: Defines one field and direction used to order an API query result set.
-          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
-        includeCount:
-          type:
-          - 'null'
-          - boolean
-          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
-        search:
-          type:
-          - 'null'
-          - string
-          description: Free-text search term applied to the configured SearchFields.
-        searchFields:
-          type:
-          - 'null'
-          - array
-          items:
-            type: string
-          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
-        filters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/ExactMatchFilter'
-            description: Selects records whose named field equals a supplied scalar value.
-          description: Exact-match conditions that require each named field to equal its supplied value.
-        rangeFilters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/RangeFilter'
-            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
-          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
-      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
-    PhoneNumberOptOutMetricsResponse:
-      type: object
-      properties:
-        windowDays:
-          type: integer
-          description: Number of days included in the metrics reporting window.
-          format: int32
-        windowStartedAt:
-          type: string
-          description: UTC timestamp when the metrics reporting window starts.
-          format: date-time
-        distinctContactedCount:
-          type: integer
-          description: Number of distinct recipients contacted during this metrics window.
-          format: int32
-        optOutCount:
-          type: integer
-          description: Number of recipients who opted out during this metrics window.
-          format: int32
-        optOutRatePercent:
-          type: number
-          description: Percentage of contacted recipients who opted out during this metrics window.
-          format: double
-      description: Describes phone number opt-out metrics data returned by Leadping.
+          description: Human-readable display name of the referenced resource.
+      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
     OutgoingNumberSelectionResponse:
       type: object
       properties:
@@ -1786,57 +1817,97 @@ components:
             description: Describes a Leadping phone number that is eligible to send an outbound message or place a call.
           description: Phone numbers that are eligible to send the requested outbound message or call.
       description: Describes outgoing number selection data returned by Leadping.
-    PhoneNumberTrafficTrendPoint:
+    PhoneNumberAvailabilityResponse:
       type: object
       properties:
-        startAt:
+        phoneNumber:
           type: string
-          description: UTC timestamp when this reporting bucket starts.
-          format: date-time
-        endAt:
-          type: string
-          description: UTC timestamp when this reporting bucket ends.
-          format: date-time
-        label:
-          type: string
-          description: Short display label for this phone number traffic trend bucket, formatted for charts, filters, or list views.
-        smsSentCount:
-          type: integer
-          description: Number of SMS messages sent during this metrics window.
-          format: int32
-        smsFailedCount:
-          type: integer
-          description: Number of SMS messages that failed during this metrics window.
-          format: int32
-        mmsSentCount:
-          type: integer
-          description: Number of MMS messages sent during this metrics window.
-          format: int32
-        mmsFailedCount:
-          type: integer
-          description: Number of MMS messages that failed during this metrics window.
-          format: int32
-        callPlacedCount:
-          type: integer
-          description: Number of outbound calls placed during this metrics window.
-          format: int32
-        callFailedCount:
-          type: integer
-          description: Number of outbound calls that failed during this metrics window.
-          format: int32
-      description: Time-series data point schema for Leadping API phone number traffic trend bucket charts and metrics.
-    OutgoingNumberSelectionReason:
+          description: Phone number used by this phone number availability result for calls, SMS, lookup, or routing.
+        isAvailable:
+          type: boolean
+          description: Indicates whether this phone number is available for purchase or assignment.
+        price:
+          type:
+          - 'null'
+          - number
+          description: Lead price or transaction price supplied to the Leadping API.
+          format: double
+        currency:
+          type:
+          - 'null'
+          - string
+          description: ISO currency code used for the monetary amounts in this phone number availability result.
+        location:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneNumberLocation'
+          description: Geographic location metadata for the phone number, lead, or lookup result.
+      description: Reports whether a phone number is available for purchase or assignment and explains any blocking condition.
+    PhoneNumberOutboundHealthStatus:
       enum:
-      - StickyConversation
-      - LeadAssigned
-      - CampaignOrSource
-      - Preferred
-      - LocalArea
-      - HealthyPool
-      - FallbackDefault
-      - ManualOverride
+      - unknown
+      - new
+      - healthy
+      - warmup
+      - limited
+      - cooling_down
+      - suspended
+      - disabled
       type: string
-      description: Explains why Leadping selected, rejected, or substituted an outgoing caller or messaging number.
+      description: Defines phone-number outbound health states used by pacing.
+    ExactMatchFilter:
+      type: object
+      properties:
+        value:
+          description: Scalar value the target field must equal; its JSON type should match the field being queried.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records whose named field equals a supplied scalar value.
+    OutgoingNumberSelectionRequest:
+      type: object
+      properties:
+        conversationId:
+          type:
+          - 'null'
+          - string
+          description: Conversation ID that links this outgoing number selection request to the Leadping inbox thread.
+        leadId:
+          type:
+          - 'null'
+          - string
+          description: Lead ID used to choose the best outgoing sender number.
+        recipientPhoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Recipient phone number that receives the outbound message or call.
+        channel:
+          enum:
+          - sms
+          - call
+          type:
+          - 'null'
+          - string
+          description: Identifies whether an outgoing phone number is eligible for voice, SMS, MMS, or another communication channel.
+        campaignId:
+          type:
+          - 'null'
+          - string
+          description: Messaging campaign identifier associated with this outgoing number selection request.
+        sourceId:
+          type:
+          - 'null'
+          - string
+          description: Lead source ID used to choose the best outgoing sender number.
+        teamId:
+          type:
+          - 'null'
+          - string
+          description: Organization ID used to choose the best outgoing sender number.
+      description: Defines the fields clients can send when working with outgoing number selection.
     RangeFilter:
       type: object
       properties:
@@ -1852,6 +1923,216 @@ components:
           type: string
           description: Serializable field name to evaluate; supported names are determined by the queried resource.
       description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+    PhoneNumberReadiness:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Indicates whether phone number warmup is enabled in Leadping.
+        state:
+          enum:
+          - Not Started
+          - In Progress
+          - Paused
+          - Blocked
+          - Ready
+          type:
+          - 'null'
+          - string
+          description: Describes whether an organization is configured and permitted to send SMS or MMS traffic through Leadping.
+        healthStatus:
+          enum:
+          - Not Evaluated
+          - Evaluating
+          - Healthy
+          - Needs Attention
+          - Blocked
+          type:
+          - 'null'
+          - string
+          description: Summarizes the severity of conditions affecting an organization's ability to send compliant SMS or MMS traffic.
+        healthScore:
+          type: integer
+          description: Current warmup health score used to assess phone number warmup.
+          format: int32
+        progressPercent:
+          type: integer
+          description: Warmup completion percentage, from 0 through 100.
+          format: int32
+        callStage:
+          enum:
+          - Stage 0
+          - Stage 1
+          - Stage 2
+          - Stage 3
+          - Stage 4
+          type:
+          - 'null'
+          - string
+          description: Identifies the current traffic-ramp stage of controlled voice warmup for a Leadping-managed phone number.
+      description: Messaging and calling warmup for a Leadping phone number.
+    PhoneNumberSearchRequest:
+      type: object
+      properties:
+        phoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Phone number used by this phone number search request for calls, SMS, lookup, or routing.
+        location:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneNumberLocation'
+          description: Geographic location metadata for the phone number, lead, or lookup result.
+      description: Defines the fields clients can send when working with phone number search.
+    SmsReadinessState:
+      enum:
+      - Not Started
+      - In Progress
+      - Paused
+      - Blocked
+      - Ready
+      type: string
+      description: Describes whether an organization is configured and permitted to send SMS or MMS traffic through Leadping.
+    SmsReadinessUiState:
+      type: object
+      properties:
+        label:
+          allOf:
+          - $ref: '#/components/schemas/SmsReadinessState'
+          description: The human-readable label shown for this SMS readiness UI state.
+        tone:
+          type: string
+          description: Tone for this SMS readiness UI state.
+        description:
+          type: string
+          description: The human-readable description of this SMS readiness UI state.
+      description: Describes SMS readiness UI state data used in Leadping API requests and responses.
+    PhoneNumberMessagingEventResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this phone number messaging event.
+        createdAt:
+          type: string
+          description: UTC timestamp when this phone number messaging event was created.
+          format: date-time
+        label:
+          type: string
+          description: Short display label for this phone number messaging event, formatted for charts, filters, or list views.
+        eventType:
+          type: string
+          description: Event type used to classify this timeline, SMS, call, or automation event.
+        direction:
+          type: string
+          description: Communication direction for this phone number messaging event, such as inbound or outbound.
+        fromPhoneNumber:
+          type: string
+          description: Sender phone number used for this communication.
+        toPhoneNumber:
+          type: string
+          description: Recipient phone number used for this communication.
+        textPreview:
+          type: string
+          description: Short preview of the SMS or conversation text for this phone number messaging event.
+        isOptOut:
+          type: boolean
+          description: Indicates whether the recipient has opted out of further SMS communication.
+      description: Describes a messaging event used to calculate delivery, failure, and opt-out metrics for a phone number.
+    Coordinate:
+      required:
+      - latitude
+      - longitude
+      type: object
+      properties:
+        latitude:
+          type: number
+          description: Latitude of the geographic coordinate in decimal degrees, from -90 through 90.
+          format: double
+        longitude:
+          type: number
+          description: Longitude of the geographic coordinate in decimal degrees, from -180 through 180.
+          format: double
+      description: Latitude and longitude coordinate for this lead contact profile.
+    PhoneNumberTableRow:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this phone number table row.
+        name:
+          type: string
+          description: Optional display label for this phone number table row in the Leadping API.
+        number:
+          type: string
+          description: E.164 phone number exposed by this phone number table row.
+        type:
+          type: string
+          description: Type classification used to route and interpret this phone number table row in the Leadping API.
+        organization:
+          type: string
+          description: Organization summary connected to this phone number table row.
+        organizationId:
+          type:
+          - 'null'
+          - string
+          description: Unique Leadping organization identifier connected to this phone number table row.
+        enabled:
+          type: boolean
+          description: Indicates whether this phone number table row is active and available in the Leadping API.
+        warmup:
+          allOf:
+          - $ref: '#/components/schemas/PhoneNumberReadiness'
+          description: Warmup state for this phone number.
+        ownership:
+          type: string
+          description: Ownership classification for this phone number, such as Leadping-owned or customer-owned.
+        routingSummary:
+          type: string
+          description: Human-readable routing summary for this phone number.
+        smsReady:
+          type: boolean
+          description: Indicates whether SMS messaging is ready for this organization or phone number.
+        voiceReady:
+          type: boolean
+          description: Indicates whether voice calling is ready for this organization or phone number.
+        tenDlcCampaignStatus:
+          type:
+          - 'null'
+          - string
+          description: 10DLC campaign status associated with this sender or SMS event.
+      description: Summarizes phone number data in paginated and searchable results.
+    PhoneNumberRequest:
+      required:
+      - name
+      - number
+      type: object
+      properties:
+        number:
+          type: string
+          description: E.164 phone number exposed by this phone number update request.
+        organizationId:
+          type:
+          - 'null'
+          - string
+          description: Organization ID that owns the phone number being created or updated.
+        enabled:
+          type: boolean
+          description: Indicates whether this phone number update request is active and available in the Leadping API.
+        name:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: Human-readable display name for the resource, subject to the API's maximum name length.
+        id:
+          type:
+          - 'null'
+          - string
+          description: Stable unique identifier of an existing resource to update; omit it when the API assigns an identifier during creation.
+      description: Defines the fields clients can send when working with phone number update.
     PhoneNumberResponse:
       type: object
       properties:
@@ -1901,70 +2182,63 @@ components:
           description: UTC timestamp when the resource was last modified, or null when it has not been updated.
           format: date-time
       description: Describes a Leadping-managed phone number, including capabilities, messaging registration, health, and assignment details.
-    SmsReadinessHealthStatus:
-      enum:
-      - Not Evaluated
-      - Evaluating
-      - Healthy
-      - Needs Attention
-      - Blocked
-      type: string
-      description: Summarizes the severity of conditions affecting an organization's ability to send compliant SMS or MMS traffic.
-    PhoneNumberLocation:
+    PhoneNumberOptOutMetricsResponse:
       type: object
       properties:
-        location:
-          type:
-          - 'null'
-          - string
-          description: Geographic location metadata for the phone number, lead, or lookup result.
-        state:
-          type:
-          - 'null'
-          - string
-          description: State, province, or region for the lead or organization postal address.
-        canonicalCity:
-          type:
-          - 'null'
-          - string
-          description: Canonical city resolved by Leadping from its ZIP-code geography data.
-        canonicalState:
-          type:
-          - 'null'
-          - string
-          description: Canonical state or territory abbreviation resolved by Leadping.
-        countryCode:
-          type:
-          - 'null'
-          - string
-          description: Country code for the phone number or location represented by this phone number location.
-        coordinate:
-          type:
-          - 'null'
-          - object
+        windowDays:
+          type: integer
+          description: Number of days included in the metrics reporting window.
+          format: int32
+        windowStartedAt:
+          type: string
+          description: UTC timestamp when the metrics reporting window starts.
+          format: date-time
+        distinctContactedCount:
+          type: integer
+          description: Number of distinct recipients contacted during this metrics window.
+          format: int32
+        optOutCount:
+          type: integer
+          description: Number of recipients who opted out during this metrics window.
+          format: int32
+        optOutRatePercent:
+          type: number
+          description: Percentage of contacted recipients who opted out during this metrics window.
+          format: double
+      description: Describes phone number opt-out metrics data returned by Leadping.
+    SmsReadinessStatusResponse:
+      type: object
+      properties:
+        phoneNumberId:
+          type: string
+          description: The phone number ID associated with this SMS warmup status.
+        phoneNumber:
+          type: string
+          description: The phone number associated with this SMS warmup status.
+        status:
           allOf:
-          - $ref: '#/components/schemas/Coordinate'
-          description: Latitude and longitude coordinate for this phone number location.
-        coordinateSource:
-          type:
-          - 'null'
-          - object
+          - $ref: '#/components/schemas/SmsReadinessState'
+          description: The current state for this SMS warmup status.
+        healthStatus:
           allOf:
-          - $ref: '#/components/schemas/PhoneLocationSource'
-          description: Describes how the coordinate was resolved.
-        timeZoneId:
-          type:
-          - 'null'
-          - string
-          description: IANA or Windows time zone identifier used for local scheduling and reporting.
-        timeZoneSource:
-          type:
-          - 'null'
-          - object
+          - $ref: '#/components/schemas/SmsReadinessHealthStatus'
+          description: The current delivery-health assessment for this SMS warmup status.
+        healthScore:
+          type: integer
+          description: The health score metric for this SMS warmup status.
+          format: int32
+        progressPercent:
+          type: integer
+          description: The progress percent metric for this SMS warmup status.
+          format: int32
+        warmupEnabled:
+          type: boolean
+          description: Whether warmup is enabled for this SMS warmup status.
+        uiState:
           allOf:
-          - $ref: '#/components/schemas/PhoneLocationSource'
-          description: Describes how the time zone was resolved.
-      description: Public Leadping API schema for phone number location data.
+          - $ref: '#/components/schemas/SmsReadinessUiState'
+          description: The current UI state for this SMS warmup status.
+      description: Describes SMS warmup status data returned by Leadping.
     EligibleOutgoingNumberResponse:
       type: object
       properties:
@@ -2032,280 +2306,6 @@ components:
           type: boolean
           description: Indicates whether this eligible outgoing phone number was selected for the requested operation.
       description: Describes a Leadping phone number that is eligible to send an outbound message or place a call.
-    ExactMatchFilter:
-      type: object
-      properties:
-        value:
-          description: Scalar value the target field must equal; its JSON type should match the field being queried.
-        field:
-          type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records whose named field equals a supplied scalar value.
-    PhoneLocationSource:
-      type: object
-      properties:
-        method:
-          type: string
-          description: The resolution method, such as telnyx-city-state, coordinates, phone-number, or state-default.
-        query:
-          type:
-          - 'null'
-          - string
-          description: The city, state, coordinates, phone number, or representative ZIP used by the method.
-      description: Describes how a phone location value was resolved.
-    SmsReadinessUiState:
-      type: object
-      properties:
-        label:
-          allOf:
-          - $ref: '#/components/schemas/SmsReadinessState'
-          description: The human-readable label shown for this SMS readiness UI state.
-        tone:
-          type: string
-          description: Tone for this SMS readiness UI state.
-        description:
-          type: string
-          description: The human-readable description of this SMS readiness UI state.
-      description: Describes SMS readiness UI state data used in Leadping API requests and responses.
-    PhoneNumberStatusResponse:
-      type: object
-      properties:
-        number:
-          type: string
-          description: E.164 phone number exposed by this phone number warmup status.
-        messagesPossible:
-          type: integer
-          description: Indicates whether this phone number can currently send SMS messages.
-          format: int32
-        callsPossible:
-          type: integer
-          description: Indicates whether this phone number can currently place outbound calls.
-          format: int32
-        smsWarmup:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/SmsReadinessStatusResponse'
-          description: SMS warmup status for this phone number.
-        outboundCapacity:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/OutboundPhoneNumberCapacity'
-          description: Current outbound SMS and voice capacity for this phone number.
-        optOutMetrics:
-          allOf:
-          - $ref: '#/components/schemas/PhoneNumberOptOutMetricsResponse'
-          description: Recent SMS opt-out metrics used to evaluate sender health and compliance risk.
-        trafficMetrics:
-          allOf:
-          - $ref: '#/components/schemas/PhoneNumberTrafficMetricsResponse'
-          description: Phone number traffic metrics for recent SMS and call activity.
-        recentEvents:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/PhoneNumberMessagingEventResponse'
-            description: Describes a messaging event used to calculate delivery, failure, and opt-out metrics for a phone number.
-          description: Recent workflow events returned for timeline and troubleshooting.
-      description: Describes a phone number's current warmup stage, limits, progress, and readiness for production traffic.
-    PhoneNumberSearchRequest:
-      type: object
-      properties:
-        phoneNumber:
-          type:
-          - 'null'
-          - string
-          description: Phone number used by this phone number search request for calls, SMS, lookup, or routing.
-        location:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/PhoneNumberLocation'
-          description: Geographic location metadata for the phone number, lead, or lookup result.
-      description: Defines the fields clients can send when working with phone number search.
-    OutgoingNumberSelectionRequest:
-      type: object
-      properties:
-        conversationId:
-          type:
-          - 'null'
-          - string
-          description: Conversation ID that links this outgoing number selection request to the Leadping inbox thread.
-        leadId:
-          type:
-          - 'null'
-          - string
-          description: Lead ID used to choose the best outgoing sender number.
-        recipientPhoneNumber:
-          type:
-          - 'null'
-          - string
-          description: Recipient phone number that receives the outbound message or call.
-        channel:
-          enum:
-          - sms
-          - call
-          type:
-          - 'null'
-          - string
-          description: Identifies whether an outgoing phone number is eligible for voice, SMS, MMS, or another communication channel.
-        campaignId:
-          type:
-          - 'null'
-          - string
-          description: Messaging campaign identifier associated with this outgoing number selection request.
-        sourceId:
-          type:
-          - 'null'
-          - string
-          description: Lead source ID used to choose the best outgoing sender number.
-        teamId:
-          type:
-          - 'null'
-          - string
-          description: Organization ID used to choose the best outgoing sender number.
-      description: Defines the fields clients can send when working with outgoing number selection.
-    SmsReadinessStatusResponse:
-      type: object
-      properties:
-        phoneNumberId:
-          type: string
-          description: The phone number ID associated with this SMS warmup status.
-        phoneNumber:
-          type: string
-          description: The phone number associated with this SMS warmup status.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/SmsReadinessState'
-          description: The current state for this SMS warmup status.
-        healthStatus:
-          allOf:
-          - $ref: '#/components/schemas/SmsReadinessHealthStatus'
-          description: The current delivery-health assessment for this SMS warmup status.
-        healthScore:
-          type: integer
-          description: The health score metric for this SMS warmup status.
-          format: int32
-        progressPercent:
-          type: integer
-          description: The progress percent metric for this SMS warmup status.
-          format: int32
-        warmupEnabled:
-          type: boolean
-          description: Whether warmup is enabled for this SMS warmup status.
-        uiState:
-          allOf:
-          - $ref: '#/components/schemas/SmsReadinessUiState'
-          description: The current UI state for this SMS warmup status.
-      description: Describes SMS warmup status data returned by Leadping.
-    IdNamePair:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          type: string
-          description: Stable unique identifier of the referenced resource.
-        name:
-          type: string
-          description: Human-readable display name of the referenced resource.
-      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
-    OutgoingNumberManualOverrideRequest:
-      required:
-      - fromPhoneNumberId
-      - selection
-      type: object
-      properties:
-        fromPhoneNumberId:
-          type: string
-          description: Sender phone number ID used for this outbound SMS or call.
-        selection:
-          allOf:
-          - $ref: '#/components/schemas/OutgoingNumberSelectionRequest'
-          description: Selected outgoing number and selection rationale returned by Leadping.
-      description: Defines the fields clients can send when working with outgoing number manual override.
-    PhoneNumberTableRow:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this phone number table row.
-        name:
-          type: string
-          description: Optional display label for this phone number table row in the Leadping API.
-        number:
-          type: string
-          description: E.164 phone number exposed by this phone number table row.
-        type:
-          type: string
-          description: Type classification used to route and interpret this phone number table row in the Leadping API.
-        organization:
-          type: string
-          description: Organization summary connected to this phone number table row.
-        organizationId:
-          type:
-          - 'null'
-          - string
-          description: Unique Leadping organization identifier connected to this phone number table row.
-        enabled:
-          type: boolean
-          description: Indicates whether this phone number table row is active and available in the Leadping API.
-        warmup:
-          allOf:
-          - $ref: '#/components/schemas/PhoneNumberReadiness'
-          description: Warmup state for this phone number.
-        ownership:
-          type: string
-          description: Ownership classification for this phone number, such as Leadping-owned or customer-owned.
-        routingSummary:
-          type: string
-          description: Human-readable routing summary for this phone number.
-        smsReady:
-          type: boolean
-          description: Indicates whether SMS messaging is ready for this organization or phone number.
-        voiceReady:
-          type: boolean
-          description: Indicates whether voice calling is ready for this organization or phone number.
-        tenDlcCampaignStatus:
-          type:
-          - 'null'
-          - string
-          description: 10DLC campaign status associated with this sender or SMS event.
-      description: Summarizes phone number data in paginated and searchable results.
-    SmsReadinessState:
-      enum:
-      - Not Started
-      - In Progress
-      - Paused
-      - Blocked
-      - Ready
-      type: string
-      description: Describes whether an organization is configured and permitted to send SMS or MMS traffic through Leadping.
-    PhoneNumberSearchResponse:
-      type: object
-      properties:
-        numbers:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/PhoneNumberSearchResult'
-            description: Result schema for the Leadping API phone number search result returned by lookup and validation endpoints.
-          description: Phone numbers returned or evaluated by this phone number search response.
-      description: Describes phone number search data returned by Leadping.
-    PhoneNumberAvailabilityRequest:
-      required:
-      - phoneNumber
-      type: object
-      properties:
-        phoneNumber:
-          type: string
-          description: Phone number to check for availability, formatted for provider lookup.
-      description: Defines the phone number and capability requirements Leadping should verify before purchase or assignment.
   securitySchemes:
     Bearer:
       type: http

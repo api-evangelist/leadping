@@ -1,0 +1,125 @@
+generated: '2026-09-03'
+method: probed
+source: https://leadping.ai/.well-known/oauth-authorization-server
+docs: https://leadping.ai/docs/api-authentication
+corroborating_source: https://api.leadping.ai/.well-known/oauth-protected-resource
+summary: >-
+  Leadping's OpenAPI declares NO oauth2 securityScheme — its two schemes are both HTTP bearer (a user
+  JWT / organization API key, and a source key). The OAuth surface is therefore not visible in the
+  contract at all; it exists only in the RFC 8414 and RFC 9728 discovery documents, which Leadping
+  serves and which the MCP endpoint's 401 WWW-Authenticate header points at. This artifact records
+  what those documents actually declare. It was PROBED from the live metadata, not derived from the
+  spec: derive-oauth-scopes.py correctly reports "providers with oauth2: 0" for this repo.
+model: >-
+  OIDC-only scope surface. Leadping delegates identity to a WorkOS AuthKit tenant and publishes only
+  the four standard OpenID Connect scopes. There is NO Leadping-specific resource scope vocabulary
+  (nothing of the leads:read / sms:send shape) in any published discovery document.
+authorization_server:
+  issuer: https://motivated-run-93.authkit.app
+  vendor: WorkOS AuthKit
+  metadata_url: https://leadping.ai/.well-known/oauth-authorization-server
+  http_status: 200
+  authorization_endpoint: https://motivated-run-93.authkit.app/oauth2/authorize
+  token_endpoint: https://motivated-run-93.authkit.app/oauth2/token
+  jwks_uri: https://motivated-run-93.authkit.app/oauth2/jwks
+  introspection_endpoint: https://motivated-run-93.authkit.app/oauth2/introspection
+  revocation_endpoint: https://motivated-run-93.authkit.app/oauth2/revoke
+  device_authorization_endpoint: https://motivated-run-93.authkit.app/oauth2/device_authorization
+  grant_types_supported:
+    - authorization_code
+    - refresh_token
+    - 'urn:ietf:params:oauth:grant-type:device_code'
+  code_challenge_methods_supported:
+    - S256
+  token_endpoint_auth_methods_supported:
+    - none
+    - client_secret_post
+    - client_secret_basic
+  response_types_supported:
+    - code
+protected_resource:
+  resource: https://api.leadping.ai
+  metadata_url: https://api.leadping.ai/.well-known/oauth-protected-resource
+  http_status: 200
+  resource_name: Leadping API
+  resource_documentation: https://leadping.ai/docs/api-reference
+  bearer_methods_supported:
+    - header
+  token_issuers_supported:
+    - https://api.workos.com/user_management/client_01KWM0YXJJ0Y4JNRC6EZJRACJT
+    - https://motivated-run-93.authkit.app
+scope_count: 4
+scopes:
+  - name: openid
+    standard: OpenID Connect Core 1.0
+    description: Requests an ID token and establishes the OIDC authentication flow.
+    declared_in:
+      - authorization_server.scopes_supported
+      - protected_resource.scopes_supported
+  - name: profile
+    standard: OpenID Connect Core 1.0
+    description: Requests the end-user's default profile claims (name, picture, updated_at and similar).
+    declared_in:
+      - authorization_server.scopes_supported
+      - protected_resource.scopes_supported
+  - name: email
+    standard: OpenID Connect Core 1.0
+    description: Requests the end-user's email and email_verified claims.
+    declared_in:
+      - authorization_server.scopes_supported
+      - protected_resource.scopes_supported
+  - name: offline_access
+    standard: OpenID Connect Core 1.0
+    description: Requests a refresh token so the client can obtain new access tokens without the user present.
+    declared_in:
+      - authorization_server.scopes_supported
+    note: >-
+      Declared by the authorization server but NOT echoed in the API's protected-resource metadata,
+      whose scopes_supported lists only openid, profile and email. A client reading only the resource
+      metadata would not know refresh tokens are available.
+agent_identity_extension:
+  note: >-
+    The RFC 8414 document carries a non-standard "agent_auth" block — outside the OAuth spec and
+    outside the scope vocabulary — that is the closest thing Leadping publishes to an agent
+    authorization surface.
+  skill: https://leadping.ai/auth.md
+  identity_endpoint: https://motivated-run-93.authkit.app/agent/identity
+  claim_endpoint: https://motivated-run-93.authkit.app/agent/identity/claim
+  revocation_endpoint: https://motivated-run-93.authkit.app/oauth2/revoke
+  identity_types_supported:
+    - identity_assertion
+  assertion_types_supported:
+    - verified_email
+  credential_types_supported:
+    - access_token
+gaps:
+  - >-
+    No resource-scope vocabulary. Nothing published lets a client request or a resource server
+    advertise least-privilege access to a Leadping capability — an access token is scoped by the
+    organization membership and role behind it, not by a requested scope. An agent cannot ask for
+    read-only access to leads and be granted exactly that.
+  - >-
+    The A2A Agent Card names a "leads:read permission" in the PROSE of its securityScheme description
+    (a2a/leadping-agent-card.json), and its skill securityRequirements carry an EMPTY scope list. So a
+    permission name exists in Leadping's world but appears in no machine-readable scope registry, in
+    no securityScheme in the OpenAPI, and in neither discovery document. This is the single clearest
+    scope gap in the profile.
+  - >-
+    The two authorization documents disagree on offline_access (see the scope note above).
+  - No scopes or permissions reference page is published; https://leadping.ai/docs/scopes 404s.
+probes:
+  - url: https://leadping.ai/.well-known/oauth-authorization-server
+    status: 200
+    fetched: '2026-09-03'
+  - url: https://api.leadping.ai/.well-known/oauth-protected-resource
+    status: 200
+    fetched: '2026-09-03'
+  - url: https://leadping.ai/.well-known/openid-configuration
+    status: 200
+    fetched: '2026-09-03'
+  - url: https://leadping.ai/docs/scopes
+    status: 404
+    fetched: '2026-09-03'
+  - url: https://leadping.ai/docs/permissions
+    status: 404
+    fetched: '2026-09-03'

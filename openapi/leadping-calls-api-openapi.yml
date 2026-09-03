@@ -305,26 +305,6 @@ paths:
       - Bearer: []
 components:
   schemas:
-    CommunicationConsoleEntry:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier of this diagnostic console entry.
-        stage:
-          type: string
-          description: Communication-processing stage that produced the entry, such as validation, routing, or provider delivery.
-        status:
-          type: string
-          description: Outcome or state recorded for this processing stage.
-        message:
-          type: string
-          description: User-safe diagnostic message describing what occurred at this stage.
-        occurredAt:
-          type: string
-          description: UTC timestamp when this communication-processing event occurred.
-          format: date-time
-      description: Describes one durable diagnostic entry from the processing of a communication.
     PhoneCallResponse:
       type: object
       properties:
@@ -470,6 +450,50 @@ components:
           description: UTC timestamp when the resource was last modified, or null when it has not been updated.
           format: date-time
       description: Describes a Leadping phone call, including participants, direction, provider state, timing, recording, and billing details.
+    CommunicationConsoleEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of this diagnostic console entry.
+        stage:
+          type: string
+          description: Communication-processing stage that produced the entry, such as validation, routing, or provider delivery.
+        status:
+          type: string
+          description: Outcome or state recorded for this processing stage.
+        message:
+          type: string
+          description: User-safe diagnostic message describing what occurred at this stage.
+        occurredAt:
+          type: string
+          description: UTC timestamp when this communication-processing event occurred.
+          format: date-time
+      description: Describes one durable diagnostic entry from the processing of a communication.
+    PhoneCallStatus:
+      enum:
+      - scheduled
+      - queued
+      - initiated
+      - ringing
+      - in_progress
+      - active
+      - completed
+      - ended
+      - busy
+      - no_answer
+      - failed
+      - canceled
+      - missed
+      - transferred
+      - voicemail
+      - blocked_billing
+      - blocked_phone_number_status
+      - blocked_configuration
+      - blocked_permission
+      - configuration_required
+      type: string
+      description: Describes the durable business outcome of a Leadping phone call after provider status normalization.
     InitiateCallRequest:
       required:
       - leadId
@@ -548,30 +572,6 @@ components:
         status: 400
         detail: One or more request fields are invalid.
         instance: /leads/intake
-    PhoneCallStatus:
-      enum:
-      - scheduled
-      - queued
-      - initiated
-      - ringing
-      - in_progress
-      - active
-      - completed
-      - ended
-      - busy
-      - no_answer
-      - failed
-      - canceled
-      - missed
-      - transferred
-      - voicemail
-      - blocked_billing
-      - blocked_phone_number_status
-      - blocked_configuration
-      - blocked_permission
-      - configuration_required
-      type: string
-      description: Describes the durable business outcome of a Leadping phone call after provider status normalization.
   securitySchemes:
     Bearer:
       type: http

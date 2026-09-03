@@ -315,109 +315,113 @@ paths:
       - Bearer: []
 components:
   schemas:
-    TrustedFormCertificate:
+    IdNamePair:
+      required:
+      - id
+      - name
       type: object
       properties:
         id:
-          type:
-          - 'null'
-          - string
-          description: Unique Leadping identifier for this TrustedForm certificate.
-        url:
           type: string
-          description: The URL associated with this TrustedForm certificate.
-          format: uri
-        source:
-          type:
-          - 'null'
-          - string
-          description: Source for this TrustedForm certificate.
-        createdAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for created at on this TrustedForm certificate.
-          format: date-time
-      description: Describes trusted form certificate data used in Leadping API requests and responses.
-    OrganizationBillingState:
+          description: Stable unique identifier of the referenced resource.
+        name:
+          type: string
+          description: Human-readable display name of the referenced resource.
+      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
+    UserNotificationPreferences:
       type: object
       properties:
-        hasStripeCustomer:
-          type: boolean
-          description: Indicates whether the organization has a Stripe customer account.
-        hasPaymentMethod:
-          type: boolean
-          description: Indicates whether the organization has a saved default payment method.
-        phoneNumberQuantity:
+        smsConsentOptedIn:
           type:
           - 'null'
-          - integer
-          description: Number of phone numbers included in the organization's subscription plan.
-          format: int64
-        organizationMemberQuantity:
-          type:
-          - 'null'
-          - integer
-          description: Number of user licenses included in the organization's subscription plan.
-          format: int64
-        organizationMemberAssignedQuantity:
-          type:
-          - 'null'
-          - integer
-          description: Number of user licenses currently assigned to organization members.
-          format: int64
-        pendingBillingPlan:
-          enum:
-          - Annual
-          - Monthly
+          - boolean
+          description: Whether the user has consented to receive Leadping account notification SMS messages.
+        smsConsentUpdatedAt:
           type:
           - 'null'
           - string
-          description: Identifies the Leadping subscription plan that determines organization features, allowances, and billing behavior.
-        billingPlanChangeEffectiveAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the scheduled billing plan change takes effect.
+          description: When the user's Leadping notification SMS consent was last changed.
           format: date-time
-        planRenewalAt:
-          type:
-          - 'null'
-          - string
-          description: Current plan renewal date.
-          format: date-time
-        planPeriodStartAt:
-          type:
-          - 'null'
-          - string
-          description: Start of the current plan billing period.
-          format: date-time
-        cancelAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when the active subscription is scheduled to cancel.
-          format: date-time
-        dunning:
+        smsConsentTrustedFormCertificate:
           type:
           - 'null'
           - object
           allOf:
-          - $ref: '#/components/schemas/OrganizationDunningInfo'
-          description: Customer-safe payment recovery state for the organization.
-        lastSubscriptionEventAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when Leadping last processed a subscription event for the organization.
-          format: date-time
-        lastPaymentMethodEventAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when Leadping last processed a payment-method event for the organization.
-          format: date-time
-      description: Customer-safe billing state for a Leadping organization.
+          - $ref: '#/components/schemas/TrustedFormCertificate'
+          description: The TrustedForm certificate captured for the user's most recent SMS opt-in.
+        paymentFailedEnabled:
+          type: boolean
+          description: Whether payment failed notifications are enabled for this user notification preferences.
+        paymentFailedSmsEnabled:
+          type: boolean
+          description: Indicates whether payment failed SMS functionality is enabled for this Leadping user notification preferences.
+        lowWalletBalanceEnabled:
+          type: boolean
+          description: Whether low wallet balance notifications are enabled for this user notification preferences.
+        lowWalletBalanceEmailEnabled:
+          type: boolean
+          description: Indicates whether low wallet balance email functionality is enabled for this Leadping user notification preferences.
+        lowWalletBalanceSmsEnabled:
+          type: boolean
+          description: Indicates whether low wallet balance SMS functionality is enabled for this Leadping user notification preferences.
+        tenDlcStatusEnabled:
+          type: boolean
+          description: Whether 10DLC status notifications are enabled for this user notification preferences.
+        newLeadEnabled:
+          type: boolean
+          description: Whether new lead notifications are enabled for this user notification preferences.
+        newLeadEmailEnabled:
+          type: boolean
+          description: Whether new lead email is enabled for this user notification preferences.
+        newLeadSmsEnabled:
+          type: boolean
+          description: Whether new lead SMS is enabled for this user notification preferences.
+        missedCallEnabled:
+          type: boolean
+          description: Whether missed call notifications are enabled for this user notification preferences.
+        missedCallEmailEnabled:
+          type: boolean
+          description: Indicates whether missed call email functionality is enabled for this Leadping user notification preferences.
+        missedCallSmsEnabled:
+          type: boolean
+          description: Indicates whether missed call SMS functionality is enabled for this Leadping user notification preferences.
+        unreadSmsEnabled:
+          type: boolean
+          description: Whether unread SMS notifications are enabled for this user notification preferences.
+        unreadSmsEmailEnabled:
+          type: boolean
+          description: Indicates whether unread SMS email functionality is enabled for this Leadping user notification preferences.
+        unreadSmsSmsEnabled:
+          type: boolean
+          description: Indicates whether unread SMS SMS functionality is enabled for this Leadping user notification preferences.
+        automationFailedEnabled:
+          type: boolean
+          description: Whether automation failed notifications are enabled for this user notification preferences.
+        automationFailedEmailEnabled:
+          type: boolean
+          description: Indicates whether automation failed email functionality is enabled for this Leadping user notification preferences.
+        automationFailedSmsEnabled:
+          type: boolean
+          description: Indicates whether automation failed SMS functionality is enabled for this Leadping user notification preferences.
+        billingEmailEnabled:
+          type: boolean
+          description: Whether billing email is enabled for this user notification preferences.
+        billingSmsEnabled:
+          type: boolean
+          description: Whether billing SMS is enabled for this user notification preferences.
+        subscriptionRenewingEnabled:
+          type: boolean
+          description: Whether subscription renewing notifications are enabled for this user notification preferences.
+        subscriptionRenewingEmailEnabled:
+          type: boolean
+          description: Indicates whether subscription renewing email functionality is enabled for this Leadping user notification preferences.
+        subscriptionRenewingSmsEnabled:
+          type: boolean
+          description: Indicates whether subscription renewing SMS functionality is enabled for this Leadping user notification preferences.
+        usageLimitHitEnabled:
+          type: boolean
+          description: Whether usage limit hit notifications are enabled for this user notification preferences.
+      description: Describes user notification preferences data used in Leadping API requests and responses.
     StripePaymentMethodResponse:
       required:
       - id
@@ -596,134 +600,6 @@ components:
           description: UTC timestamp when the resource was last modified, or null when it has not been updated.
           format: date-time
       description: Describes user data returned by Leadping.
-    UserNotificationPreferences:
-      type: object
-      properties:
-        smsConsentOptedIn:
-          type:
-          - 'null'
-          - boolean
-          description: Whether the user has consented to receive Leadping account notification SMS messages.
-        smsConsentUpdatedAt:
-          type:
-          - 'null'
-          - string
-          description: When the user's Leadping notification SMS consent was last changed.
-          format: date-time
-        smsConsentTrustedFormCertificate:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/TrustedFormCertificate'
-          description: The TrustedForm certificate captured for the user's most recent SMS opt-in.
-        paymentFailedEnabled:
-          type: boolean
-          description: Whether payment failed notifications are enabled for this user notification preferences.
-        paymentFailedSmsEnabled:
-          type: boolean
-          description: Indicates whether payment failed SMS functionality is enabled for this Leadping user notification preferences.
-        lowWalletBalanceEnabled:
-          type: boolean
-          description: Whether low wallet balance notifications are enabled for this user notification preferences.
-        lowWalletBalanceEmailEnabled:
-          type: boolean
-          description: Indicates whether low wallet balance email functionality is enabled for this Leadping user notification preferences.
-        lowWalletBalanceSmsEnabled:
-          type: boolean
-          description: Indicates whether low wallet balance SMS functionality is enabled for this Leadping user notification preferences.
-        tenDlcStatusEnabled:
-          type: boolean
-          description: Whether 10DLC status notifications are enabled for this user notification preferences.
-        newLeadEnabled:
-          type: boolean
-          description: Whether new lead notifications are enabled for this user notification preferences.
-        newLeadEmailEnabled:
-          type: boolean
-          description: Whether new lead email is enabled for this user notification preferences.
-        newLeadSmsEnabled:
-          type: boolean
-          description: Whether new lead SMS is enabled for this user notification preferences.
-        missedCallEnabled:
-          type: boolean
-          description: Whether missed call notifications are enabled for this user notification preferences.
-        missedCallEmailEnabled:
-          type: boolean
-          description: Indicates whether missed call email functionality is enabled for this Leadping user notification preferences.
-        missedCallSmsEnabled:
-          type: boolean
-          description: Indicates whether missed call SMS functionality is enabled for this Leadping user notification preferences.
-        unreadSmsEnabled:
-          type: boolean
-          description: Whether unread SMS notifications are enabled for this user notification preferences.
-        unreadSmsEmailEnabled:
-          type: boolean
-          description: Indicates whether unread SMS email functionality is enabled for this Leadping user notification preferences.
-        unreadSmsSmsEnabled:
-          type: boolean
-          description: Indicates whether unread SMS SMS functionality is enabled for this Leadping user notification preferences.
-        automationFailedEnabled:
-          type: boolean
-          description: Whether automation failed notifications are enabled for this user notification preferences.
-        automationFailedEmailEnabled:
-          type: boolean
-          description: Indicates whether automation failed email functionality is enabled for this Leadping user notification preferences.
-        automationFailedSmsEnabled:
-          type: boolean
-          description: Indicates whether automation failed SMS functionality is enabled for this Leadping user notification preferences.
-        billingEmailEnabled:
-          type: boolean
-          description: Whether billing email is enabled for this user notification preferences.
-        billingSmsEnabled:
-          type: boolean
-          description: Whether billing SMS is enabled for this user notification preferences.
-        subscriptionRenewingEnabled:
-          type: boolean
-          description: Whether subscription renewing notifications are enabled for this user notification preferences.
-        subscriptionRenewingEmailEnabled:
-          type: boolean
-          description: Indicates whether subscription renewing email functionality is enabled for this Leadping user notification preferences.
-        subscriptionRenewingSmsEnabled:
-          type: boolean
-          description: Indicates whether subscription renewing SMS functionality is enabled for this Leadping user notification preferences.
-        usageLimitHitEnabled:
-          type: boolean
-          description: Whether usage limit hit notifications are enabled for this user notification preferences.
-      description: Describes user notification preferences data used in Leadping API requests and responses.
-    BillingPlan:
-      enum:
-      - Annual
-      - Monthly
-      type: string
-      description: Identifies the Leadping subscription plan that determines organization features, allowances, and billing behavior.
-    IdNamePair:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          type: string
-          description: Stable unique identifier of the referenced resource.
-        name:
-          type: string
-          description: Human-readable display name of the referenced resource.
-      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
-    ChangeBillingPlanRequest:
-      required:
-      - billingPlan
-      type: object
-      properties:
-        billingPlan:
-          allOf:
-          - $ref: '#/components/schemas/BillingPlan'
-          description: Billing plan for this billing plan.
-        userId:
-          type:
-          - 'null'
-          - string
-          description: The user ID associated with this billing plan.
-      description: Defines the input used for change billing plan.
     MobileDevicePreferences:
       type: object
       properties:
@@ -741,83 +617,52 @@ components:
           description: The date and time this device preference was last updated.
           format: date-time
       description: Describes notification and calling preferences saved for one of the user's mobile devices.
-    UserIdentity:
+    BillingPlan:
+      enum:
+      - Annual
+      - Monthly
+      type: string
+      description: Identifies the Leadping subscription plan that determines organization features, allowances, and billing behavior.
+    ComplianceUpdateRequest:
       type: object
       properties:
-        issuer:
-          type: string
-          description: Identity provider or tenant that issued the sign-in identity, such as contoso.com or facebook.com.
-        issuerAssignedId:
-          type: string
-          description: Stable unique user identifier assigned by the identity provider within the issuer's namespace.
-        signInType:
-          type: string
-          description: Sign-in method represented by the identity, such as emailAddress, userName, or federated.
-      description: Identifies an external sign-in identity linked to a Leadping user, including its provider, provider-assigned user identifier, and authentication method.
-    UserCompliance:
+        compliance:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/UserCompliance'
+          description: Compliance for this compliance update.
+        source:
+          type:
+          - 'null'
+          - string
+          description: Source for this compliance update.
+      description: Defines the input used for compliance update.
+    TrustedFormCertificate:
       type: object
       properties:
-        acceptedTerms:
-          type: boolean
-          description: Whether the user accepted terms for this user compliance.
-        acceptedToSubscription:
-          type: boolean
-          description: Whether the user accepted subscription for this user compliance.
-        acceptedSms:
-          type: boolean
-          description: Whether the user accepted SMS for this user compliance.
-        acceptedBaa:
-          type: boolean
-          description: Whether the user accepted BAA for this user compliance.
-        acceptedEmail:
-          type: boolean
-          description: Whether the user accepted email for this user compliance.
-        trustedFormCertificates:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/TrustedFormCertificate'
-            description: Describes trusted form certificate data used in Leadping API requests and responses.
-          description: The TrustedForm certificates included with this user compliance.
-      description: Describes user compliance data used in Leadping API requests and responses.
-    ProblemDetails:
-      type: object
-      properties:
-        type:
+        id:
           type:
           - 'null'
           - string
-          description: URI reference that identifies the problem type.
-        title:
+          description: Unique Leadping identifier for this TrustedForm certificate.
+        url:
+          type: string
+          description: The URL associated with this TrustedForm certificate.
+          format: uri
+        source:
           type:
           - 'null'
           - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
+          description: Source for this TrustedForm certificate.
+        createdAt:
           type:
           - 'null'
           - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-      example:
-        type: https://leadping.ai/docs/errors/validation
-        title: Request validation failed
-        status: 400
-        detail: One or more request fields are invalid.
-        instance: /leads/intake
+          description: UTC timestamp for created at on this TrustedForm certificate.
+          format: date-time
+      description: Describes trusted form certificate data used in Leadping API requests and responses.
     UserRequest:
       required:
       - phone
@@ -897,6 +742,34 @@ components:
           - string
           description: Stable unique identifier of an existing resource to update; omit it when the API assigns an identifier during creation.
       description: Defines the fields clients can send when working with user profile.
+    UserCompliance:
+      type: object
+      properties:
+        acceptedTerms:
+          type: boolean
+          description: Whether the user accepted terms for this user compliance.
+        acceptedToSubscription:
+          type: boolean
+          description: Whether the user accepted subscription for this user compliance.
+        acceptedSms:
+          type: boolean
+          description: Whether the user accepted SMS for this user compliance.
+        acceptedBaa:
+          type: boolean
+          description: Whether the user accepted BAA for this user compliance.
+        acceptedEmail:
+          type: boolean
+          description: Whether the user accepted email for this user compliance.
+        trustedFormCertificates:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/TrustedFormCertificate'
+            description: Describes trusted form certificate data used in Leadping API requests and responses.
+          description: The TrustedForm certificates included with this user compliance.
+      description: Describes user compliance data used in Leadping API requests and responses.
     OrganizationDunningInfo:
       type: object
       properties:
@@ -957,22 +830,149 @@ components:
           description: Date and time when this Leadping organization dunning info was last updated.
           format: date-time
       description: Dunning state recorded after a failed recurring payment.
-    ComplianceUpdateRequest:
+    UserIdentity:
       type: object
       properties:
-        compliance:
+        issuer:
+          type: string
+          description: Identity provider or tenant that issued the sign-in identity, such as contoso.com or facebook.com.
+        issuerAssignedId:
+          type: string
+          description: Stable unique user identifier assigned by the identity provider within the issuer's namespace.
+        signInType:
+          type: string
+          description: Sign-in method represented by the identity, such as emailAddress, userName, or federated.
+      description: Identifies an external sign-in identity linked to a Leadping user, including its provider, provider-assigned user identifier, and authentication method.
+    ChangeBillingPlanRequest:
+      required:
+      - billingPlan
+      type: object
+      properties:
+        billingPlan:
+          allOf:
+          - $ref: '#/components/schemas/BillingPlan'
+          description: Billing plan for this billing plan.
+        userId:
+          type:
+          - 'null'
+          - string
+          description: The user ID associated with this billing plan.
+      description: Defines the input used for change billing plan.
+    OrganizationBillingState:
+      type: object
+      properties:
+        hasStripeCustomer:
+          type: boolean
+          description: Indicates whether the organization has a Stripe customer account.
+        hasPaymentMethod:
+          type: boolean
+          description: Indicates whether the organization has a saved default payment method.
+        phoneNumberQuantity:
+          type:
+          - 'null'
+          - integer
+          description: Number of phone numbers included in the organization's subscription plan.
+          format: int64
+        organizationMemberQuantity:
+          type:
+          - 'null'
+          - integer
+          description: Number of user licenses included in the organization's subscription plan.
+          format: int64
+        organizationMemberAssignedQuantity:
+          type:
+          - 'null'
+          - integer
+          description: Number of user licenses currently assigned to organization members.
+          format: int64
+        pendingBillingPlan:
+          enum:
+          - Annual
+          - Monthly
+          type:
+          - 'null'
+          - string
+          description: Identifies the Leadping subscription plan that determines organization features, allowances, and billing behavior.
+        billingPlanChangeEffectiveAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the scheduled billing plan change takes effect.
+          format: date-time
+        planRenewalAt:
+          type:
+          - 'null'
+          - string
+          description: Current plan renewal date.
+          format: date-time
+        planPeriodStartAt:
+          type:
+          - 'null'
+          - string
+          description: Start of the current plan billing period.
+          format: date-time
+        cancelAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the active subscription is scheduled to cancel.
+          format: date-time
+        dunning:
           type:
           - 'null'
           - object
           allOf:
-          - $ref: '#/components/schemas/UserCompliance'
-          description: Compliance for this compliance update.
-        source:
+          - $ref: '#/components/schemas/OrganizationDunningInfo'
+          description: Customer-safe payment recovery state for the organization.
+        lastSubscriptionEventAt:
           type:
           - 'null'
           - string
-          description: Source for this compliance update.
-      description: Defines the input used for compliance update.
+          description: UTC timestamp when Leadping last processed a subscription event for the organization.
+          format: date-time
+        lastPaymentMethodEventAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping last processed a payment-method event for the organization.
+          format: date-time
+      description: Customer-safe billing state for a Leadping organization.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
   securitySchemes:
     Bearer:
       type: http

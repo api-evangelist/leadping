@@ -147,6 +147,13 @@ paths:
       security: []
 components:
   schemas:
+    ContactResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Message text supplied by the user or returned by the Leadping API for this contact form response.
+      description: Describes contact form data returned by Leadping.
     ProblemDetails:
       type: object
       properties:
@@ -183,13 +190,6 @@ components:
         status: 400
         detail: One or more request fields are invalid.
         instance: /leads/intake
-    ContactResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Message text supplied by the user or returned by the Leadping API for this contact form response.
-      description: Describes contact form data returned by Leadping.
     ContactRequest:
       required:
       - email

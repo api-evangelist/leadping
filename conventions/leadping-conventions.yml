@@ -1,7 +1,7 @@
-generated: '2026-08-18'
+generated: '2026-09-03'
 method: searched
 source: https://leadping.ai/docs/api-authentication
-derived_from: openapi/leadping-openapi.json
+derived_from: openapi/_original/leadping-openapi.json
 docs:
   - https://leadping.ai/docs/api-authentication
   - https://leadping.ai/docs/rate-limits
@@ -121,3 +121,230 @@ webhooks:
     - webhook-timestamp
     - webhook-signature
   detail: asyncapi/leadping-webhooks.yml
+dry_run_mode:
+  supported: true
+  status: documented
+  mechanism: request-body flag on a dedicated preview operation
+  surfaces:
+    - operation: Automations_Preview
+      path: 'POST /automations/preview'
+      flag: validate_only
+      docs: https://leadping.ai/docs/api-reference/automations/preview-a-lead-follow-up-automation
+      description: >-
+        Previews automation execution against a sample lead, returning the matched steps and messages
+        WITHOUT creating follow-up events. Setting validate_only returns configuration validation only,
+        without evaluating conditions or actions and without writing a test audit event. Quoted from
+        the provider's own operation description.
+    - operation: PhoneNumbers_ValidateManualOverride
+      path: 'POST /phone-numbers/outgoing/manual-override'
+      docs: https://leadping.ai/docs/api-reference/phonenumbers/validate-sender-number-override
+      description: >-
+        Validates a manual outgoing-number override BEFORE use, checking ownership, destination and
+        delivery eligibility. A rehearsal of the send-eligibility decision that does not set the
+        override; PhoneNumbers_SetConversationOverride is the committing operation.
+    - operation: Suppressions_Check
+      path: 'POST /suppressions/check'
+      docs: https://leadping.ai/docs/api-reference/suppressions/check-whether-a-recipient-is-suppressed
+      description: >-
+        Check of whether a recipient is suppressed (a POST, but non-mutating), so an agent can test compliance state
+        before attempting an outbound send rather than discovering it from a rejection.
+  gaps:
+    - >-
+      There is no general dry-run flag. The two highest-consequence write surfaces — Sms_Send
+      (POST /sms/send) and Calls_InitiateCall (POST /phone-call/initiate) — have no preview or
+      validate-only mode, so an agent cannot rehearse an actual message or call. The preview surface
+      covers automation configuration and sender eligibility, not delivery itself.
+reversibility:
+  status: verified
+  method: derived
+  derived_from: openapi/_original/leadping-openapi.json
+  docs:
+    - https://leadping.ai/docs/api-reference
+    - https://leadping.ai/docs/data-deletion
+  summary: >-
+    Leadping has a substantial write surface and a correspondingly explicit reversal surface: most
+    destructive operations are soft (archive / mark-deleted with history preserved) and several have a
+    named inverse operation. One reversal — cancelling a scheduled SMS — carries a WINDOW stated in the
+    provider's own operation description, which is what lifts this from documented to verified.
+  reversals:
+    - action: Send a scheduled SMS
+      forward_operation: Sms_Send
+      forward_path: 'POST /sms/send'
+      reversal_operation: Sms_CancelScheduled
+      reversal_path: 'POST /sms/{smsEventId}/cancel'
+      window: >-
+        Only while the SMS status is Scheduled. The window closes when delivery begins.
+      window_stated: true
+      window_source: >-
+        Provider's own operation description, https://leadping.ai/docs/api-reference and
+        openapi/_original/leadping-openapi.json: "Cancels a scheduled SMS event before delivery,
+        preserving the event record while preventing the queued message from being sent. The
+        cancellation window remains open only while the SMS status is Scheduled and closes when
+        delivery begins."
+      effect: >-
+        The event record is preserved; only the queued delivery is prevented. State-bounded rather
+        than time-bounded — an agent must read the SMS status to know whether the window is still open.
+      grade: verified
+    - action: Archive a lead
+      forward_operation: Leads_Archive
+      forward_path: 'POST /leads/{id}/archive'
+      reversal_operation: Leads_Unarchive
+      reversal_path: 'POST /leads/{id}/unarchive'
+      window: >-
+        No stated expiry. The docs describe unarchive as restoring an archived lead to active pipeline
+        views so follow-up, communication and routing workflows can resume, with no time bound given.
+      window_stated: false
+      effect: >-
+        Fully reversible in both directions. Archiving removes the lead from active pipeline views
+        while preserving communication and event records; unarchiving restores it.
+      grade: documented
+    - action: Delete a lead
+      forward_operation: Leads_Delete
+      forward_path: 'DELETE /leads/{id}'
+      reversal_operation: null
+      window: null
+      window_stated: false
+      effect: >-
+        Soft delete, but with NO published API reversal. The provider's own description says the lead
+        is marked deleted so it no longer appears in user-facing lead, conversation, routing or event
+        workflows, and that the stored lead, conversation and event records are RETAINED — so the data
+        survives, but no endpoint restores it. Recovery is a support request, not an operation.
+      caveat: >-
+        This is the most important gap for an agent: the record is recoverable in principle and
+        unrecoverable through the API. Treat DELETE /leads/{id} as irreversible when planning.
+      grade: irreversible-via-api
+    - action: Suppress a recipient
+      forward_operation: Suppressions_Suppress
+      forward_path: 'POST /suppressions'
+      reversal_operation: Suppressions_Release
+      reversal_path: 'POST /suppressions/release'
+      window: >-
+        No stated expiry, but release is not unconditional: the result reflects the effective
+        compliance state after normalization, organization scoping and suppression-history checks, so
+        a release can be refused on compliance grounds.
+      window_stated: false
+      effect: >-
+        Reversible in both directions, subject to compliance evaluation. This is a consent surface —
+        releasing a suppression re-enables outreach to a recipient who was previously opted out, so
+        the reversal itself is the higher-consequence direction.
+      caveat: >-
+        An agent must not treat Suppressions_Release as a routine undo. Suppression records are
+        retained at least 4 years after the last related contact per
+        https://leadping.ai/docs/data-deletion, and releasing one has TCPA/consent consequences that
+        the API will evaluate but cannot absolve.
+      grade: documented
+    - action: Archive a lead status
+      forward_operation: LeadStatuses_Archive
+      forward_path: 'DELETE /lead-statuses/{id}'
+      reversal_operation: null
+      window: null
+      window_stated: false
+      effect: >-
+        Soft: the status becomes unavailable for new assignments while existing lead history is
+        preserved. No unarchive operation is published.
+      grade: irreversible-via-api
+    - action: Archive a tag
+      forward_operation: Tags_Archive
+      forward_path: 'DELETE /tags/{id}'
+      reversal_operation: Tags_Update
+      reversal_path: 'PUT /tags/{id}'
+      window: >-
+        No stated expiry.
+      window_stated: false
+      effect: >-
+        Reversible. Tags_Update explicitly updates a tag's "name, color, or archived state", so the
+        archived flag can be cleared back to active through the normal update operation. Historical
+        lead labels remain available throughout.
+      grade: documented
+    - action: Set a sender-number override on a conversation
+      forward_operation: PhoneNumbers_SetConversationOverride
+      forward_path: 'POST /phone-numbers/outgoing/conversation/{conversationId}/override'
+      reversal_operation: PhoneNumbers_ClearConversationOverride
+      reversal_path: 'DELETE /phone-numbers/outgoing/conversation/{conversationId}/override'
+      window: >-
+        No stated expiry.
+      window_stated: false
+      effect: Fully reversible; clearing returns the conversation to normal sender selection.
+      grade: documented
+    - action: Add tags to a lead
+      forward_operation: Leads_AddTags
+      forward_path: 'POST /leads/{id}/tags'
+      reversal_operation: Leads_RemoveTag
+      reversal_path: 'DELETE /leads/{id}/tags/{tagId}'
+      window: >-
+        No stated expiry.
+      window_stated: false
+      effect: >-
+        Fully reversible per tag; removing one tag leaves the lead record, other tags and
+        communication history intact.
+      grade: documented
+    - action: Rotate a source intake credential
+      forward_operation: Sources_RotateApiKey
+      forward_path: 'POST /sources/{id}/credentials/rotate'
+      reversal_operation: null
+      window: null
+      window_stated: false
+      effect: >-
+        IRREVERSIBLE. The provider states the current credential is invalidated and the replacement
+        secret is returned ONCE — only its hash and short preview are retained. The previous credential
+        cannot be restored and the new one cannot be re-read.
+      grade: irreversible
+    - action: Initiate a phone call
+      forward_operation: Calls_InitiateCall
+      forward_path: 'POST /phone-call/initiate'
+      reversal_operation: Calls_HangupCall
+      reversal_path: 'POST /phone-call/{callId}/hangup'
+      window: >-
+        Only while the call is active; ending validates ownership and current provider state.
+      window_stated: false
+      effect: >-
+        A call already placed cannot be un-placed — ending it stops it in progress. This is
+        interruption, not reversal, and the recipient has already been contacted.
+      caveat: >-
+        For an agent, an initiated call should be treated as irreversible in effect even though an
+        end operation exists.
+      grade: documented
+  irreversible_operations:
+    - operation: Sources_RotateApiKey
+      reason: Prior credential invalidated; replacement secret returned once and never re-readable.
+    - operation: Leads_Delete
+      reason: Soft delete with retained records but no published restore operation.
+    - operation: LeadStatuses_Archive
+      reason: No unarchive operation published.
+    - operation: LeadStatusChanges_Delete
+      reason: >-
+        Deletes a lead status change from a lead's outcome history. No restore operation and no
+        stated recovery path.
+    - operation: Organizations_DeleteApiKey
+      reason: Deletes an organization-owned API key. No restore.
+    - operation: Sources_Delete
+      reason: Deletes a lead intake source. No restore operation published.
+    - operation: PhoneNumbers_Delete
+      reason: >-
+        Releases an organization phone number. Number release is a carrier-side action; Leadping
+        publishes no reclaim operation.
+    - operation: Sms_Send
+      reason: >-
+        A delivered message cannot be recalled. Only the pre-delivery Scheduled state is cancellable
+        (see Sms_CancelScheduled).
+  account_level:
+    note: >-
+      Account and data deletion are NOT API operations — they are email requests to
+      support@leadping.ai, processed within 30 days for most verified requests
+      (https://leadping.ai/docs/account-deletion, https://leadping.ai/docs/data-deletion). There is no
+      published self-service undo once a deletion request is processed.
+    retention_after_deletion:
+      billing_invoice_payment_tax: Up to 7 years
+      support_and_deletion_correspondence: Up to 3 years
+      security_authentication_audit: Up to 2 years
+      consent_optin_optout_suppression_carrier_compliance: >-
+        At least 4 years after the last related contact, or longer when required
+      backups: Generally within 90 days, unless preservation is required
+      source: https://leadping.ai/docs/data-deletion
+  grade: verified
+  grade_basis: >-
+    Verified rather than documented because at least one reversal path is published WITH the window in
+    which it works, stated by the provider: Sms_CancelScheduled's window "remains open only while the
+    SMS status is Scheduled and closes when delivery begins". Nine further reversal pairs are
+    documented without a stated window, and eight write operations are recorded as irreversible via
+    the API. No window has been asserted anywhere in this block that the provider does not state.

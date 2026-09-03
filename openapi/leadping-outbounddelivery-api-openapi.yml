@@ -70,18 +70,6 @@ paths:
       - Bearer: []
 components:
   schemas:
-    OutboundDeliverySource:
-      enum:
-      - manual
-      - automation
-      - campaign
-      - import
-      - api
-      - system_notification
-      - warmup
-      - retry
-      type: string
-      description: Defines the source that requested outbound delivery.
     OutboundQueueItem:
       type: object
       properties:
@@ -145,6 +133,90 @@ components:
           - string
           description: Phone number associated with this Leadping outbound queue item.
       description: Describes a queued or recently evaluated outbound delivery request and the pacing decision that controls when it may be sent.
+    OutboundDeliveryChannel:
+      enum:
+      - sms
+      - voice
+      - email
+      - webhook
+      - internal_notification
+      type: string
+      description: Defines outbound delivery channels protected by delivery control.
+    OutboundCapacityOverview:
+      type: object
+      properties:
+        smsCapacityRemainingToday:
+          type: integer
+          description: SMS capacity remaining today for the applicable messaging or voice capacity window.
+          format: int32
+        voiceCapacityRemainingToday:
+          type: integer
+          description: Voice capacity remaining today for the applicable messaging or voice capacity window.
+          format: int32
+        healthyPhoneNumbers:
+          type: integer
+          description: Number of healthy phone numbers represented by this Leadping outbound capacity overview.
+          format: int32
+        limitedPhoneNumbers:
+          type: integer
+          description: Number of limited phone numbers represented by this Leadping outbound capacity overview.
+          format: int32
+        coolingPhoneNumbers:
+          type: integer
+          description: Number of cooling phone numbers represented by this Leadping outbound capacity overview.
+          format: int32
+        rampingPhoneNumbers:
+          type: integer
+          description: Number of phone numbers whose SMS or calling capacity is still ramping up.
+          format: int32
+        scheduledCount:
+          type: integer
+          description: Total number of scheduled records represented by this Leadping outbound capacity overview.
+          format: int32
+        blockedCount:
+          type: integer
+          description: Total number of blocked records represented by this Leadping outbound capacity overview.
+          format: int32
+        phoneNumbers:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/OutboundPhoneNumberCapacity'
+            description: Reports the sending capacity, current load, and availability of a phone number considered for outbound delivery.
+          description: Collection of phone numbers included with this Leadping outbound capacity overview.
+        recentDecisions:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/OutboundQueueItem'
+            description: Describes a queued or recently evaluated outbound delivery request and the pacing decision that controls when it may be sent.
+          description: Collection of recent decisions included with this Leadping outbound capacity overview.
+      description: Summarizes organization-wide SMS and voice sending capacity, phone-number health, and recent outbound pacing decisions.
+    PhoneNumberOutboundHealthStatus:
+      enum:
+      - unknown
+      - new
+      - healthy
+      - warmup
+      - limited
+      - cooling_down
+      - suspended
+      - disabled
+      type: string
+      description: Defines phone-number outbound health states used by pacing.
+    OutboundDeliveryStatus:
+      enum:
+      - pending
+      - scheduled
+      - reserved
+      - sending
+      - sent
+      - failed
+      - skipped
+      - blocked
+      - cancelled
+      type: string
+      description: Defines durable outbound delivery request statuses.
     OutboundPhoneNumberCapacity:
       type: object
       properties:
@@ -288,90 +360,18 @@ components:
           description: Start of the next Eastern time hour, when voice hourly capacity resets.
           format: date-time
       description: Reports the sending capacity, current load, and availability of a phone number considered for outbound delivery.
-    PhoneNumberOutboundHealthStatus:
+    OutboundDeliverySource:
       enum:
-      - unknown
-      - new
-      - healthy
+      - manual
+      - automation
+      - campaign
+      - import
+      - api
+      - system_notification
       - warmup
-      - limited
-      - cooling_down
-      - suspended
-      - disabled
+      - retry
       type: string
-      description: Defines phone-number outbound health states used by pacing.
-    OutboundDeliveryStatus:
-      enum:
-      - pending
-      - scheduled
-      - reserved
-      - sending
-      - sent
-      - failed
-      - skipped
-      - blocked
-      - cancelled
-      type: string
-      description: Defines durable outbound delivery request statuses.
-    OutboundDeliveryChannel:
-      enum:
-      - sms
-      - voice
-      - email
-      - webhook
-      - internal_notification
-      type: string
-      description: Defines outbound delivery channels protected by delivery control.
-    OutboundCapacityOverview:
-      type: object
-      properties:
-        smsCapacityRemainingToday:
-          type: integer
-          description: SMS capacity remaining today for the applicable messaging or voice capacity window.
-          format: int32
-        voiceCapacityRemainingToday:
-          type: integer
-          description: Voice capacity remaining today for the applicable messaging or voice capacity window.
-          format: int32
-        healthyPhoneNumbers:
-          type: integer
-          description: Number of healthy phone numbers represented by this Leadping outbound capacity overview.
-          format: int32
-        limitedPhoneNumbers:
-          type: integer
-          description: Number of limited phone numbers represented by this Leadping outbound capacity overview.
-          format: int32
-        coolingPhoneNumbers:
-          type: integer
-          description: Number of cooling phone numbers represented by this Leadping outbound capacity overview.
-          format: int32
-        rampingPhoneNumbers:
-          type: integer
-          description: Number of phone numbers whose SMS or calling capacity is still ramping up.
-          format: int32
-        scheduledCount:
-          type: integer
-          description: Total number of scheduled records represented by this Leadping outbound capacity overview.
-          format: int32
-        blockedCount:
-          type: integer
-          description: Total number of blocked records represented by this Leadping outbound capacity overview.
-          format: int32
-        phoneNumbers:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/OutboundPhoneNumberCapacity'
-            description: Reports the sending capacity, current load, and availability of a phone number considered for outbound delivery.
-          description: Collection of phone numbers included with this Leadping outbound capacity overview.
-        recentDecisions:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/OutboundQueueItem'
-            description: Describes a queued or recently evaluated outbound delivery request and the pacing decision that controls when it may be sent.
-          description: Collection of recent decisions included with this Leadping outbound capacity overview.
-      description: Summarizes organization-wide SMS and voice sending capacity, phone-number health, and recent outbound pacing decisions.
+      description: Defines the source that requested outbound delivery.
     ProblemDetails:
       type: object
       properties:

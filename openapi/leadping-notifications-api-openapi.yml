@@ -563,6 +563,212 @@ paths:
       - Bearer: []
 components:
   schemas:
+    NotificationType:
+      enum:
+      - General
+      - Lead
+      - Call
+      - Sms
+      - Billing
+      - System
+      - Success
+      - Warning
+      - Error
+      - Info
+      - Announcement
+      - Activation
+      type: string
+      description: Identifies the Leadping workflow or account event communicated by a user notification.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/OrderByOption'
+            description: Defines one field and direction used to order an API query result set.
+          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
+        search:
+          type:
+          - 'null'
+          - string
+          description: Free-text search term applied to the configured SearchFields.
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ExactMatchFilter'
+            description: Selects records whose named field equals a supplied scalar value.
+          description: Exact-match conditions that require each named field to equal its supplied value.
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/RangeFilter'
+            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
+      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+    ExactMatchFilter:
+      type: object
+      properties:
+        value:
+          description: Scalar value the target field must equal; its JSON type should match the field being queried.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records whose named field equals a supplied scalar value.
+    OrderByOption:
+      type: object
+      properties:
+        field:
+          type: string
+          description: Serializable field name used for sorting; supported names are determined by the queried resource.
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
+          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
+      description: Defines one field and direction used to order an API query result set.
+    NotificationTableRow:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/NotificationType'
+          description: The type classification for this notification.
+        priority:
+          allOf:
+          - $ref: '#/components/schemas/NotificationPriority'
+          description: Priority for this notification.
+        message:
+          type: string
+          description: Message for this notification.
+        details:
+          type:
+          - 'null'
+          - string
+          description: Optional supporting details displayed beneath the notification message.
+        isRead:
+          type: boolean
+          description: Whether this notification is read.
+        readAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for read at on this notification.
+          format: date-time
+        actionUrl:
+          type:
+          - 'null'
+          - string
+          description: The URL associated with this notification.
+        actionButtonText:
+          type:
+          - 'null'
+          - string
+          description: Action button text for this notification.
+        relatedEntityId:
+          type:
+          - 'null'
+          - string
+          description: The related entity ID associated with this notification.
+        relatedEntityType:
+          type:
+          - 'null'
+          - string
+          description: The related entity type classification for this notification.
+        name:
+          type: string
+          description: Human-readable display name of the resource.
+        id:
+          type: string
+          description: Stable unique identifier of the resource.
+        createdAt:
+          type: string
+          description: UTC timestamp when the resource was created.
+          format: date-time
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
+          format: date-time
+      description: Describes notification data returned by Leadping.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
+    NotificationPriority:
+      enum:
+      - Low
+      - Medium
+      - High
+      - Critical
+      type: string
+      description: Ranks the urgency and presentation importance of a Leadping user notification.
     NotificationResponse:
       type: object
       properties:
@@ -634,136 +840,21 @@ components:
           description: UTC timestamp when the resource was last modified, or null when it has not been updated.
           format: date-time
       description: Describes notification data used in Leadping API requests and responses.
-    RequestDataOptions:
+    RangeFilter:
       type: object
       properties:
-        pageSize:
-          type: integer
-          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
-        orderBy:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/OrderByOption'
-            description: Defines one field and direction used to order an API query result set.
-          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
-        includeCount:
-          type:
-          - 'null'
-          - boolean
-          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
-        search:
-          type:
-          - 'null'
-          - string
-          description: Free-text search term applied to the configured SearchFields.
-        searchFields:
-          type:
-          - 'null'
-          - array
-          items:
-            type: string
-          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
-        filters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/ExactMatchFilter'
-            description: Selects records whose named field equals a supplied scalar value.
-          description: Exact-match conditions that require each named field to equal its supplied value.
-        rangeFilters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/RangeFilter'
-            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
-          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
-      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
-    NotificationTableRow:
-      type: object
-      properties:
-        type:
-          allOf:
-          - $ref: '#/components/schemas/NotificationType'
-          description: The type classification for this notification.
-        priority:
-          allOf:
-          - $ref: '#/components/schemas/NotificationPriority'
-          description: Priority for this notification.
-        message:
+        greaterThan:
+          description: Exclusive lower bound; matching field values must be greater than this value.
+        greaterThanOrEqual:
+          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
+        lessThan:
+          description: Exclusive upper bound; matching field values must be less than this value.
+        lessThanOrEqual:
+          description: Inclusive upper bound; matching field values must be less than or equal to this value.
+        field:
           type: string
-          description: Message for this notification.
-        details:
-          type:
-          - 'null'
-          - string
-          description: Optional supporting details displayed beneath the notification message.
-        isRead:
-          type: boolean
-          description: Whether this notification is read.
-        readAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for read at on this notification.
-          format: date-time
-        actionUrl:
-          type:
-          - 'null'
-          - string
-          description: The URL associated with this notification.
-        actionButtonText:
-          type:
-          - 'null'
-          - string
-          description: Action button text for this notification.
-        relatedEntityId:
-          type:
-          - 'null'
-          - string
-          description: The related entity ID associated with this notification.
-        relatedEntityType:
-          type:
-          - 'null'
-          - string
-          description: The related entity type classification for this notification.
-        name:
-          type: string
-          description: Human-readable display name of the resource.
-        id:
-          type: string
-          description: Stable unique identifier of the resource.
-        createdAt:
-          type: string
-          description: UTC timestamp when the resource was created.
-          format: date-time
-        modifiedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
-          format: date-time
-      description: Describes notification data returned by Leadping.
-    NotificationPriority:
-      enum:
-      - Low
-      - Medium
-      - High
-      - Critical
-      type: string
-      description: Ranks the urgency and presentation importance of a Leadping user notification.
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
     PushInstallationRequest:
       type: object
       properties:
@@ -841,97 +932,6 @@ components:
           - string
           description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
       description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
-    OrderByOption:
-      type: object
-      properties:
-        field:
-          type: string
-          description: Serializable field name used for sorting; supported names are determined by the queried resource.
-        direction:
-          enum:
-          - asc
-          - desc
-          type:
-          - 'null'
-          - string
-          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
-      description: Defines one field and direction used to order an API query result set.
-    ExactMatchFilter:
-      type: object
-      properties:
-        value:
-          description: Scalar value the target field must equal; its JSON type should match the field being queried.
-        field:
-          type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records whose named field equals a supplied scalar value.
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - 'null'
-          - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
-          type:
-          - 'null'
-          - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-      example:
-        type: https://leadping.ai/docs/errors/validation
-        title: Request validation failed
-        status: 400
-        detail: One or more request fields are invalid.
-        instance: /leads/intake
-    RangeFilter:
-      type: object
-      properties:
-        greaterThan:
-          description: Exclusive lower bound; matching field values must be greater than this value.
-        greaterThanOrEqual:
-          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
-        lessThan:
-          description: Exclusive upper bound; matching field values must be less than this value.
-        lessThanOrEqual:
-          description: Inclusive upper bound; matching field values must be less than or equal to this value.
-        field:
-          type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
-    NotificationType:
-      enum:
-      - General
-      - Lead
-      - Call
-      - Sms
-      - Billing
-      - System
-      - Success
-      - Warning
-      - Error
-      - Info
-      - Announcement
-      - Activation
-      type: string
-      description: Identifies the Leadping workflow or account event communicated by a user notification.
   securitySchemes:
     Bearer:
       type: http

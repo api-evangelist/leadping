@@ -1122,107 +1122,36 @@ paths:
       security: []
 components:
   schemas:
-    TenDlcApplicationStatus:
-      enum:
-      - NotStarted
-      - DraftGenerated
-      - DraftIncomplete
-      - ReadyToSubmit
-      - Submitted
-      - PendingTelnyxReview
-      - Approved
-      - Rejected
-      - NeedsChanges
-      - ResubmissionReady
-      - Failed
-      type: string
-      description: Describes an organization's overall 10DLC registration lifecycle across brand and messaging campaign submission.
-    CustomerActivationStatus:
-      enum:
-      - DraftOnboarding
-      - PaymentMethodPending
-      - PaymentMethodConfirmed
-      - SubscriptionPending
-      - SubscriptionReceived
-      - SubscriptionActive
-      - LaunchReviewPending
-      - TelephonyProvisioningPending
-      - TelephonyPartiallyProvisioned
-      - TelephonyReady
-      - AwaitingReview
-      - DomainSelection
-      - WebsiteSetup
-      - ComplianceRegistration
-      - ReadyForApproval
-      - Active
-      - Failed
-      - Blocked
-      - BlockedRequiresOperatorAction
-      - ManuallyBypassed
-      type: string
-      description: Summarizes an organization's overall progress from initial Leadping onboarding through launch readiness.
-    ActivationTelephonyStatus:
-      enum:
-      - NotStarted
-      - ProvisioningPending
-      - PartiallyProvisioned
-      - Ready
-      - Failed
-      - BlockedRequiresOperatorAction
-      type: string
-      description: Describes whether phone numbers, calling, messaging, and provider resources are ready for organization launch.
-    OrderByOption:
+    OrganizationTableRow:
       type: object
       properties:
-        field:
+        id:
           type: string
-          description: Serializable field name used for sorting; supported names are determined by the queried resource.
-        direction:
-          enum:
-          - asc
-          - desc
-          type:
-          - 'null'
-          - string
-          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
-      description: Defines one field and direction used to order an API query result set.
-    OrganizationMemberRequest:
-      type: object
-      properties:
-        userId:
-          type:
-          - 'null'
-          - string
-          description: User ID to add, update, or remove from the organization.
-        email:
-          type:
-          - 'null'
-          - string
-          description: Email address for the person represented by this organization user request.
-          format: email
-        role:
-          allOf:
-          - $ref: '#/components/schemas/OrganizationMemberRole'
-          description: Organization role assigned to the user.
-      description: Defines the fields clients can send when working with organization user.
-    OrganizationResponse:
-      type: object
-      properties:
-        secondaryName:
-          type:
-          - 'null'
-          - string
-          description: Alternate organization name or DBA shown in Leadping.
-        user:
+          description: Unique Leadping identifier for this organization.
+        name:
+          type: string
+          description: The human-readable name shown for this organization.
+        organization:
           type:
           - 'null'
           - object
           allOf:
           - $ref: '#/components/schemas/IdNamePair'
-          description: User summary connected to this organization profile response.
+          description: Identifier and display name of the related organization.
+        industry:
+          type:
+          - 'null'
+          - string
+          description: Industry for this organization.
+        userCount:
+          type: integer
+          description: The user count for this organization.
+          format: int32
         accountBalance:
-          type: number
-          description: Current wallet balance available to the organization.
+          type:
+          - 'null'
+          - number
+          description: Account balance for this organization.
           format: double
         billingPlan:
           enum:
@@ -1242,28 +1171,30 @@ components:
           - 'null'
           - string
           description: Describes an organization's billing subscription lifecycle, including trial, active, delinquent, canceled, and expired states.
-        billingState:
+        lastSubscriptionEventAt:
           type:
           - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/OrganizationBillingState'
-          description: Customer-safe billing state for this organization.
-        autoRefillEnabled:
-          type: boolean
-          description: Indicates whether automatic wallet refill is enabled for the organization.
-        autoRefillAmount:
+          - string
+          description: Date and time when this Leadping organization table row was last subscription event.
+          format: date-time
+        subscriptionCancelAt:
           type:
           - 'null'
-          - number
-          description: Wallet refill amount charged when automatic refill is triggered.
-          format: double
-        autoRefillTrigger:
+          - string
+          description: Date and time when this Leadping organization table row was subscription cancel.
+          format: date-time
+        paymentFailedAt:
           type:
           - 'null'
-          - number
-          description: Wallet balance threshold that triggers automatic refill.
-          format: double
+          - string
+          description: Date and time when this Leadping organization table row was payment failed.
+          format: date-time
+        phone:
+          type: string
+          description: The phone number associated with this organization.
+        website:
+          type: string
+          description: The website URL associated with this organization.
         status:
           enum:
           - SettingUp
@@ -1273,101 +1204,49 @@ components:
           - 'null'
           - string
           description: Describes an organization's account lifecycle and whether it can actively use Leadping services.
-        setupStatus:
-          enum:
-          - Personal
-          - Organization
-          - Details
-          - Compliance
-          - Phone
-          - Plan
-          - Billing
-          - Review
-          - Complete
-          type:
-          - 'null'
-          - string
-          description: Describes a user's progress through required Leadping profile and account setup tasks.
         enabled:
           type: boolean
-          description: Indicates whether this organization profile response is active and available in the Leadping API.
-        phone:
+          description: Whether this organization is enabled.
+        apiKeyPreview:
           type:
           - 'null'
           - string
-          description: Phone details for the lead, user, or organization represented by this organization profile response.
-        website:
-          type:
-          - 'null'
-          - string
-          description: Organization website URL used for compliance, brand review, and lead attribution.
-        address:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/StreetAddress'
-          description: Postal address for the organization, lead, or contact represented by this organization profile response.
-        billingName:
-          type:
-          - 'null'
-          - string
-          description: Name used for invoices, receipts, and payment processor billing records.
-        billingAddress:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/StreetAddress'
-          description: Postal address used for invoices, receipts, and payment processor billing records.
-        billingTaxId:
-          type:
-          - 'null'
-          - string
-          description: Tax identifier printed on billing documents. This may differ from the organization verification EIN.
-        vertical:
-          type:
-          - 'null'
-          - string
-          description: Industry vertical used for lead routing, compliance review, and reporting.
-        description:
-          type:
-          - 'null'
-          - string
-          description: Human-readable description that explains this organization profile response to API users.
-        ein:
-          type:
-          - 'null'
-          - string
-          description: Employer Identification Number used for organization and 10DLC verification.
-        einDocument:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNameValue'
-          description: Uploaded EIN document reference used for organization verification.
-        domain:
-          type:
-          - 'null'
-          - string
-          description: Domain name connected to the organization website or activation workflow.
-        phones:
+          description: The masked API key preview owned by this organization.
+        apiKeyPermissions:
           type:
           - 'null'
           - array
           items:
-            allOf:
-            - $ref: '#/components/schemas/IdNameValue'
-            description: Extends an identifier-and-name resource reference with an optional string value used for display or selection metadata.
-          description: Phone numbers assigned to this organization.
-        site:
+            type: string
+          description: WorkOS permission slugs granted to this organization API key.
+        apiKeyIssuedAt:
           type:
           - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Leadping website record connected to this organization.
+          - string
+          description: The date and time this organization API key was issued.
+          format: date-time
+        apiKeyFirstUsedAt:
+          type:
+          - 'null'
+          - string
+          description: The date and time this organization API key was first used.
+          format: date-time
+        apiKeyLastUsedAt:
+          type:
+          - 'null'
+          - string
+          description: The date and time this organization API key was last used.
+          format: date-time
+        apiKeyExpiresAt:
+          type:
+          - 'null'
+          - string
+          description: The date and time this organization API key expires, or null when it has no expiration.
+          format: date-time
+        apiKeyTotalUses:
+          type: integer
+          description: The total number of tracked uses for this organization API key.
+          format: int64
         setupStep:
           enum:
           - DomainFinding
@@ -1385,228 +1264,84 @@ components:
           - 'null'
           - string
           description: Identifies a discrete billing, telephony, compliance, or configuration stage in organization provisioning.
-        activation:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/OrganizationActivationState'
-          description: Organization activation state covering site, billing, compliance, and telephony readiness.
-        compliancePolicy:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/OrganizationCompliancePolicy'
-          description: Compliance policy configuration for the organization.
-        name:
-          type: string
-          description: Human-readable display name of the resource.
-        id:
-          type: string
-          description: Stable unique identifier of the resource.
-        createdAt:
-          type: string
-          description: UTC timestamp when the resource was created.
-          format: date-time
-        modifiedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
-          format: date-time
-      description: Describes organization profile data returned by Leadping.
-    OrganizationInvitationStatus:
-      enum:
-      - Pending
-      - Accepted
-      - Expired
-      - Revoked
-      - Resent
-      - Failed to send
-      type: string
-      description: Describes the lifecycle of an organization membership invitation from issuance through acceptance, expiration, or revocation.
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - 'null'
-          - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
-          type:
-          - 'null'
-          - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-      example:
-        type: https://leadping.ai/docs/errors/validation
-        title: Request validation failed
-        status: 400
-        detail: One or more request fields are invalid.
-        instance: /leads/intake
-    OrganizationMemberTableRow:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this organization user.
-        user:
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Identifier and display name of the related user.
-        userEmail:
-          type:
-          - 'null'
-          - string
-          description: User email for this organization user.
-          format: email
-        role:
-          allOf:
-          - $ref: '#/components/schemas/OrganizationMemberRole'
-          description: Role for this organization user.
-        createdAt:
-          type: string
-          description: UTC timestamp for created at on this organization user.
-          format: date-time
-        licenseBillingStatus:
-          type:
-          - 'null'
-          - string
-          description: The billing status for this user's organization license.
-        licenseRenewalDate:
-          type:
-          - 'null'
-          - string
-          description: The renewal date used for this user's license proration.
-          format: date-time
-      description: Describes organization user data used in Leadping API requests and responses.
-    ActivationDomainOption:
-      type: object
-      properties:
-        domainName:
-          type: string
-          description: The domain name associated with this activation domain option.
-        whyItFits:
-          type: string
-          description: Why it fits for this activation domain option.
-        industryRelevance:
-          type: string
-          description: Industry relevance for this activation domain option.
-        trustConcerns:
-          type:
-          - 'null'
-          - string
-          description: Trust concerns for this activation domain option.
-        estimatedAnnualCost:
-          type:
-          - 'null'
-          - number
-          description: Estimated annual cost for this activation domain option.
-          format: double
-        availabilityStatus:
-          type: string
-          description: The current availability status for this activation domain option.
-        recommended:
-          type: boolean
-          description: Whether this activation domain option is recommended.
-      description: Describes activation domain option data used in Leadping API requests and responses.
-    OrganizationBillingState:
-      type: object
-      properties:
-        hasStripeCustomer:
-          type: boolean
-          description: Indicates whether the organization has a Stripe customer account.
-        hasPaymentMethod:
-          type: boolean
-          description: Indicates whether the organization has a saved default payment method.
-        phoneNumberQuantity:
-          type:
-          - 'null'
-          - integer
-          description: Number of phone numbers included in the organization's subscription plan.
-          format: int64
-        organizationMemberQuantity:
-          type:
-          - 'null'
-          - integer
-          description: Number of user licenses included in the organization's subscription plan.
-          format: int64
-        organizationMemberAssignedQuantity:
-          type:
-          - 'null'
-          - integer
-          description: Number of user licenses currently assigned to organization members.
-          format: int64
-        pendingBillingPlan:
+        activationStatus:
           enum:
-          - Annual
-          - Monthly
+          - DraftOnboarding
+          - PaymentMethodPending
+          - PaymentMethodConfirmed
+          - SubscriptionPending
+          - SubscriptionReceived
+          - SubscriptionActive
+          - LaunchReviewPending
+          - TelephonyProvisioningPending
+          - TelephonyPartiallyProvisioned
+          - TelephonyReady
+          - AwaitingReview
+          - DomainSelection
+          - WebsiteSetup
+          - ComplianceRegistration
+          - ReadyForApproval
+          - Active
+          - Failed
+          - Blocked
+          - BlockedRequiresOperatorAction
+          - ManuallyBypassed
           type:
           - 'null'
           - string
-          description: Identifies the Leadping subscription plan that determines organization features, allowances, and billing behavior.
-        billingPlanChangeEffectiveAt:
+          description: Summarizes an organization's overall progress from initial Leadping onboarding through launch readiness.
+        websiteStatus:
+          enum:
+          - NotStarted
+          - DomainSuggestionsPending
+          - DomainSelectionPending
+          - DomainPurchasePending
+          - DomainPurchased
+          - WebsiteGenerationQueued
+          - WebsiteGenerating
+          - WebsiteDeploymentQueued
+          - WebsiteDeploying
+          - WebsiteLive
+          - WebsiteFailed
+          - ManuallyBypassed
           type:
           - 'null'
           - string
-          description: Date and time when the scheduled billing plan change takes effect.
+          description: Describes an organization website's lifecycle from discovery and verification through activation, suspension, or removal.
+        tenDlcStatus:
+          enum:
+          - NotStarted
+          - DraftGenerated
+          - DraftIncomplete
+          - ReadyToSubmit
+          - Submitted
+          - PendingTelnyxReview
+          - Approved
+          - Rejected
+          - NeedsChanges
+          - ResubmissionReady
+          - Failed
+          type:
+          - 'null'
+          - string
+          description: Describes an organization's overall 10DLC registration lifecycle across brand and messaging campaign submission.
+        needsAdminReview:
+          type: boolean
+          description: Whether needs admin review applies to this organization.
+        modifiedAt:
+          type: string
+          description: UTC timestamp for modified at on this organization.
           format: date-time
-        planRenewalAt:
-          type:
-          - 'null'
-          - string
-          description: Current plan renewal date.
-          format: date-time
-        planPeriodStartAt:
-          type:
-          - 'null'
-          - string
-          description: Start of the current plan billing period.
-          format: date-time
-        cancelAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when the active subscription is scheduled to cancel.
-          format: date-time
-        dunning:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/OrganizationDunningInfo'
-          description: Customer-safe payment recovery state for the organization.
-        lastSubscriptionEventAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when Leadping last processed a subscription event for the organization.
-          format: date-time
-        lastPaymentMethodEventAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when Leadping last processed a payment-method event for the organization.
-          format: date-time
-      description: Customer-safe billing state for a Leadping organization.
+      description: Describes organization data used in Leadping API requests and responses.
+    OrganizationSwitchRequest:
+      required:
+      - organizationId
+      type: object
+      properties:
+        organizationId:
+          type: string
+          description: Organization ID to switch into for the current Leadping session.
+      description: Defines the fields clients can send when working with organization switch.
     RequestDataOptions:
       type: object
       properties:
@@ -1664,30 +1399,103 @@ components:
             description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
           description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
       description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
-    TenDlcRegistrationStatus:
-      enum:
-      - NotSubmitted
-      - Pending
-      - Approved
-      - Rejected
-      - Failed
-      type: string
-      description: Defines the provider lifecycle for an individual 10DLC brand or campaign.
-    RangeFilter:
+    OrganizationDunningInfo:
       type: object
       properties:
-        greaterThan:
-          description: Exclusive lower bound; matching field values must be greater than this value.
-        greaterThanOrEqual:
-          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
-        lessThan:
-          description: Exclusive upper bound; matching field values must be less than this value.
-        lessThanOrEqual:
-          description: Inclusive upper bound; matching field values must be less than or equal to this value.
-        field:
+        stage:
+          type:
+          - 'null'
+          - string
+          description: Current stage for this Leadping organization dunning info.
+        paymentFailedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when this Leadping organization dunning info was payment failed.
+          format: date-time
+        lastFailedInvoiceStatus:
+          type:
+          - 'null'
+          - string
+          description: Current last failed invoice status for this Leadping organization dunning info.
+        retryAttemptCount:
+          type: integer
+          description: Total number of retry attempt records represented by this Leadping organization dunning info.
+          format: int32
+        nextRetryAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the next retry is scheduled.
+          format: date-time
+        gracePeriodEndsAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when this Leadping organization dunning info was grace period ends.
+          format: date-time
+        outboundRestrictedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when this Leadping organization dunning info was outbound restricted.
+          format: date-time
+        outboundSuspendedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when this Leadping organization dunning info was outbound suspended.
+          format: date-time
+        finalCancellationAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when this Leadping organization dunning info was final cancellation.
+          format: date-time
+        lastUpdatedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when this Leadping organization dunning info was last updated.
+          format: date-time
+      description: Dunning state recorded after a failed recurring payment.
+    ActivationTimelineEvent:
+      type: object
+      properties:
+        id:
           type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+          description: Unique Leadping identifier for this activation timeline event.
+        type:
+          type: string
+          description: The type classification for this activation timeline event.
+        title:
+          type: string
+          description: Title for this activation timeline event.
+        details:
+          type:
+          - 'null'
+          - string
+          description: Details for this activation timeline event.
+        status:
+          type: string
+          description: The current status for this activation timeline event.
+        actor:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related actor.
+        failureReason:
+          type:
+          - 'null'
+          - string
+          description: The human-readable failure reason explaining this activation timeline event.
+        createdAt:
+          type: string
+          description: UTC timestamp for created at on this activation timeline event.
+          format: date-time
+      description: Describes activation timeline event data used in Leadping API requests and responses.
     StreetAddress:
       type: object
       properties:
@@ -1737,343 +1545,105 @@ components:
           - string
           description: Additional address context or delivery instructions that do not fit the structured fields.
       description: Describes a physical or mailing address using international locality, administrative-area, postal-code, and country fields.
-    IdNameValue:
-      required:
-      - id
-      - name
+    PagedResultOfOrganizationTableRow:
       type: object
       properties:
-        value:
-          type:
-          - 'null'
-          - string
-          description: Optional machine-readable or display value associated with the referenced resource.
-        id:
-          type: string
-          description: Stable unique identifier of the referenced resource.
-        name:
-          type: string
-          description: Human-readable display name of the referenced resource.
-      description: Extends an identifier-and-name resource reference with an optional string value used for display or selection metadata.
-    TenDlcApplicationDraft:
-      type: object
-      properties:
-        companyName:
-          type:
-          - 'null'
-          - string
-          description: Company name for this 10DLC application draft.
-        contactName:
-          type:
-          - 'null'
-          - string
-          description: Contact name for this 10DLC application draft.
-        contactEmail:
-          type:
-          - 'null'
-          - string
-          description: Contact email for this 10DLC application draft.
-          format: email
-        contactPhone:
-          type:
-          - 'null'
-          - string
-          description: Contact phone for this 10DLC application draft.
-        ein:
-          type:
-          - 'null'
-          - string
-          description: EIN for this 10DLC application draft.
-        websiteUrl:
-          type:
-          - 'null'
-          - string
-          description: Public business website URL submitted to carriers during brand review.
-          format: uri
-        industry:
-          type:
-          - 'null'
-          - string
-          description: The Telnyx brand vertical for this 10DLC application draft. The JSON name is retained for backward compatibility.
-        useCase:
-          type:
-          - 'null'
-          - string
-          description: Use case for this 10DLC application draft.
-        useCaseDescription:
-          type:
-          - 'null'
-          - string
-          description: Use case description for this 10DLC application draft.
-        messageExamples:
+        items:
           type: array
           items:
-            type: string
-          description: The message examples included with this 10DLC application draft.
-        optInLanguage:
-          type:
-          - 'null'
-          - string
-          description: Opt in language for this 10DLC application draft.
-        privacyPolicyUrl:
-          type:
-          - 'null'
-          - string
-          description: Public privacy-policy URL that explains how messaging recipient data is handled.
-          format: uri
-        termsUrl:
-          type:
-          - 'null'
-          - string
-          description: Public terms-of-service URL governing the messaging program.
-          format: uri
-        expectedMonthlyVolume:
+            allOf:
+            - $ref: '#/components/schemas/OrganizationTableRow'
+            description: Describes organization data used in Leadping API requests and responses.
+          description: Items included in the current page, in the order determined by the query.
+        pageSize:
+          type: integer
+          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
+          format: int32
+        totalCount:
           type:
           - 'null'
           - integer
-          description: Expected monthly volume for this 10DLC application draft.
+          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
           format: int32
-        trustedFormRequired:
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
+      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+    ActivationSubscriptionStatus:
+      enum:
+      - Pending
+      - Active
+      - Failed
+      - Canceled
+      type: string
+      description: Describes whether an organization's subscription is ready, blocked, or still incomplete during activation.
+    OrganizationInvitationStatus:
+      enum:
+      - Pending
+      - Accepted
+      - Expired
+      - Revoked
+      - Resent
+      - Failed to send
+      type: string
+      description: Describes the lifecycle of an organization membership invitation from issuance through acceptance, expiration, or revocation.
+    ActivationDomainOption:
+      type: object
+      properties:
+        domainName:
+          type: string
+          description: The domain name associated with this activation domain option.
+        whyItFits:
+          type: string
+          description: Why it fits for this activation domain option.
+        industryRelevance:
+          type: string
+          description: Industry relevance for this activation domain option.
+        trustConcerns:
+          type:
+          - 'null'
+          - string
+          description: Trust concerns for this activation domain option.
+        estimatedAnnualCost:
+          type:
+          - 'null'
+          - number
+          description: Estimated annual cost for this activation domain option.
+          format: double
+        availabilityStatus:
+          type: string
+          description: The current availability status for this activation domain option.
+        recommended:
           type: boolean
-          description: Whether TrustedForm required applies to this 10DLC application draft.
-        complianceWarnings:
-          type: array
-          items:
-            type: string
-          description: The compliance warnings included with this 10DLC application draft.
-        missingFields:
-          type: array
-          items:
-            type: string
-          description: The missing fields included with this 10DLC application draft.
-        brandStatus:
-          allOf:
-          - $ref: '#/components/schemas/TenDlcRegistrationStatus'
-          description: The current provider review status for the submitted brand.
-        campaignStatus:
-          allOf:
-          - $ref: '#/components/schemas/TenDlcRegistrationStatus'
-          description: The current provider review status for the submitted campaign.
-        lastSubmittedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for last submitted at on this 10DLC application draft.
-          format: date-time
-        rejectionReason:
-          type:
-          - 'null'
-          - string
-          description: The human-readable rejection reason explaining this 10DLC application draft.
-        updatedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for updated at on this 10DLC application draft.
-          format: date-time
-        version:
-          type: integer
-          description: Version for this 10DLC application draft.
-          format: int32
-      description: Describes ten dlc application draft data used in Leadping API requests and responses.
-    OrganizationRequest:
+          description: Whether this activation domain option is recommended.
+      description: Describes activation domain option data used in Leadping API requests and responses.
+    AcceptOrganizationInvitationRequest:
       required:
-      - name
+      - token
       type: object
       properties:
-        secondaryName:
-          type:
-          - 'null'
-          - string
-          description: Alternate organization name or DBA shown in Leadping.
-        status:
-          enum:
-          - SettingUp
-          - SetupCompleted
-          - Active
-          type:
-          - 'null'
-          - string
-          description: Describes an organization's account lifecycle and whether it can actively use Leadping services.
-        enabled:
-          type:
-          - 'null'
-          - boolean
-          description: Indicates whether this organization profile request is active and available in the Leadping API.
-        autoRefillEnabled:
-          type:
-          - 'null'
-          - boolean
-          description: Indicates whether automatic wallet refill is enabled for the organization.
-        autoRefillAmount:
-          type:
-          - 'null'
-          - number
-          description: Wallet refill amount charged when automatic refill is triggered.
-          format: double
-        autoRefillTrigger:
-          type:
-          - 'null'
-          - number
-          description: Wallet balance threshold that triggers automatic refill.
-          format: double
-        phone:
-          type:
-          - 'null'
-          - string
-          description: Phone details for the lead, user, or organization represented by this organization profile request.
-        address:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/StreetAddress'
-          description: Postal address for the organization, lead, or contact represented by this organization profile request.
-        billingName:
-          type:
-          - 'null'
-          - string
-          description: Name used for invoices, receipts, and payment processor billing records.
-        billingAddress:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/StreetAddress'
-          description: Postal address used for invoices, receipts, and payment processor billing records.
-        billingTaxId:
-          type:
-          - 'null'
-          - string
-          description: Tax identifier printed on billing documents. This may differ from the organization verification EIN.
-        website:
-          type:
-          - 'null'
-          - string
-          description: Organization website URL used for compliance, brand review, and lead attribution.
-        vertical:
-          type:
-          - 'null'
-          - string
-          description: Industry vertical used for lead routing, compliance review, and reporting.
-        description:
-          type:
-          - 'null'
-          - string
-          description: Human-readable description that explains this organization profile request to API users.
-        ein:
-          type:
-          - 'null'
-          - string
-          description: Employer Identification Number used for organization and 10DLC verification.
-        isYoungerThan90:
-          type:
-          - 'null'
-          - boolean
-          description: Indicates whether the organization serves customers younger than 90, for compliance and underwriting context.
-        einDocument:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNameValue'
-          description: Uploaded EIN document reference used for organization verification.
-        phones:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/IdNameValue'
-            description: Extends an identifier-and-name resource reference with an optional string value used for display or selection metadata.
-          description: Phone numbers assigned to this organization.
-        compliancePolicy:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/OrganizationCompliancePolicy'
-          description: Compliance policy configuration for the organization.
-        name:
-          maxLength: 255
-          minLength: 0
+        token:
           type: string
-          description: Human-readable display name for the resource, subject to the API's maximum name length.
-        id:
+          description: The token supplied to authorize or complete this organization invitation.
+        email:
           type:
           - 'null'
           - string
-          description: Stable unique identifier of an existing resource to update; omit it when the API assigns an identifier during creation.
-      description: Defines the fields clients can send when working with organization profile.
-    OrganizationCompliancePolicy:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: Whether this organization compliance policy is enabled.
-        allowedStates:
-          type: array
-          items:
-            type: string
-          description: The allowed states included with this organization compliance policy.
-        allowedProducts:
-          type: array
-          items:
-            type: string
-          description: The allowed products included with this organization compliance policy.
-        requireLeadState:
-          type: boolean
-          description: Whether this organization compliance policy requires lead state.
-        requireAgentLicenseState:
-          type: boolean
-          description: Whether this organization compliance policy requires agent license state.
-        requireProduct:
-          type: boolean
-          description: Whether this organization compliance policy requires product.
-        requireTrustedFormForAutomations:
-          type: boolean
-          description: Whether this organization compliance policy requires TrustedForm for automations.
-        requireSourceComplianceApproval:
-          type: boolean
-          description: Whether this organization compliance policy requires source compliance approval.
-      description: Describes organization compliance policy data used in Leadping API requests and responses.
-    ActivationTimelineEvent:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this activation timeline event.
-        type:
-          type: string
-          description: The type classification for this activation timeline event.
-        title:
-          type: string
-          description: Title for this activation timeline event.
-        details:
+          description: The email address associated with this organization invitation.
+          format: email
+        firstName:
           type:
           - 'null'
           - string
-          description: Details for this activation timeline event.
-        status:
-          type: string
-          description: The current status for this activation timeline event.
-        actor:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Identifier and display name of the related actor.
-        failureReason:
+          description: First name for this organization invitation.
+        lastName:
           type:
           - 'null'
           - string
-          description: The human-readable failure reason explaining this activation timeline event.
-        createdAt:
-          type: string
-          description: UTC timestamp for created at on this activation timeline event.
-          format: date-time
-      description: Describes activation timeline event data used in Leadping API requests and responses.
+          description: UTC timestamp for last name on this organization invitation.
+      description: Defines the input used for accept organization invitation.
     OrganizationSwitchOption:
       type: object
       properties:
@@ -2163,29 +1733,6 @@ components:
           type: boolean
           description: Whether ready for customer traffic applies to this organization switch option.
       description: Describes organization switch option data used in Leadping API requests and responses.
-    OrganizationInvitationRequest:
-      required:
-      - email
-      type: object
-      properties:
-        email:
-          type: string
-          description: The email address associated with this organization invitation.
-          format: email
-        role:
-          allOf:
-          - $ref: '#/components/schemas/OrganizationMemberRole'
-          description: Role for this organization invitation.
-      description: Defines the input used for organization invitation.
-    ExactMatchFilter:
-      type: object
-      properties:
-        value:
-          description: Scalar value the target field must equal; its JSON type should match the field being queried.
-        field:
-          type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records whose named field equals a supplied scalar value.
     OrganizationMemberResponse:
       type: object
       properties:
@@ -2263,94 +1810,14 @@ components:
           description: UTC timestamp when the resource was last modified, or null when it has not been updated.
           format: date-time
       description: Describes organization user data returned by Leadping.
-    OrganizationDunningInfo:
+    OrganizationInvitationResponse:
       type: object
       properties:
-        stage:
+        safeMessage:
           type:
           - 'null'
           - string
-          description: Current stage for this Leadping organization dunning info.
-        paymentFailedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when this Leadping organization dunning info was payment failed.
-          format: date-time
-        lastFailedInvoiceStatus:
-          type:
-          - 'null'
-          - string
-          description: Current last failed invoice status for this Leadping organization dunning info.
-        retryAttemptCount:
-          type: integer
-          description: Total number of retry attempt records represented by this Leadping organization dunning info.
-          format: int32
-        nextRetryAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the next retry is scheduled.
-          format: date-time
-        gracePeriodEndsAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when this Leadping organization dunning info was grace period ends.
-          format: date-time
-        outboundRestrictedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when this Leadping organization dunning info was outbound restricted.
-          format: date-time
-        outboundSuspendedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when this Leadping organization dunning info was outbound suspended.
-          format: date-time
-        finalCancellationAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when this Leadping organization dunning info was final cancellation.
-          format: date-time
-        lastUpdatedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when this Leadping organization dunning info was last updated.
-          format: date-time
-      description: Dunning state recorded after a failed recurring payment.
-    AcceptOrganizationInvitationRequest:
-      required:
-      - token
-      type: object
-      properties:
-        token:
-          type: string
-          description: The token supplied to authorize or complete this organization invitation.
-        email:
-          type:
-          - 'null'
-          - string
-          description: The email address associated with this organization invitation.
-          format: email
-        firstName:
-          type:
-          - 'null'
-          - string
-          description: First name for this organization invitation.
-        lastName:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for last name on this organization invitation.
-      description: Defines the input used for accept organization invitation.
-    OrganizationInvitationTableRow:
-      type: object
-      properties:
+          description: Safe message for this organization invitation.
         id:
           type: string
           description: Unique Leadping identifier for this organization invitation.
@@ -2436,67 +1903,38 @@ components:
           - string
           description: The date and time this invitation's paid license was released.
           format: date-time
-      description: Describes organization invitation data used in Leadping API requests and responses.
-    ActivationLaunchReviewStatus:
-      enum:
-      - NotReady
-      - Pending
-      - Approved
-      - NotRequired
-      - Blocked
-      type: string
-      description: Describes the administrative review decision that determines whether an organization can launch Leadping workflows.
-    OrganizationMemberRole:
-      enum:
-      - Owner
-      - Admin
-      - Agent
-      type: string
-      description: Identifies an organization member's access level and permission scope within Leadping.
-    TenDlcNotesRequest:
+      description: Describes organization invitation data returned by Leadping.
+    OrderByOption:
       type: object
       properties:
-        notes:
-          maxLength: 4000
+        field:
+          type: string
+          description: Serializable field name used for sorting; supported names are determined by the queried resource.
+        direction:
+          enum:
+          - asc
+          - desc
           type:
           - 'null'
           - string
-          description: Notes to store with the 10DLC application, or null to clear them.
-      description: Updates the internal notes associated with a 10DLC application.
-    ActivationSubscriptionStatus:
+          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
+      description: Defines one field and direction used to order an API query result set.
+    WebsiteLifecycleStatus:
       enum:
-      - Pending
-      - Active
-      - Failed
-      - Canceled
+      - NotStarted
+      - DomainSuggestionsPending
+      - DomainSelectionPending
+      - DomainPurchasePending
+      - DomainPurchased
+      - WebsiteGenerationQueued
+      - WebsiteGenerating
+      - WebsiteDeploymentQueued
+      - WebsiteDeploying
+      - WebsiteLive
+      - WebsiteFailed
+      - ManuallyBypassed
       type: string
-      description: Describes whether an organization's subscription is ready, blocked, or still incomplete during activation.
-    PagedResultOfOrganizationTableRow:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/OrganizationTableRow'
-            description: Describes organization data used in Leadping API requests and responses.
-          description: Items included in the current page, in the order determined by the query.
-        pageSize:
-          type: integer
-          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
-      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+      description: Describes an organization website's lifecycle from discovery and verification through activation, suspension, or removal.
     OrganizationActivationState:
       type: object
       properties:
@@ -2727,72 +2165,24 @@ components:
           description: UTC timestamp for updated at on this organization activation state.
           format: date-time
       description: Describes organization activation state data used in Leadping API requests and responses.
-    IdNamePair:
-      required:
-      - id
-      - name
+    OrganizationResponse:
       type: object
       properties:
-        id:
-          type: string
-          description: Stable unique identifier of the referenced resource.
-        name:
-          type: string
-          description: Human-readable display name of the referenced resource.
-      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
-    ActivationOnboardingStatus:
-      enum:
-      - Draft
-      - Submitted
-      - Failed
-      type: string
-      description: Describes completion and blocking state for an organization's core Leadping onboarding requirements.
-    ActivationPaymentStatus:
-      enum:
-      - PaymentMethodPending
-      - PaymentMethodConfirmed
-      - Failed
-      type: string
-      description: Describes whether valid funding and payment prerequisites are satisfied during organization activation.
-    OrganizationSwitchRequest:
-      required:
-      - organizationId
-      type: object
-      properties:
-        organizationId:
-          type: string
-          description: Organization ID to switch into for the current Leadping session.
-      description: Defines the fields clients can send when working with organization switch.
-    OrganizationTableRow:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this organization.
-        name:
-          type: string
-          description: The human-readable name shown for this organization.
-        organization:
+        secondaryName:
+          type:
+          - 'null'
+          - string
+          description: Alternate organization name or DBA shown in Leadping.
+        user:
           type:
           - 'null'
           - object
           allOf:
           - $ref: '#/components/schemas/IdNamePair'
-          description: Identifier and display name of the related organization.
-        industry:
-          type:
-          - 'null'
-          - string
-          description: Industry for this organization.
-        userCount:
-          type: integer
-          description: The user count for this organization.
-          format: int32
+          description: User summary connected to this organization profile response.
         accountBalance:
-          type:
-          - 'null'
-          - number
-          description: Account balance for this organization.
+          type: number
+          description: Current wallet balance available to the organization.
           format: double
         billingPlan:
           enum:
@@ -2812,30 +2202,28 @@ components:
           - 'null'
           - string
           description: Describes an organization's billing subscription lifecycle, including trial, active, delinquent, canceled, and expired states.
-        lastSubscriptionEventAt:
+        billingState:
           type:
           - 'null'
-          - string
-          description: Date and time when this Leadping organization table row was last subscription event.
-          format: date-time
-        subscriptionCancelAt:
+          - object
+          allOf:
+          - $ref: '#/components/schemas/OrganizationBillingState'
+          description: Customer-safe billing state for this organization.
+        autoRefillEnabled:
+          type: boolean
+          description: Indicates whether automatic wallet refill is enabled for the organization.
+        autoRefillAmount:
           type:
           - 'null'
-          - string
-          description: Date and time when this Leadping organization table row was subscription cancel.
-          format: date-time
-        paymentFailedAt:
+          - number
+          description: Wallet refill amount charged when automatic refill is triggered.
+          format: double
+        autoRefillTrigger:
           type:
           - 'null'
-          - string
-          description: Date and time when this Leadping organization table row was payment failed.
-          format: date-time
-        phone:
-          type: string
-          description: The phone number associated with this organization.
-        website:
-          type: string
-          description: The website URL associated with this organization.
+          - number
+          description: Wallet balance threshold that triggers automatic refill.
+          format: double
         status:
           enum:
           - SettingUp
@@ -2845,49 +2233,101 @@ components:
           - 'null'
           - string
           description: Describes an organization's account lifecycle and whether it can actively use Leadping services.
-        enabled:
-          type: boolean
-          description: Whether this organization is enabled.
-        apiKeyPreview:
+        setupStatus:
+          enum:
+          - Personal
+          - Organization
+          - Details
+          - Compliance
+          - Phone
+          - Plan
+          - Billing
+          - Review
+          - Complete
           type:
           - 'null'
           - string
-          description: The masked API key preview owned by this organization.
-        apiKeyPermissions:
+          description: Describes a user's progress through required Leadping profile and account setup tasks.
+        enabled:
+          type: boolean
+          description: Indicates whether this organization profile response is active and available in the Leadping API.
+        phone:
+          type:
+          - 'null'
+          - string
+          description: Phone details for the lead, user, or organization represented by this organization profile response.
+        website:
+          type:
+          - 'null'
+          - string
+          description: Organization website URL used for compliance, brand review, and lead attribution.
+        address:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/StreetAddress'
+          description: Postal address for the organization, lead, or contact represented by this organization profile response.
+        billingName:
+          type:
+          - 'null'
+          - string
+          description: Name used for invoices, receipts, and payment processor billing records.
+        billingAddress:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/StreetAddress'
+          description: Postal address used for invoices, receipts, and payment processor billing records.
+        billingTaxId:
+          type:
+          - 'null'
+          - string
+          description: Tax identifier printed on billing documents. This may differ from the organization verification EIN.
+        vertical:
+          type:
+          - 'null'
+          - string
+          description: Industry vertical used for lead routing, compliance review, and reporting.
+        description:
+          type:
+          - 'null'
+          - string
+          description: Human-readable description that explains this organization profile response to API users.
+        ein:
+          type:
+          - 'null'
+          - string
+          description: Employer Identification Number used for organization and 10DLC verification.
+        einDocument:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNameValue'
+          description: Uploaded EIN document reference used for organization verification.
+        domain:
+          type:
+          - 'null'
+          - string
+          description: Domain name connected to the organization website or activation workflow.
+        phones:
           type:
           - 'null'
           - array
           items:
-            type: string
-          description: WorkOS permission slugs granted to this organization API key.
-        apiKeyIssuedAt:
+            allOf:
+            - $ref: '#/components/schemas/IdNameValue'
+            description: Extends an identifier-and-name resource reference with an optional string value used for display or selection metadata.
+          description: Phone numbers assigned to this organization.
+        site:
           type:
           - 'null'
-          - string
-          description: The date and time this organization API key was issued.
-          format: date-time
-        apiKeyFirstUsedAt:
-          type:
-          - 'null'
-          - string
-          description: The date and time this organization API key was first used.
-          format: date-time
-        apiKeyLastUsedAt:
-          type:
-          - 'null'
-          - string
-          description: The date and time this organization API key was last used.
-          format: date-time
-        apiKeyExpiresAt:
-          type:
-          - 'null'
-          - string
-          description: The date and time this organization API key expires, or null when it has no expiration.
-          format: date-time
-        apiKeyTotalUses:
-          type: integer
-          description: The total number of tracked uses for this organization API key.
-          format: int64
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Leadping website record connected to this organization.
         setupStep:
           enum:
           - DomainFinding
@@ -2905,83 +2345,306 @@ components:
           - 'null'
           - string
           description: Identifies a discrete billing, telephony, compliance, or configuration stage in organization provisioning.
-        activationStatus:
-          enum:
-          - DraftOnboarding
-          - PaymentMethodPending
-          - PaymentMethodConfirmed
-          - SubscriptionPending
-          - SubscriptionReceived
-          - SubscriptionActive
-          - LaunchReviewPending
-          - TelephonyProvisioningPending
-          - TelephonyPartiallyProvisioned
-          - TelephonyReady
-          - AwaitingReview
-          - DomainSelection
-          - WebsiteSetup
-          - ComplianceRegistration
-          - ReadyForApproval
-          - Active
-          - Failed
-          - Blocked
-          - BlockedRequiresOperatorAction
-          - ManuallyBypassed
+        activation:
           type:
           - 'null'
-          - string
-          description: Summarizes an organization's overall progress from initial Leadping onboarding through launch readiness.
-        websiteStatus:
-          enum:
-          - NotStarted
-          - DomainSuggestionsPending
-          - DomainSelectionPending
-          - DomainPurchasePending
-          - DomainPurchased
-          - WebsiteGenerationQueued
-          - WebsiteGenerating
-          - WebsiteDeploymentQueued
-          - WebsiteDeploying
-          - WebsiteLive
-          - WebsiteFailed
-          - ManuallyBypassed
+          - object
+          allOf:
+          - $ref: '#/components/schemas/OrganizationActivationState'
+          description: Organization activation state covering site, billing, compliance, and telephony readiness.
+        compliancePolicy:
           type:
           - 'null'
-          - string
-          description: Describes an organization website's lifecycle from discovery and verification through activation, suspension, or removal.
-        tenDlcStatus:
-          enum:
-          - NotStarted
-          - DraftGenerated
-          - DraftIncomplete
-          - ReadyToSubmit
-          - Submitted
-          - PendingTelnyxReview
-          - Approved
-          - Rejected
-          - NeedsChanges
-          - ResubmissionReady
-          - Failed
-          type:
-          - 'null'
-          - string
-          description: Describes an organization's overall 10DLC registration lifecycle across brand and messaging campaign submission.
-        needsAdminReview:
-          type: boolean
-          description: Whether needs admin review applies to this organization.
-        modifiedAt:
+          - object
+          allOf:
+          - $ref: '#/components/schemas/OrganizationCompliancePolicy'
+          description: Compliance policy configuration for the organization.
+        name:
           type: string
-          description: UTC timestamp for modified at on this organization.
+          description: Human-readable display name of the resource.
+        id:
+          type: string
+          description: Stable unique identifier of the resource.
+        createdAt:
+          type: string
+          description: UTC timestamp when the resource was created.
           format: date-time
-      description: Describes organization data used in Leadping API requests and responses.
-    OrganizationInvitationResponse:
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
+          format: date-time
+      description: Describes organization profile data returned by Leadping.
+    OrganizationBillingState:
       type: object
       properties:
-        safeMessage:
+        hasStripeCustomer:
+          type: boolean
+          description: Indicates whether the organization has a Stripe customer account.
+        hasPaymentMethod:
+          type: boolean
+          description: Indicates whether the organization has a saved default payment method.
+        phoneNumberQuantity:
+          type:
+          - 'null'
+          - integer
+          description: Number of phone numbers included in the organization's subscription plan.
+          format: int64
+        organizationMemberQuantity:
+          type:
+          - 'null'
+          - integer
+          description: Number of user licenses included in the organization's subscription plan.
+          format: int64
+        organizationMemberAssignedQuantity:
+          type:
+          - 'null'
+          - integer
+          description: Number of user licenses currently assigned to organization members.
+          format: int64
+        pendingBillingPlan:
+          enum:
+          - Annual
+          - Monthly
           type:
           - 'null'
           - string
-          description: Safe message for this organization invitation.
+          description: Identifies the Leadping subscription plan that determines organization features, allowances, and billing behavior.
+        billingPlanChangeEffectiveAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the scheduled billing plan change takes effect.
+          format: date-time
+        planRenewalAt:
+          type:
+          - 'null'
+          - string
+          description: Current plan renewal date.
+          format: date-time
+        planPeriodStartAt:
+          type:
+          - 'null'
+          - string
+          description: Start of the current plan billing period.
+          format: date-time
+        cancelAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the active subscription is scheduled to cancel.
+          format: date-time
+        dunning:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/OrganizationDunningInfo'
+          description: Customer-safe payment recovery state for the organization.
+        lastSubscriptionEventAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping last processed a subscription event for the organization.
+          format: date-time
+        lastPaymentMethodEventAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping last processed a payment-method event for the organization.
+          format: date-time
+      description: Customer-safe billing state for a Leadping organization.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable unique identifier of the referenced resource.
+        name:
+          type: string
+          description: Human-readable display name of the referenced resource.
+      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
+    OrganizationMemberRole:
+      enum:
+      - Owner
+      - Admin
+      - Agent
+      type: string
+      description: Identifies an organization member's access level and permission scope within Leadping.
+    ActivationTelephonyStatus:
+      enum:
+      - NotStarted
+      - ProvisioningPending
+      - PartiallyProvisioned
+      - Ready
+      - Failed
+      - BlockedRequiresOperatorAction
+      type: string
+      description: Describes whether phone numbers, calling, messaging, and provider resources are ready for organization launch.
+    TenDlcApplicationDraft:
+      type: object
+      properties:
+        companyName:
+          type:
+          - 'null'
+          - string
+          description: Company name for this 10DLC application draft.
+        contactName:
+          type:
+          - 'null'
+          - string
+          description: Contact name for this 10DLC application draft.
+        contactEmail:
+          type:
+          - 'null'
+          - string
+          description: Contact email for this 10DLC application draft.
+          format: email
+        contactPhone:
+          type:
+          - 'null'
+          - string
+          description: Contact phone for this 10DLC application draft.
+        ein:
+          type:
+          - 'null'
+          - string
+          description: EIN for this 10DLC application draft.
+        websiteUrl:
+          type:
+          - 'null'
+          - string
+          description: Public business website URL submitted to carriers during brand review.
+          format: uri
+        industry:
+          type:
+          - 'null'
+          - string
+          description: The Telnyx brand vertical for this 10DLC application draft. The JSON name is retained for backward compatibility.
+        useCase:
+          type:
+          - 'null'
+          - string
+          description: Use case for this 10DLC application draft.
+        useCaseDescription:
+          type:
+          - 'null'
+          - string
+          description: Use case description for this 10DLC application draft.
+        messageExamples:
+          type: array
+          items:
+            type: string
+          description: The message examples included with this 10DLC application draft.
+        optInLanguage:
+          type:
+          - 'null'
+          - string
+          description: Opt in language for this 10DLC application draft.
+        privacyPolicyUrl:
+          type:
+          - 'null'
+          - string
+          description: Public privacy-policy URL that explains how messaging recipient data is handled.
+          format: uri
+        termsUrl:
+          type:
+          - 'null'
+          - string
+          description: Public terms-of-service URL governing the messaging program.
+          format: uri
+        expectedMonthlyVolume:
+          type:
+          - 'null'
+          - integer
+          description: Expected monthly volume for this 10DLC application draft.
+          format: int32
+        trustedFormRequired:
+          type: boolean
+          description: Whether TrustedForm required applies to this 10DLC application draft.
+        complianceWarnings:
+          type: array
+          items:
+            type: string
+          description: The compliance warnings included with this 10DLC application draft.
+        missingFields:
+          type: array
+          items:
+            type: string
+          description: The missing fields included with this 10DLC application draft.
+        brandStatus:
+          allOf:
+          - $ref: '#/components/schemas/TenDlcRegistrationStatus'
+          description: The current provider review status for the submitted brand.
+        campaignStatus:
+          allOf:
+          - $ref: '#/components/schemas/TenDlcRegistrationStatus'
+          description: The current provider review status for the submitted campaign.
+        lastSubmittedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for last submitted at on this 10DLC application draft.
+          format: date-time
+        rejectionReason:
+          type:
+          - 'null'
+          - string
+          description: The human-readable rejection reason explaining this 10DLC application draft.
+        updatedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for updated at on this 10DLC application draft.
+          format: date-time
+        version:
+          type: integer
+          description: Version for this 10DLC application draft.
+          format: int32
+      description: Describes ten dlc application draft data used in Leadping API requests and responses.
+    OrganizationInvitationTableRow:
+      type: object
+      properties:
         id:
           type: string
           description: Unique Leadping identifier for this organization invitation.
@@ -3067,23 +2730,360 @@ components:
           - string
           description: The date and time this invitation's paid license was released.
           format: date-time
-      description: Describes organization invitation data returned by Leadping.
-    WebsiteLifecycleStatus:
+      description: Describes organization invitation data used in Leadping API requests and responses.
+    TenDlcApplicationStatus:
       enum:
       - NotStarted
-      - DomainSuggestionsPending
-      - DomainSelectionPending
-      - DomainPurchasePending
-      - DomainPurchased
-      - WebsiteGenerationQueued
-      - WebsiteGenerating
-      - WebsiteDeploymentQueued
-      - WebsiteDeploying
-      - WebsiteLive
-      - WebsiteFailed
+      - DraftGenerated
+      - DraftIncomplete
+      - ReadyToSubmit
+      - Submitted
+      - PendingTelnyxReview
+      - Approved
+      - Rejected
+      - NeedsChanges
+      - ResubmissionReady
+      - Failed
+      type: string
+      description: Describes an organization's overall 10DLC registration lifecycle across brand and messaging campaign submission.
+    ActivationPaymentStatus:
+      enum:
+      - PaymentMethodPending
+      - PaymentMethodConfirmed
+      - Failed
+      type: string
+      description: Describes whether valid funding and payment prerequisites are satisfied during organization activation.
+    ExactMatchFilter:
+      type: object
+      properties:
+        value:
+          description: Scalar value the target field must equal; its JSON type should match the field being queried.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records whose named field equals a supplied scalar value.
+    OrganizationInvitationRequest:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          type: string
+          description: The email address associated with this organization invitation.
+          format: email
+        role:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationMemberRole'
+          description: Role for this organization invitation.
+      description: Defines the input used for organization invitation.
+    OrganizationCompliancePolicy:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether this organization compliance policy is enabled.
+        allowedStates:
+          type: array
+          items:
+            type: string
+          description: The allowed states included with this organization compliance policy.
+        allowedProducts:
+          type: array
+          items:
+            type: string
+          description: The allowed products included with this organization compliance policy.
+        requireLeadState:
+          type: boolean
+          description: Whether this organization compliance policy requires lead state.
+        requireAgentLicenseState:
+          type: boolean
+          description: Whether this organization compliance policy requires agent license state.
+        requireProduct:
+          type: boolean
+          description: Whether this organization compliance policy requires product.
+        requireTrustedFormForAutomations:
+          type: boolean
+          description: Whether this organization compliance policy requires TrustedForm for automations.
+        requireSourceComplianceApproval:
+          type: boolean
+          description: Whether this organization compliance policy requires source compliance approval.
+      description: Describes organization compliance policy data used in Leadping API requests and responses.
+    OrganizationMemberTableRow:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this organization user.
+        user:
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related user.
+        userEmail:
+          type:
+          - 'null'
+          - string
+          description: User email for this organization user.
+          format: email
+        role:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationMemberRole'
+          description: Role for this organization user.
+        createdAt:
+          type: string
+          description: UTC timestamp for created at on this organization user.
+          format: date-time
+        licenseBillingStatus:
+          type:
+          - 'null'
+          - string
+          description: The billing status for this user's organization license.
+        licenseRenewalDate:
+          type:
+          - 'null'
+          - string
+          description: The renewal date used for this user's license proration.
+          format: date-time
+      description: Describes organization user data used in Leadping API requests and responses.
+    RangeFilter:
+      type: object
+      properties:
+        greaterThan:
+          description: Exclusive lower bound; matching field values must be greater than this value.
+        greaterThanOrEqual:
+          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
+        lessThan:
+          description: Exclusive upper bound; matching field values must be less than this value.
+        lessThanOrEqual:
+          description: Inclusive upper bound; matching field values must be less than or equal to this value.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+    ActivationOnboardingStatus:
+      enum:
+      - Draft
+      - Submitted
+      - Failed
+      type: string
+      description: Describes completion and blocking state for an organization's core Leadping onboarding requirements.
+    TenDlcNotesRequest:
+      type: object
+      properties:
+        notes:
+          maxLength: 4000
+          type:
+          - 'null'
+          - string
+          description: Notes to store with the 10DLC application, or null to clear them.
+      description: Updates the internal notes associated with a 10DLC application.
+    OrganizationRequest:
+      required:
+      - name
+      type: object
+      properties:
+        secondaryName:
+          type:
+          - 'null'
+          - string
+          description: Alternate organization name or DBA shown in Leadping.
+        status:
+          enum:
+          - SettingUp
+          - SetupCompleted
+          - Active
+          type:
+          - 'null'
+          - string
+          description: Describes an organization's account lifecycle and whether it can actively use Leadping services.
+        enabled:
+          type:
+          - 'null'
+          - boolean
+          description: Indicates whether this organization profile request is active and available in the Leadping API.
+        autoRefillEnabled:
+          type:
+          - 'null'
+          - boolean
+          description: Indicates whether automatic wallet refill is enabled for the organization.
+        autoRefillAmount:
+          type:
+          - 'null'
+          - number
+          description: Wallet refill amount charged when automatic refill is triggered.
+          format: double
+        autoRefillTrigger:
+          type:
+          - 'null'
+          - number
+          description: Wallet balance threshold that triggers automatic refill.
+          format: double
+        phone:
+          type:
+          - 'null'
+          - string
+          description: Phone details for the lead, user, or organization represented by this organization profile request.
+        address:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/StreetAddress'
+          description: Postal address for the organization, lead, or contact represented by this organization profile request.
+        billingName:
+          type:
+          - 'null'
+          - string
+          description: Name used for invoices, receipts, and payment processor billing records.
+        billingAddress:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/StreetAddress'
+          description: Postal address used for invoices, receipts, and payment processor billing records.
+        billingTaxId:
+          type:
+          - 'null'
+          - string
+          description: Tax identifier printed on billing documents. This may differ from the organization verification EIN.
+        website:
+          type:
+          - 'null'
+          - string
+          description: Organization website URL used for compliance, brand review, and lead attribution.
+        vertical:
+          type:
+          - 'null'
+          - string
+          description: Industry vertical used for lead routing, compliance review, and reporting.
+        description:
+          type:
+          - 'null'
+          - string
+          description: Human-readable description that explains this organization profile request to API users.
+        ein:
+          type:
+          - 'null'
+          - string
+          description: Employer Identification Number used for organization and 10DLC verification.
+        isYoungerThan90:
+          type:
+          - 'null'
+          - boolean
+          description: Indicates whether the organization serves customers younger than 90, for compliance and underwriting context.
+        einDocument:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNameValue'
+          description: Uploaded EIN document reference used for organization verification.
+        phones:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/IdNameValue'
+            description: Extends an identifier-and-name resource reference with an optional string value used for display or selection metadata.
+          description: Phone numbers assigned to this organization.
+        compliancePolicy:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/OrganizationCompliancePolicy'
+          description: Compliance policy configuration for the organization.
+        name:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: Human-readable display name for the resource, subject to the API's maximum name length.
+        id:
+          type:
+          - 'null'
+          - string
+          description: Stable unique identifier of an existing resource to update; omit it when the API assigns an identifier during creation.
+      description: Defines the fields clients can send when working with organization profile.
+    CustomerActivationStatus:
+      enum:
+      - DraftOnboarding
+      - PaymentMethodPending
+      - PaymentMethodConfirmed
+      - SubscriptionPending
+      - SubscriptionReceived
+      - SubscriptionActive
+      - LaunchReviewPending
+      - TelephonyProvisioningPending
+      - TelephonyPartiallyProvisioned
+      - TelephonyReady
+      - AwaitingReview
+      - DomainSelection
+      - WebsiteSetup
+      - ComplianceRegistration
+      - ReadyForApproval
+      - Active
+      - Failed
+      - Blocked
+      - BlockedRequiresOperatorAction
       - ManuallyBypassed
       type: string
-      description: Describes an organization website's lifecycle from discovery and verification through activation, suspension, or removal.
+      description: Summarizes an organization's overall progress from initial Leadping onboarding through launch readiness.
+    TenDlcRegistrationStatus:
+      enum:
+      - NotSubmitted
+      - Pending
+      - Approved
+      - Rejected
+      - Failed
+      type: string
+      description: Defines the provider lifecycle for an individual 10DLC brand or campaign.
+    IdNameValue:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        value:
+          type:
+          - 'null'
+          - string
+          description: Optional machine-readable or display value associated with the referenced resource.
+        id:
+          type: string
+          description: Stable unique identifier of the referenced resource.
+        name:
+          type: string
+          description: Human-readable display name of the referenced resource.
+      description: Extends an identifier-and-name resource reference with an optional string value used for display or selection metadata.
+    ActivationLaunchReviewStatus:
+      enum:
+      - NotReady
+      - Pending
+      - Approved
+      - NotRequired
+      - Blocked
+      type: string
+      description: Describes the administrative review decision that determines whether an organization can launch Leadping workflows.
+    OrganizationMemberRequest:
+      type: object
+      properties:
+        userId:
+          type:
+          - 'null'
+          - string
+          description: User ID to add, update, or remove from the organization.
+        email:
+          type:
+          - 'null'
+          - string
+          description: Email address for the person represented by this organization user request.
+          format: email
+        role:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationMemberRole'
+          description: Organization role assigned to the user.
+      description: Defines the fields clients can send when working with organization user.
   securitySchemes:
     Bearer:
       type: http

@@ -1,0 +1,80 @@
+generated: '2026-09-03'
+method: searched
+source: https://leadping.ai/docs/api-reference
+summary: >-
+  Leadping publishes an interactive API playground but NO sandbox environment. This distinction is the
+  whole finding: a developer can compose and fire a request from the docs, but every request they fire
+  goes to production against real credentials, real phone numbers, real carriers and real spend.
+console:
+  present: true
+  type: interactive API playground
+  vendor: Mintlify api-playground
+  url: https://leadping.ai/docs/api-reference
+  evidence: >-
+    https://leadping.ai/docs/api-reference/leads/create-a-lead-record-from-intake-payload returned
+    HTTP 200 on 2026-09-03 carrying Mintlify's api-playground component and "Try it" controls. Every
+    one of the 144 operations has a generated reference page with the same playground.
+  auth_required: true
+  targets: >-
+    Production only. The playground's server is https://api.leadping.ai, the single server declared in
+    the OpenAPI document. There is no test host to point it at.
+sandbox:
+  present: false
+  test_mode: false
+  test_credentials: false
+  test_key_prefix: null
+  test_data: null
+  time_simulation: false
+  fixtures_or_triggers: false
+  note: >-
+    Leadping publishes no sandbox, no test mode, no simulator and no magic test identifiers of the kind
+    comms providers usually offer. Searched and not found: https://leadping.ai/docs/sandbox (404),
+    https://leadping.ai/docs/testing (404); neither the docs index at
+    https://leadping.ai/docs/llms.txt (189 lines, every published page) nor the site llms.txt names a
+    sandbox, test-mode, staging or simulator page. The OpenAPI declares exactly one server,
+    https://api.leadping.ai, described "Production". The three credential prefixes the contract and
+    docs name — a user JWT, an organization API key beginning sk_, and a source key beginning lp_src_
+    — have no test-mode counterpart.
+  consequence: >-
+    This matters more here than for most APIs. Leadping's write surface sends SMS and places phone
+    calls to real recipients under a carrier-registered 10DLC campaign, and its own reversibility
+    record shows a sent message cannot be recalled and an initiated call cannot be un-placed (see
+    conventions/leadping-conventions.yml). With no sandbox, the only safe rehearsal affordances are
+    the three preview/validate operations Leadping does publish.
+rehearsal_affordances:
+  note: >-
+    What Leadping offers instead of a sandbox. These are real operations, but they rehearse
+    configuration and eligibility, not delivery.
+  operations:
+    - operation: Automations_Preview
+      path: 'POST /automations/preview'
+      flag: validate_only
+      effect: >-
+        Previews automation execution against a sample lead without creating follow-up events; with
+        validate_only, returns configuration validation without evaluating conditions or actions and
+        without writing a test audit event.
+    - operation: PhoneNumbers_ValidateManualOverride
+      path: 'POST /phone-numbers/outgoing/manual-override'
+      effect: Validates a sender-number override before use without setting it.
+    - operation: Suppressions_Check
+      path: 'POST /suppressions/check'
+      effect: Tests whether a recipient is suppressed before attempting an outbound send.
+  gap: >-
+    Neither Sms_Send (POST /sms/send) nor Calls_InitiateCall (POST /phone-call/initiate) has a
+    preview, validate-only or dry-run mode. The two operations with real-world consequence are the
+    two with no rehearsal path.
+probes:
+  - url: https://leadping.ai/docs/api-reference/leads/create-a-lead-record-from-intake-payload
+    status: 200
+    fetched: '2026-09-03'
+    note: Interactive playground present.
+  - url: https://leadping.ai/docs/sandbox
+    status: 404
+    fetched: '2026-09-03'
+  - url: https://leadping.ai/docs/testing
+    status: 404
+    fetched: '2026-09-03'
+  - url: https://leadping.ai/docs/llms.txt
+    status: 200
+    fetched: '2026-09-03'
+    note: Complete docs index; contains no sandbox, test-mode, staging or simulator page.

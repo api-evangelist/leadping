@@ -562,6 +562,57 @@ paths:
       - Bearer: []
 components:
   schemas:
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable unique identifier of the referenced resource.
+        name:
+          type: string
+          description: Human-readable display name of the referenced resource.
+      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
+    MessageMediaAttachment:
+      type: object
+      properties:
+        url:
+          type: string
+          description: URL from which the media attachment can be retrieved.
+          format: uri
+        contentType:
+          type:
+          - 'null'
+          - string
+          description: MIME content type of the media attachment.
+        size:
+          type:
+          - 'null'
+          - integer
+          description: Size of the media attachment in bytes.
+          format: int64
+        sha256:
+          type:
+          - 'null'
+          - string
+          description: SHA-256 digest of the media content, when available.
+        fileName:
+          type:
+          - 'null'
+          - string
+          description: Original file name of the media attachment, when available.
+      description: Media attached to an SMS/MMS conversation event.
+    CreateNoteRequest:
+      required:
+      - text
+      type: object
+      properties:
+        text:
+          type: string
+          description: Plain-text note content to add to the conversation timeline.
+      description: Defines the input used for create note.
     PagedResultOfEventTableRow:
       type: object
       properties:
@@ -778,63 +829,6 @@ components:
           description: UTC timestamp when the resource was last modified, or null when it has not been updated.
           format: date-time
       description: Describes event detail data returned by Leadping.
-    RequestDataOptions:
-      type: object
-      properties:
-        pageSize:
-          type: integer
-          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
-        orderBy:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/OrderByOption'
-            description: Defines one field and direction used to order an API query result set.
-          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
-        includeCount:
-          type:
-          - 'null'
-          - boolean
-          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
-        search:
-          type:
-          - 'null'
-          - string
-          description: Free-text search term applied to the configured SearchFields.
-        searchFields:
-          type:
-          - 'null'
-          - array
-          items:
-            type: string
-          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
-        filters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/ExactMatchFilter'
-            description: Selects records whose named field equals a supplied scalar value.
-          description: Exact-match conditions that require each named field to equal its supplied value.
-        rangeFilters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/RangeFilter'
-            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
-          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
-      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
     EventTableRow:
       type: object
       properties:
@@ -1111,57 +1105,6 @@ components:
           description: Email address for the person who created this event timeline table row.
           format: email
       description: Summarizes event timeline data in paginated and searchable results.
-    CreateNoteRequest:
-      required:
-      - text
-      type: object
-      properties:
-        text:
-          type: string
-          description: Plain-text note content to add to the conversation timeline.
-      description: Defines the input used for create note.
-    MessageMediaAttachment:
-      type: object
-      properties:
-        url:
-          type: string
-          description: URL from which the media attachment can be retrieved.
-          format: uri
-        contentType:
-          type:
-          - 'null'
-          - string
-          description: MIME content type of the media attachment.
-        size:
-          type:
-          - 'null'
-          - integer
-          description: Size of the media attachment in bytes.
-          format: int64
-        sha256:
-          type:
-          - 'null'
-          - string
-          description: SHA-256 digest of the media content, when available.
-        fileName:
-          type:
-          - 'null'
-          - string
-          description: Original file name of the media attachment, when available.
-      description: Media attached to an SMS/MMS conversation event.
-    IdNamePair:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          type: string
-          description: Stable unique identifier of the referenced resource.
-        name:
-          type: string
-          description: Human-readable display name of the referenced resource.
-      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
     OrderByOption:
       type: object
       properties:
@@ -1186,6 +1129,79 @@ components:
           type: string
           description: Serializable field name to evaluate; supported names are determined by the queried resource.
       description: Selects records whose named field equals a supplied scalar value.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/OrderByOption'
+            description: Defines one field and direction used to order an API query result set.
+          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
+        search:
+          type:
+          - 'null'
+          - string
+          description: Free-text search term applied to the configured SearchFields.
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ExactMatchFilter'
+            description: Selects records whose named field equals a supplied scalar value.
+          description: Exact-match conditions that require each named field to equal its supplied value.
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/RangeFilter'
+            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
+      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+    EventTimelineType:
+      enum:
+      - Message
+      - Sms
+      - Mms
+      - Call
+      - Voicemail
+      - Note
+      - LeadStatusChange
+      - LeadCreated
+      - LeadUpdated
+      - Notification
+      - Payment
+      - Warmup
+      type: string
+      description: Classifies the kind of activity displayed in a lead or conversation event timeline.
     RangeFilter:
       type: object
       properties:
@@ -1237,22 +1253,6 @@ components:
         status: 400
         detail: One or more request fields are invalid.
         instance: /leads/intake
-    EventTimelineType:
-      enum:
-      - Message
-      - Sms
-      - Mms
-      - Call
-      - Voicemail
-      - Note
-      - LeadStatusChange
-      - LeadCreated
-      - LeadUpdated
-      - Notification
-      - Payment
-      - Warmup
-      type: string
-      description: Classifies the kind of activity displayed in a lead or conversation event timeline.
   securitySchemes:
     Bearer:
       type: http

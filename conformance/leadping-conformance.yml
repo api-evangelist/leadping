@@ -1,14 +1,14 @@
-generated: '2026-08-18'
+generated: '2026-09-03'
 method: searched
 source: >-
   https://leadping.ai/docs (compliance + trust pages) cross-checked against
-  openapi/leadping-openapi.json and live /.well-known probes on 2026-08-18
+  openapi/_original/leadping-openapi.json and live /.well-known probes on 2026-09-03
 standards:
   - id: openapi-3.1
     name: OpenAPI 3.1
     conforms: true
     evidence: >-
-      openapi/leadping-openapi.json declares "openapi": "3.1.1" with 113 paths, 137 operations, 219
+      openapi/_original/leadping-openapi.json declares "openapi": "3.1.1" with 119 paths, 144 operations, 234
       component schemas, unique operationIds and declared securitySchemes. Served from
       https://api.leadping.ai/openapi/v1.json (HTTP 200, application/json).
   - id: rfc9457
@@ -101,11 +101,28 @@ standards:
       https://leadping.ai/.well-known/agent-skills/index.json returns 200 against
       $schema https://schemas.agentskills.io/discovery/0.2.0/schema.json with one sha256-digested skill.
   - id: a2a
-    name: 'A2A Agent Card'
-    conforms: false
+    name: 'A2A 1.0.0 Agent Card'
+    conforms: true
+    grade: conformant
     evidence: >-
-      /.well-known/agent-card.json and /.well-known/agent.json return the SPA HTML shell (200, text/html)
-      on leadping.ai and 404 on api.leadping.ai. No AgentCard is served.
+      https://api.leadping.ai/.well-known/agent-card.json returned HTTP 200, content-type
+      application/json, 1505 bytes, on 2026-09-03 - a JSON object with real AgentCard shape. All three
+      A2A 1.0.0 hard checks pass: capabilities is an OBJECT, protocolVersion is present ("1.0", on
+      supportedInterfaces[0] where 1.0.0 carries it), and skills is an ARRAY with one fully-populated
+      skill. defaultInputModes and defaultOutputModes are both declared. The declared interface
+      https://api.leadping.ai/a2a returns 405 to a GET, confirming a callable JSONRPC endpoint rather
+      than a documentation page. Saved verbatim to a2a/leadping-agent-card.json; graded in
+      a2a/leadping-a2a.yml.
+    changed: >-
+      CHANGED since 2026-08-18, when this entry read conforms:false. At that time leadping.ai answered
+      200-with-SPA-shell for every /.well-known/* path (correctly rejected as a false positive) and
+      api.leadping.ai returned 404 for agent-card.json. Both have changed: the apex now returns a real
+      404 and the API host now serves a real card. This is a new provider surface, not a corrected
+      miss.
+    caveat: >-
+      The card exposes ONE read-only skill (lead-research) against a 144-operation REST contract and
+      an authenticated MCP server, so the A2A surface is deliberately narrow and is not a projection
+      of the whole API.
   - id: asyncapi
     name: AsyncAPI
     conforms: false
@@ -160,3 +177,65 @@ compliance_programs:
     - id: subprocessors
       name: Published subprocessor list
       evidence: https://leadping.ai/docs/subprocessors
+domain_standard_conformance:
+  generated: '2026-09-03'
+  method: derived
+  derived_from: openapi/_original/leadping-openapi.json
+  market: >-
+    US lead generation and A2P (application-to-person) messaging. The governing regimes here are
+    carrier-mandated 10DLC registration (CTIA / The Campaign Registry) and TCPA-driven written-consent
+    evidence, with ActiveProspect TrustedForm as the de-facto consent-certificate standard the lead
+    industry actually transacts on.
+  summary: >-
+    Leadping declares its market's standards IN THE CONTRACT, not only in marketing prose. The
+    OpenAPI carries first-class 10DLC registration types and TrustedForm certificate types, and a
+    lead-intake request has a dedicated trustedFormUrl field. A buyer who already runs TrustedForm
+    and 10DLC integrates against named fields rather than a bespoke connector.
+  standards:
+    - id: trustedform
+      name: 'ActiveProspect TrustedForm consent certificate'
+      conforms: true
+      signature: named schema + request field
+      evidence:
+        - 'components.schemas.TrustedFormCertificate — a dedicated certificate type in the contract.'
+        - 'components.schemas.LeadIntakeRequest.trustedFormUrl — the certificate URL is a first-class field on the lead-intake payload.'
+        - 'components.schemas.LeadMetadata.trustedFormUrl and LeadMetadata.trustedFormCheckedAt — the certificate and its verification timestamp are persisted on the lead.'
+        - 'components.schemas.SourceRequest.requiresTrustedForm and SourceResponse.requiresTrustedForm — per-source enforcement is configurable through the API.'
+        - 'components.schemas.OrganizationCompliancePolicy.requireTrustedFormForAutomations — organization-level enforcement for automated outreach.'
+        - 'components.schemas.UserNotificationPreferences.smsConsentTrustedFormCertificate.'
+      docs: https://leadping.ai/docs/requiring-trustedform
+    - id: a2p-10dlc
+      name: 'A2P 10DLC brand and campaign registration (The Campaign Registry / CTIA)'
+      conforms: true
+      signature: named schemas + registration status enums + campaign identifiers
+      evidence:
+        - 'components.schemas.TenDlcApplicationDraft, TenDlcApplicationStatus, TenDlcRegistrationStatus, TenDlcNotesRequest — four dedicated 10DLC types.'
+        - 'components.schemas.OrganizationActivationState.tenDlcStatus / tenDlcApplicationId / tenDlcDraft — registration state is part of organization activation.'
+        - 'components.schemas.PhoneNumberRoutingMetadata.tenDlcApplicationId and PhoneNumberTableRow.tenDlcCampaignStatus — registration is bound to the sending number.'
+        - 'campaignId appears on EligibleOutgoingNumberResponse, InitiateCallRequest, OutgoingNumberSelectionRequest/Response, PhoneCallResponse and EventTableRow — the campaign identifier travels with every send decision.'
+      docs: https://leadping.ai/docs/carrier-registration
+    - id: consent-optout-suppression
+      name: 'TCPA-shaped consent, opt-out and suppression handling'
+      conforms: true
+      partial: true
+      signature: consent state fields + a first-class Suppressions resource + opt-out rate metrics
+      evidence:
+        - 'components.schemas.LeadMetadata.smsConsentStatus, smsConsentPhoneNumber, smsOptOutAt — consent state and opt-out timestamp are modelled per lead.'
+        - 'Suppressions resource with Suppressions_Suppress (POST /suppressions), Suppressions_Release (POST /suppressions/release), Suppressions_Check (POST /suppressions/check), Suppressions_Get and Suppressions_GetAllForCurrentOrganization.'
+        - 'components.schemas.PhoneNumberOptOutMetricsResponse.optOutCount and optOutRatePercent — opt-out rate is a measured, exposed metric, which is the number carriers actually police.'
+      caveat: >-
+        TCPA is a statute, not a wire standard, so there is no schema URN or message type to declare.
+        This entry records that the CONTRACT models the obligations, not that a conformance body has
+        certified anything. No third-party attestation is claimed anywhere by Leadping.
+      docs: https://leadping.ai/docs/compliance
+  not_applicable:
+    - id: scim
+      note: No user-provisioning surface; no urn:ietf:params:scim:schemas:* URN anywhere in the contract.
+    - id: odata
+      note: No $metadata endpoint and no OData query conventions.
+    - id: openrtb
+      note: Leadping is not an ad-exchange participant; no bid endpoint.
+    - id: hl7-x12-edifact-iso20022
+      note: >-
+        No healthcare, EDI or payments message types, despite the HIPAA BAA offer — the BAA governs
+        PHI that may travel through ordinary lead fields, not an HL7 or X12 interchange.

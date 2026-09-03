@@ -639,314 +639,6 @@ paths:
       - Bearer: []
 components:
   schemas:
-    AutomationRequestSnapshot:
-      type: object
-      properties:
-        id:
-          type:
-          - 'null'
-          - string
-          description: Unique Leadping identifier for this automation request snapshot.
-        name:
-          type:
-          - 'null'
-          - string
-          description: Display name for this automation request snapshot in the Leadping API.
-        description:
-          type:
-          - 'null'
-          - string
-          description: Human-readable description that explains this automation request snapshot to API users.
-        enabled:
-          type:
-          - 'null'
-          - boolean
-          description: Indicates whether this automation request snapshot is active and available in the Leadping API.
-        organizationId:
-          type:
-          - 'null'
-          - string
-          description: Organization ID captured when the automation request snapshot was created.
-        createdByUserId:
-          type:
-          - 'null'
-          - string
-          description: User ID of the person who created this automation request snapshot.
-        scope:
-          type:
-          - 'null'
-          - string
-          description: Scope that limits where this automation request snapshot applies in Leadping.
-        visibility:
-          type:
-          - 'null'
-          - string
-          description: Visibility level that controls who can see this automation request snapshot.
-        managementLevel:
-          type:
-          - 'null'
-          - string
-          description: Management level that controls whether Leadping or the organization owns this automation setting.
-        isSystemManaged:
-          type: boolean
-          description: Indicates whether Leadping manages this automation request snapshot automatically instead of a user.
-        triggers:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AutomationTrigger'
-            description: Public Leadping API schema for automation trigger data.
-          description: Automation triggers that can start this workflow.
-        conditionGroups:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AutomationConditionGroup'
-            description: Public Leadping API schema for automation condition group data.
-          description: Grouped automation conditions used to decide whether this workflow should run.
-        actions:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AutomationAction'
-            description: Public Leadping API schema for automation action data.
-          description: Automation actions configured or returned for this workflow.
-        connections:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AutomationConnection'
-            description: A directed connection between two nodes in an automation graph.
-          description: Directed connections between nodes in this automation graph.
-      description: Public Leadping API schema for automation request snapshot data.
-    AutomationRequest:
-      required:
-      - name
-      type: object
-      properties:
-        description:
-          type:
-          - 'null'
-          - string
-          description: Human-readable description that explains this automation configuration request to API users.
-        enabled:
-          type:
-          - 'null'
-          - boolean
-          description: Indicates whether this automation configuration request is active and available in the Leadping API.
-        scope:
-          type:
-          - 'null'
-          - string
-          description: Scope that limits where this automation configuration request applies in Leadping.
-        visibility:
-          type:
-          - 'null'
-          - string
-          description: Visibility level that controls who can see this automation configuration request.
-        triggers:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AutomationTrigger'
-            description: Public Leadping API schema for automation trigger data.
-          description: Automation triggers that can start this workflow.
-        conditionGroups:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AutomationConditionGroup'
-            description: Public Leadping API schema for automation condition group data.
-          description: Grouped automation conditions used to decide whether this workflow should run.
-        actions:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AutomationAction'
-            description: Public Leadping API schema for automation action data.
-          description: Automation actions configured or returned for this workflow.
-        connections:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AutomationConnection'
-            description: A directed connection between two nodes in an automation graph.
-          description: Directed connections between nodes in this automation graph.
-        version:
-          type: integer
-          description: Version number for this automation configuration request schema or saved configuration.
-          format: int32
-        name:
-          maxLength: 255
-          minLength: 0
-          type: string
-          description: Human-readable display name for the resource, subject to the API's maximum name length.
-        id:
-          type:
-          - 'null'
-          - string
-          description: Stable unique identifier of an existing resource to update; omit it when the API assigns an identifier during creation.
-      description: Defines the fields clients can send when working with automation configuration.
-    AutomationWorkflowEventResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for the automation workflow event.
-        stepId:
-          type:
-          - 'null'
-          - string
-          description: Unique identifier of the step associated with this Leadping automation workflow event.
-        actionId:
-          type:
-          - 'null'
-          - string
-          description: Unique identifier of the action associated with this Leadping automation workflow event.
-        eventType:
-          type: string
-          description: Event type classification for this Leadping automation workflow event.
-        status:
-          type: string
-          description: Current status for this Leadping automation workflow event.
-        statusDisplay:
-          type: string
-          description: Human-readable status display for this Leadping automation workflow event.
-        summary:
-          type: string
-          description: Human-readable summary for this Leadping automation workflow event.
-        reasonCode:
-          type:
-          - 'null'
-          - string
-          description: Reason or diagnostic code that explains the current outcome for this Leadping automation workflow event.
-        occurredAt:
-          type: string
-          description: Date and time when the automation workflow event event occurred.
-          format: date-time
-      description: User-safe workflow history event returned for lead automation status.
-    AutomationPreviewActionResult:
-      type: object
-      properties:
-        actionId:
-          type:
-          - 'null'
-          - string
-          description: Automation action ID executed or evaluated by this automation preview action result.
-        summary:
-          type: string
-          description: Short human-readable summary of this automation preview action result for lists, timelines, and notifications.
-        renderedOutput:
-          type: string
-          description: Rendered preview output produced by this automation preview action result.
-        wouldHaveSideEffect:
-          type: boolean
-          description: Indicates whether the automation preview would perform an external action if executed live.
-        warnings:
-          type: array
-          items:
-            type: string
-          description: Warnings returned for this automation preview action result that do not necessarily block processing.
-      description: Result schema for the Leadping API automation preview action result returned by lookup and validation endpoints.
-    OrderByOption:
-      type: object
-      properties:
-        field:
-          type: string
-          description: Serializable field name used for sorting; supported names are determined by the queried resource.
-        direction:
-          enum:
-          - asc
-          - desc
-          type:
-          - 'null'
-          - string
-          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
-      description: Defines one field and direction used to order an API query result set.
-    PagedResultOfAutomationTableRow:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AutomationTableRow'
-            description: Summarizes automation data in paginated and searchable results.
-          description: Items included in the current page, in the order determined by the query.
-        pageSize:
-          type: integer
-          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
-      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - 'null'
-          - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
-          type:
-          - 'null'
-          - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-      example:
-        type: https://leadping.ai/docs/errors/validation
-        title: Request validation failed
-        status: 400
-        detail: One or more request fields are invalid.
-        instance: /leads/intake
-    AutomationAction:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this automation action.
-        type:
-          type: string
-          description: Type classification used to route and interpret this automation action in the Leadping API.
-        order:
-          type: integer
-          description: Sort order used to evaluate or display this automation action.
-          format: int32
-        isEnabled:
-          type: boolean
-          description: Indicates whether this automation action is active and allowed to run.
-        settings:
-          type: object
-          additionalProperties:
-            type: string
-          description: Key-value settings that configure how this automation action behaves.
-      description: Public Leadping API schema for automation action data.
     RequestDataOptions:
       type: object
       properties:
@@ -1004,262 +696,6 @@ components:
             description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
           description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
       description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
-    AutomationTableRow:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this automation table row.
-        name:
-          type: string
-          description: Display name for this automation table row in the Leadping API.
-        description:
-          type: string
-          description: Human-readable description that explains this automation table row to API users.
-        enabled:
-          type: boolean
-          description: Indicates whether this automation table row is active and available in the Leadping API.
-        organizationId:
-          type:
-          - 'null'
-          - string
-          description: Organization ID that owns this automation.
-        createdByUserId:
-          type:
-          - 'null'
-          - string
-          description: User ID of the person who created this automation table row.
-        scope:
-          type:
-          - 'null'
-          - string
-          description: Scope that limits where this automation table row applies in Leadping.
-        visibility:
-          type:
-          - 'null'
-          - string
-          description: Visibility level that controls who can see this automation table row.
-        managementLevel:
-          type:
-          - 'null'
-          - string
-          description: Management level that controls whether Leadping or the organization owns this automation setting.
-        isSystemManaged:
-          type: boolean
-          description: Indicates whether Leadping manages this automation table row automatically instead of a user.
-        triggerType:
-          type: string
-          description: Automation trigger type that starts the workflow.
-        triggerSummary:
-          type: string
-          description: Human-readable summary of the automation trigger that started the workflow.
-        conditionSummary:
-          type: string
-          description: Human-readable summary of the automation condition evaluation.
-        actionSummary:
-          type: string
-          description: Human-readable summary of the automation action outcome.
-        ruleSentence:
-          type: string
-          description: Human-readable explanation of the automation rule being evaluated.
-        lastRunStatus:
-          type:
-          - 'null'
-          - string
-          description: Status from the most recent automation run.
-        lastRunAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when this automation last ran.
-          format: date-time
-        modifiedAt:
-          type: string
-          description: UTC timestamp when this automation table row was last modified.
-          format: date-time
-        healthSummary:
-          type: string
-          description: Human-readable health summary for this automation table row.
-        user:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: User summary connected to this automation table row.
-        organization:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Organization summary connected to this automation table row.
-      description: Summarizes automation data in paginated and searchable results.
-    AutomationActionRunRecord:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this automation action run record.
-        automationRunId:
-          type:
-          - 'null'
-          - string
-          description: Automation run ID connected to this action or event record.
-        actionId:
-          type:
-          - 'null'
-          - string
-          description: Automation action ID executed or evaluated by this automation action run record.
-        actionType:
-          type: string
-          description: Automation action type, such as send SMS or create task.
-        order:
-          type: integer
-          description: Sort order used to evaluate or display this automation action run record.
-          format: int32
-        status:
-          type: string
-          description: Current lifecycle status for this automation action run record in the Leadping API.
-        startedAt:
-          type: string
-          description: UTC timestamp when processing started for this automation action run record.
-          format: date-time
-        scheduledAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when this automation action run record was scheduled.
-          format: date-time
-        completedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when processing completed for this automation action run record.
-          format: date-time
-        failedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when processing failed for this automation action run record.
-          format: date-time
-        processingAttempts:
-          type: integer
-          description: Number of processing attempts made for this workflow or delivery request.
-          format: int32
-        nextRetryAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when Leadping will retry this automation action run record.
-          format: date-time
-        failureCode:
-          type:
-          - 'null'
-          - string
-          description: Machine-readable failure code for troubleshooting this automation action run record.
-      description: History record schema for Leadping API automation action run record data exposed in automation and audit views.
-    RangeFilter:
-      type: object
-      properties:
-        greaterThan:
-          description: Exclusive lower bound; matching field values must be greater than this value.
-        greaterThanOrEqual:
-          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
-        lessThan:
-          description: Exclusive upper bound; matching field values must be less than this value.
-        lessThanOrEqual:
-          description: Inclusive upper bound; matching field values must be less than or equal to this value.
-        field:
-          type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
-    AutomationWorkflowActionResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for the automation workflow action.
-        stepId:
-          type:
-          - 'null'
-          - string
-          description: Unique identifier of the step associated with this Leadping automation workflow action.
-        stepOrder:
-          type: integer
-          description: Step order associated with this Leadping automation workflow action.
-          format: int32
-        stepDisplayName:
-          type: string
-          description: Human-readable step display name associated with this Leadping automation workflow action.
-        actionType:
-          type: string
-          description: Action type classification for this Leadping automation workflow action.
-        actionTypeDisplay:
-          type: string
-          description: Human-readable action type display for this Leadping automation workflow action.
-        status:
-          type: string
-          description: Current status for this Leadping automation workflow action.
-        statusDisplay:
-          type: string
-          description: Human-readable status display for this Leadping automation workflow action.
-        scheduledAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the automation workflow action was scheduled.
-          format: date-time
-        startedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the automation workflow action started.
-          format: date-time
-        completedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the automation workflow action completed.
-          format: date-time
-        failedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the automation workflow action failed.
-          format: date-time
-        skippedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the workflow action was skipped.
-          format: date-time
-        retryCount:
-          type: integer
-          description: Total number of retry records represented by this Leadping automation workflow action.
-          format: int32
-        nextRetryAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the next retry is scheduled.
-          format: date-time
-        userSummary:
-          type:
-          - 'null'
-          - string
-          description: Human-readable user summary for this Leadping automation workflow action.
-        safeReason:
-          type:
-          - 'null'
-          - string
-          description: Safe reason associated with this Leadping automation workflow action.
-        failureCode:
-          type:
-          - 'null'
-          - string
-          description: Reason or diagnostic code that explains the current outcome for this Leadping automation workflow action.
-      description: User-safe action status returned for lead automation workflow visibility.
     AutomationRunRecord:
       type: object
       properties:
@@ -1330,6 +766,103 @@ components:
             description: History record schema for Leadping API automation action run record data exposed in automation and audit views.
           description: Automation actions configured or returned for this workflow.
       description: History record schema for Leadping API automation run record data exposed in automation and audit views.
+    AutomationTrigger:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this automation trigger.
+        type:
+          type: string
+          description: Type classification used to route and interpret this automation trigger in the Leadping API.
+        displayName:
+          type:
+          - 'null'
+          - string
+          description: Human-readable display name shown for this automation trigger.
+        isEnabled:
+          type: boolean
+          description: Indicates whether this automation trigger is active and allowed to run.
+        settings:
+          type: object
+          additionalProperties:
+            type: string
+          description: Key-value settings that configure how this automation trigger behaves.
+      description: Public Leadping API schema for automation trigger data.
+    AutomationValidationResult:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          description: Validation or processing errors returned for this automation validation result.
+        warnings:
+          type: array
+          items:
+            type: string
+          description: Warnings returned for this automation validation result that do not necessarily block processing.
+      description: Result schema for the Leadping API automation validation result returned by lookup and validation endpoints.
+    AutomationPreviewConditionResult:
+      type: object
+      properties:
+        conditionId:
+          type:
+          - 'null'
+          - string
+          description: Automation condition ID evaluated by this preview result.
+        summary:
+          type: string
+          description: Short human-readable summary of this automation preview condition result for lists, timelines, and notifications.
+        passed:
+          type: boolean
+          description: Indicates whether this automation preview condition result passed the preview or validation check.
+      description: Result schema for the Leadping API automation preview condition result returned by lookup and validation endpoints.
+    AutomationCondition:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this automation condition.
+        type:
+          type: string
+          description: Type classification used to route and interpret this automation condition in the Leadping API.
+        operator:
+          type:
+          - 'null'
+          - string
+          description: Automation comparison operator used by this condition.
+        isEnabled:
+          type: boolean
+          description: Indicates whether this automation condition is active and allowed to run.
+        settings:
+          type: object
+          additionalProperties:
+            type: string
+          description: Key-value settings that configure how this automation condition behaves.
+      description: Public Leadping API schema for automation condition data.
+    AutomationAction:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this automation action.
+        type:
+          type: string
+          description: Type classification used to route and interpret this automation action in the Leadping API.
+        order:
+          type: integer
+          description: Sort order used to evaluate or display this automation action.
+          format: int32
+        isEnabled:
+          type: boolean
+          description: Indicates whether this automation action is active and allowed to run.
+        settings:
+          type: object
+          additionalProperties:
+            type: string
+          description: Key-value settings that configure how this automation action behaves.
+      description: Public Leadping API schema for automation action data.
     AutomationResponse:
       type: object
       properties:
@@ -1452,6 +985,611 @@ components:
           description: UTC timestamp when the resource was last modified, or null when it has not been updated.
           format: date-time
       description: Describes automation configuration data returned by Leadping.
+    AutomationWorkflowActionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for the automation workflow action.
+        stepId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the step associated with this Leadping automation workflow action.
+        stepOrder:
+          type: integer
+          description: Step order associated with this Leadping automation workflow action.
+          format: int32
+        stepDisplayName:
+          type: string
+          description: Human-readable step display name associated with this Leadping automation workflow action.
+        actionType:
+          type: string
+          description: Action type classification for this Leadping automation workflow action.
+        actionTypeDisplay:
+          type: string
+          description: Human-readable action type display for this Leadping automation workflow action.
+        status:
+          type: string
+          description: Current status for this Leadping automation workflow action.
+        statusDisplay:
+          type: string
+          description: Human-readable status display for this Leadping automation workflow action.
+        scheduledAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow action was scheduled.
+          format: date-time
+        startedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow action started.
+          format: date-time
+        completedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow action completed.
+          format: date-time
+        failedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow action failed.
+          format: date-time
+        skippedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the workflow action was skipped.
+          format: date-time
+        retryCount:
+          type: integer
+          description: Total number of retry records represented by this Leadping automation workflow action.
+          format: int32
+        nextRetryAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the next retry is scheduled.
+          format: date-time
+        userSummary:
+          type:
+          - 'null'
+          - string
+          description: Human-readable user summary for this Leadping automation workflow action.
+        safeReason:
+          type:
+          - 'null'
+          - string
+          description: Safe reason associated with this Leadping automation workflow action.
+        failureCode:
+          type:
+          - 'null'
+          - string
+          description: Reason or diagnostic code that explains the current outcome for this Leadping automation workflow action.
+      description: User-safe action status returned for lead automation workflow visibility.
+    AutomationConsoleResponse:
+      type: object
+      properties:
+        automationId:
+          type: string
+          description: Unique identifier of the automation whose execution history is returned.
+        runs:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationWorkflowRunResponse'
+            description: User-safe automation workflow run status returned for a lead.
+          description: Recent persisted workflow runs for the automation, ordered for console display.
+      description: Recent persisted execution runs for an automation console.
+    OrderByOption:
+      type: object
+      properties:
+        field:
+          type: string
+          description: Serializable field name used for sorting; supported names are determined by the queried resource.
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
+          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
+      description: Defines one field and direction used to order an API query result set.
+    AutomationConnection:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this connection.
+        sourceNodeId:
+          type: string
+          description: Graph node identifier where the connection begins.
+        targetNodeId:
+          type: string
+          description: Graph node identifier where the connection ends.
+      description: A directed connection between two nodes in an automation graph.
+    PagedResultOfAutomationTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationTableRow'
+            description: Summarizes automation data in paginated and searchable results.
+          description: Items included in the current page, in the order determined by the query.
+        pageSize:
+          type: integer
+          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
+      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable unique identifier of the referenced resource.
+        name:
+          type: string
+          description: Human-readable display name of the referenced resource.
+      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
+    AutomationWorkflowEventResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for the automation workflow event.
+        stepId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the step associated with this Leadping automation workflow event.
+        actionId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the action associated with this Leadping automation workflow event.
+        eventType:
+          type: string
+          description: Event type classification for this Leadping automation workflow event.
+        status:
+          type: string
+          description: Current status for this Leadping automation workflow event.
+        statusDisplay:
+          type: string
+          description: Human-readable status display for this Leadping automation workflow event.
+        summary:
+          type: string
+          description: Human-readable summary for this Leadping automation workflow event.
+        reasonCode:
+          type:
+          - 'null'
+          - string
+          description: Reason or diagnostic code that explains the current outcome for this Leadping automation workflow event.
+        occurredAt:
+          type: string
+          description: Date and time when the automation workflow event event occurred.
+          format: date-time
+      description: User-safe workflow history event returned for lead automation status.
+    AutomationActionRunRecord:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this automation action run record.
+        automationRunId:
+          type:
+          - 'null'
+          - string
+          description: Automation run ID connected to this action or event record.
+        actionId:
+          type:
+          - 'null'
+          - string
+          description: Automation action ID executed or evaluated by this automation action run record.
+        actionType:
+          type: string
+          description: Automation action type, such as send SMS or create task.
+        order:
+          type: integer
+          description: Sort order used to evaluate or display this automation action run record.
+          format: int32
+        status:
+          type: string
+          description: Current lifecycle status for this automation action run record in the Leadping API.
+        startedAt:
+          type: string
+          description: UTC timestamp when processing started for this automation action run record.
+          format: date-time
+        scheduledAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when this automation action run record was scheduled.
+          format: date-time
+        completedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when processing completed for this automation action run record.
+          format: date-time
+        failedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when processing failed for this automation action run record.
+          format: date-time
+        processingAttempts:
+          type: integer
+          description: Number of processing attempts made for this workflow or delivery request.
+          format: int32
+        nextRetryAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping will retry this automation action run record.
+          format: date-time
+        failureCode:
+          type:
+          - 'null'
+          - string
+          description: Machine-readable failure code for troubleshooting this automation action run record.
+      description: History record schema for Leadping API automation action run record data exposed in automation and audit views.
+    AutomationRequest:
+      required:
+      - name
+      type: object
+      properties:
+        description:
+          type:
+          - 'null'
+          - string
+          description: Human-readable description that explains this automation configuration request to API users.
+        enabled:
+          type:
+          - 'null'
+          - boolean
+          description: Indicates whether this automation configuration request is active and available in the Leadping API.
+        scope:
+          type:
+          - 'null'
+          - string
+          description: Scope that limits where this automation configuration request applies in Leadping.
+        visibility:
+          type:
+          - 'null'
+          - string
+          description: Visibility level that controls who can see this automation configuration request.
+        triggers:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationTrigger'
+            description: Public Leadping API schema for automation trigger data.
+          description: Automation triggers that can start this workflow.
+        conditionGroups:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationConditionGroup'
+            description: Public Leadping API schema for automation condition group data.
+          description: Grouped automation conditions used to decide whether this workflow should run.
+        actions:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationAction'
+            description: Public Leadping API schema for automation action data.
+          description: Automation actions configured or returned for this workflow.
+        connections:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationConnection'
+            description: A directed connection between two nodes in an automation graph.
+          description: Directed connections between nodes in this automation graph.
+        version:
+          type: integer
+          description: Version number for this automation configuration request schema or saved configuration.
+          format: int32
+        name:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: Human-readable display name for the resource, subject to the API's maximum name length.
+        id:
+          type:
+          - 'null'
+          - string
+          description: Stable unique identifier of an existing resource to update; omit it when the API assigns an identifier during creation.
+      description: Defines the fields clients can send when working with automation configuration.
+    ExactMatchFilter:
+      type: object
+      properties:
+        value:
+          description: Scalar value the target field must equal; its JSON type should match the field being queried.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records whose named field equals a supplied scalar value.
+    AutomationTableRow:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this automation table row.
+        name:
+          type: string
+          description: Display name for this automation table row in the Leadping API.
+        description:
+          type: string
+          description: Human-readable description that explains this automation table row to API users.
+        enabled:
+          type: boolean
+          description: Indicates whether this automation table row is active and available in the Leadping API.
+        organizationId:
+          type:
+          - 'null'
+          - string
+          description: Organization ID that owns this automation.
+        createdByUserId:
+          type:
+          - 'null'
+          - string
+          description: User ID of the person who created this automation table row.
+        scope:
+          type:
+          - 'null'
+          - string
+          description: Scope that limits where this automation table row applies in Leadping.
+        visibility:
+          type:
+          - 'null'
+          - string
+          description: Visibility level that controls who can see this automation table row.
+        managementLevel:
+          type:
+          - 'null'
+          - string
+          description: Management level that controls whether Leadping or the organization owns this automation setting.
+        isSystemManaged:
+          type: boolean
+          description: Indicates whether Leadping manages this automation table row automatically instead of a user.
+        triggerType:
+          type: string
+          description: Automation trigger type that starts the workflow.
+        triggerSummary:
+          type: string
+          description: Human-readable summary of the automation trigger that started the workflow.
+        conditionSummary:
+          type: string
+          description: Human-readable summary of the automation condition evaluation.
+        actionSummary:
+          type: string
+          description: Human-readable summary of the automation action outcome.
+        ruleSentence:
+          type: string
+          description: Human-readable explanation of the automation rule being evaluated.
+        lastRunStatus:
+          type:
+          - 'null'
+          - string
+          description: Status from the most recent automation run.
+        lastRunAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when this automation last ran.
+          format: date-time
+        modifiedAt:
+          type: string
+          description: UTC timestamp when this automation table row was last modified.
+          format: date-time
+        healthSummary:
+          type: string
+          description: Human-readable health summary for this automation table row.
+        user:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: User summary connected to this automation table row.
+        organization:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Organization summary connected to this automation table row.
+      description: Summarizes automation data in paginated and searchable results.
+    AutomationRequestSnapshot:
+      type: object
+      properties:
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique Leadping identifier for this automation request snapshot.
+        name:
+          type:
+          - 'null'
+          - string
+          description: Display name for this automation request snapshot in the Leadping API.
+        description:
+          type:
+          - 'null'
+          - string
+          description: Human-readable description that explains this automation request snapshot to API users.
+        enabled:
+          type:
+          - 'null'
+          - boolean
+          description: Indicates whether this automation request snapshot is active and available in the Leadping API.
+        organizationId:
+          type:
+          - 'null'
+          - string
+          description: Organization ID captured when the automation request snapshot was created.
+        createdByUserId:
+          type:
+          - 'null'
+          - string
+          description: User ID of the person who created this automation request snapshot.
+        scope:
+          type:
+          - 'null'
+          - string
+          description: Scope that limits where this automation request snapshot applies in Leadping.
+        visibility:
+          type:
+          - 'null'
+          - string
+          description: Visibility level that controls who can see this automation request snapshot.
+        managementLevel:
+          type:
+          - 'null'
+          - string
+          description: Management level that controls whether Leadping or the organization owns this automation setting.
+        isSystemManaged:
+          type: boolean
+          description: Indicates whether Leadping manages this automation request snapshot automatically instead of a user.
+        triggers:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationTrigger'
+            description: Public Leadping API schema for automation trigger data.
+          description: Automation triggers that can start this workflow.
+        conditionGroups:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationConditionGroup'
+            description: Public Leadping API schema for automation condition group data.
+          description: Grouped automation conditions used to decide whether this workflow should run.
+        actions:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationAction'
+            description: Public Leadping API schema for automation action data.
+          description: Automation actions configured or returned for this workflow.
+        connections:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationConnection'
+            description: A directed connection between two nodes in an automation graph.
+          description: Directed connections between nodes in this automation graph.
+      description: Public Leadping API schema for automation request snapshot data.
+    RangeFilter:
+      type: object
+      properties:
+        greaterThan:
+          description: Exclusive lower bound; matching field values must be greater than this value.
+        greaterThanOrEqual:
+          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
+        lessThan:
+          description: Exclusive upper bound; matching field values must be less than this value.
+        lessThanOrEqual:
+          description: Inclusive upper bound; matching field values must be less than or equal to this value.
+        field:
+          type: string
+          description: Serializable field name to evaluate; supported names are determined by the queried resource.
+      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+    AutomationPreviewResponse:
+      type: object
+      properties:
+        triggerType:
+          type:
+          - 'null'
+          - string
+          description: Automation trigger type that starts the workflow.
+        samplePayload:
+          type: object
+          additionalProperties:
+            type: string
+          description: Example payload clients can use to understand this automation preview response format.
+        validation:
+          allOf:
+          - $ref: '#/components/schemas/AutomationValidationResult'
+          description: Validation result returned for the automation configuration.
+        conditionResults:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationPreviewConditionResult'
+            description: Result schema for the Leadping API automation preview condition result returned by lookup and validation endpoints.
+          description: Condition evaluation results returned by the automation preview.
+        actionResults:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationPreviewActionResult'
+            description: Result schema for the Leadping API automation preview action result returned by lookup and validation endpoints.
+          description: Action preview results showing what the automation would do.
+        warnings:
+          type: array
+          items:
+            type: string
+          description: Warnings returned for this automation preview response that do not necessarily block processing.
+      description: Describes automation preview data returned by Leadping.
     AutomationPreviewRequest:
       required:
       - automation
@@ -1467,147 +1605,29 @@ components:
           - string
           description: Automation trigger type that starts the workflow.
       description: Defines the fields clients can send when working with automation preview.
-    AutomationPreviewConditionResult:
+    AutomationPreviewActionResult:
       type: object
       properties:
-        conditionId:
+        actionId:
           type:
           - 'null'
           - string
-          description: Automation condition ID evaluated by this preview result.
+          description: Automation action ID executed or evaluated by this automation preview action result.
         summary:
           type: string
-          description: Short human-readable summary of this automation preview condition result for lists, timelines, and notifications.
-        passed:
+          description: Short human-readable summary of this automation preview action result for lists, timelines, and notifications.
+        renderedOutput:
+          type: string
+          description: Rendered preview output produced by this automation preview action result.
+        wouldHaveSideEffect:
           type: boolean
-          description: Indicates whether this automation preview condition result passed the preview or validation check.
-      description: Result schema for the Leadping API automation preview condition result returned by lookup and validation endpoints.
-    ExactMatchFilter:
-      type: object
-      properties:
-        value:
-          description: Scalar value the target field must equal; its JSON type should match the field being queried.
-        field:
-          type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records whose named field equals a supplied scalar value.
-    AutomationConsoleResponse:
-      type: object
-      properties:
-        automationId:
-          type: string
-          description: Unique identifier of the automation whose execution history is returned.
-        runs:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AutomationWorkflowRunResponse'
-            description: User-safe automation workflow run status returned for a lead.
-          description: Recent persisted workflow runs for the automation, ordered for console display.
-      description: Recent persisted execution runs for an automation console.
-    AutomationTrigger:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this automation trigger.
-        type:
-          type: string
-          description: Type classification used to route and interpret this automation trigger in the Leadping API.
-        displayName:
-          type:
-          - 'null'
-          - string
-          description: Human-readable display name shown for this automation trigger.
-        isEnabled:
-          type: boolean
-          description: Indicates whether this automation trigger is active and allowed to run.
-        settings:
-          type: object
-          additionalProperties:
-            type: string
-          description: Key-value settings that configure how this automation trigger behaves.
-      description: Public Leadping API schema for automation trigger data.
-    AutomationConditionGroup:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this automation condition group.
-        mode:
-          type: string
-          description: Execution mode that controls how this automation condition group is evaluated.
-        conditions:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AutomationCondition'
-            description: Public Leadping API schema for automation condition data.
-          description: Automation conditions evaluated before an action or workflow runs.
-      description: Public Leadping API schema for automation condition group data.
-    AutomationValidationResult:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          description: Validation or processing errors returned for this automation validation result.
+          description: Indicates whether the automation preview would perform an external action if executed live.
         warnings:
           type: array
           items:
             type: string
-          description: Warnings returned for this automation validation result that do not necessarily block processing.
-      description: Result schema for the Leadping API automation validation result returned by lookup and validation endpoints.
-    AutomationCondition:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this automation condition.
-        type:
-          type: string
-          description: Type classification used to route and interpret this automation condition in the Leadping API.
-        operator:
-          type:
-          - 'null'
-          - string
-          description: Automation comparison operator used by this condition.
-        isEnabled:
-          type: boolean
-          description: Indicates whether this automation condition is active and allowed to run.
-        settings:
-          type: object
-          additionalProperties:
-            type: string
-          description: Key-value settings that configure how this automation condition behaves.
-      description: Public Leadping API schema for automation condition data.
-    AutomationConnection:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for this connection.
-        sourceNodeId:
-          type: string
-          description: Graph node identifier where the connection begins.
-        targetNodeId:
-          type: string
-          description: Graph node identifier where the connection ends.
-      description: A directed connection between two nodes in an automation graph.
-    IdNamePair:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          type: string
-          description: Stable unique identifier of the referenced resource.
-        name:
-          type: string
-          description: Human-readable display name of the referenced resource.
-      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
+          description: Warnings returned for this automation preview action result that do not necessarily block processing.
+      description: Result schema for the Leadping API automation preview action result returned by lookup and validation endpoints.
     AutomationWorkflowRunResponse:
       type: object
       properties:
@@ -1752,43 +1772,23 @@ components:
             description: User-safe workflow history event returned for lead automation status.
           description: Collection of events included with this Leadping automation workflow run.
       description: User-safe automation workflow run status returned for a lead.
-    AutomationPreviewResponse:
+    AutomationConditionGroup:
       type: object
       properties:
-        triggerType:
-          type:
-          - 'null'
-          - string
-          description: Automation trigger type that starts the workflow.
-        samplePayload:
-          type: object
-          additionalProperties:
-            type: string
-          description: Example payload clients can use to understand this automation preview response format.
-        validation:
-          allOf:
-          - $ref: '#/components/schemas/AutomationValidationResult'
-          description: Validation result returned for the automation configuration.
-        conditionResults:
+        id:
+          type: string
+          description: Unique Leadping identifier for this automation condition group.
+        mode:
+          type: string
+          description: Execution mode that controls how this automation condition group is evaluated.
+        conditions:
           type: array
           items:
             allOf:
-            - $ref: '#/components/schemas/AutomationPreviewConditionResult'
-            description: Result schema for the Leadping API automation preview condition result returned by lookup and validation endpoints.
-          description: Condition evaluation results returned by the automation preview.
-        actionResults:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AutomationPreviewActionResult'
-            description: Result schema for the Leadping API automation preview action result returned by lookup and validation endpoints.
-          description: Action preview results showing what the automation would do.
-        warnings:
-          type: array
-          items:
-            type: string
-          description: Warnings returned for this automation preview response that do not necessarily block processing.
-      description: Describes automation preview data returned by Leadping.
+            - $ref: '#/components/schemas/AutomationCondition'
+            description: Public Leadping API schema for automation condition data.
+          description: Automation conditions evaluated before an action or workflow runs.
+      description: Public Leadping API schema for automation condition group data.
   securitySchemes:
     Bearer:
       type: http

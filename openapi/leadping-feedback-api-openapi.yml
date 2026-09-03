@@ -84,6 +84,44 @@ paths:
       - Bearer: []
 components:
   schemas:
+    FeedbackCreateRequest:
+      type: object
+      properties:
+        type:
+          enum:
+          - bug
+          - confusing
+          - feature_request
+          - missing_capability
+          - other
+          type:
+          - 'null'
+          - string
+          description: Defines the type of product feedback submitted from inside Leadping.
+        message:
+          type:
+          - 'null'
+          - string
+          description: Message text supplied by the user or returned by the Leadping API for this feedback creation request.
+        route:
+          type:
+          - 'null'
+          - string
+          description: Application route where this feedback creation request originated or should direct the user.
+        area:
+          type:
+          - 'null'
+          - string
+          description: Product area or app section connected to this feedback creation request.
+        allowContact:
+          type: boolean
+          description: Indicates whether the submitter permits Leadping support to contact them about the feedback.
+        clientVersion:
+          type:
+          - 'null'
+          - string
+          description: Client application version that submitted this feedback creation request.
+      description: Defines the fields clients can send when working with feedback creation.
     FeedbackType:
       enum:
       - bug
@@ -93,17 +131,6 @@ components:
       - other
       type: string
       description: Defines the type of product feedback submitted from inside Leadping.
-    FeedbackStatus:
-      enum:
-      - new
-      - reviewed
-      - planned
-      - in_progress
-      - shipped
-      - closed
-      - ignored
-      type: string
-      description: Defines admin triage statuses for durable product feedback.
     FeedbackResponse:
       type: object
       properties:
@@ -190,44 +217,17 @@ components:
         status: 400
         detail: One or more request fields are invalid.
         instance: /leads/intake
-    FeedbackCreateRequest:
-      type: object
-      properties:
-        type:
-          enum:
-          - bug
-          - confusing
-          - feature_request
-          - missing_capability
-          - other
-          type:
-          - 'null'
-          - string
-          description: Defines the type of product feedback submitted from inside Leadping.
-        message:
-          type:
-          - 'null'
-          - string
-          description: Message text supplied by the user or returned by the Leadping API for this feedback creation request.
-        route:
-          type:
-          - 'null'
-          - string
-          description: Application route where this feedback creation request originated or should direct the user.
-        area:
-          type:
-          - 'null'
-          - string
-          description: Product area or app section connected to this feedback creation request.
-        allowContact:
-          type: boolean
-          description: Indicates whether the submitter permits Leadping support to contact them about the feedback.
-        clientVersion:
-          type:
-          - 'null'
-          - string
-          description: Client application version that submitted this feedback creation request.
-      description: Defines the fields clients can send when working with feedback creation.
+    FeedbackStatus:
+      enum:
+      - new
+      - reviewed
+      - planned
+      - in_progress
+      - shipped
+      - closed
+      - ignored
+      type: string
+      description: Defines admin triage statuses for durable product feedback.
   securitySchemes:
     Bearer:
       type: http
