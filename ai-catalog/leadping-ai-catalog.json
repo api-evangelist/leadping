@@ -1,0 +1,57 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "Leadping",
+    "identifier": "did:web:leadping.ai"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:leadping.ai:server:mcp",
+      "displayName": "Leadping MCP Server",
+      "type": "application/mcp-server-card+json",
+      "url": "https://leadping.ai/.well-known/mcp/server-card.json",
+      "description": "Authenticated Model Context Protocol tools for working with Leadping.",
+      "representativeQueries": [
+        "show me the Leadping tools available to my AI agent",
+        "connect an MCP client to Leadping",
+        "manage Leadping resources through MCP"
+      ]
+    },
+    {
+      "identifier": "urn:air:leadping.ai:agent:lead-research",
+      "displayName": "Leadping Lead Research Agent",
+      "type": "application/a2a-agent-card+json",
+      "url": "https://api.leadping.ai/.well-known/agent-card.json",
+      "description": "An authenticated Agent2Agent service for organization-scoped lead research.",
+      "representativeQueries": [
+        "research this lead for my sales team",
+        "find useful context about a prospective customer",
+        "enrich a Leadping lead with public research"
+      ]
+    },
+    {
+      "identifier": "urn:air:leadping.ai:api:openapi",
+      "displayName": "Leadping OpenAPI Description",
+      "type": "application/vnd.oai.openapi+json",
+      "url": "https://leadping.ai/docs/openapi.json",
+      "description": "The machine-readable contract for the Leadping HTTP API.",
+      "representativeQueries": [
+        "how can I send a lead to Leadping through the API",
+        "show me the Leadping API endpoints and request schemas",
+        "generate an API client for Leadping"
+      ]
+    },
+    {
+      "identifier": "urn:air:leadping.ai:skill:website",
+      "displayName": "Leadping Website Skill",
+      "type": "text/markdown",
+      "url": "https://leadping.ai/.well-known/agent-skills/leadping-website/SKILL.md",
+      "description": "Instructions for agents navigating Leadping's public product and developer resources.",
+      "representativeQueries": [
+        "help me understand what Leadping does",
+        "find Leadping pricing and product documentation",
+        "locate Leadping authentication and agent integration resources"
+      ]
+    }
+  ]
+}
