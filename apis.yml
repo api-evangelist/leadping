@@ -452,41 +452,6 @@ apis:
     url: rate-limits/leadping-rate-limits.yml
   - type: Vocabulary
     url: vocabulary/leadping-vocabulary.json
-- aid: leadping:leadping-leadstatuses-api
-  name: Leadping Lead Statuses API
-  description: >-
-    Manages the lead statuses used to classify and track leads throughout their lifecycle. Use these endpoints
-    to list, create, update, and archive organization-specific lead statuses for consistent pipeline organization
-    and reporting.
-  humanURL: https://leadping.ai/docs/api-reference
-  baseURL: https://api.leadping.ai
-  tags:
-  - Lead Statuses
-  tags_raw:
-  - LeadStatuses
-  properties:
-  - type: OpenAPI
-    url: openapi/leadping-leadstatuses-api-openapi.yml
-  - type: Documentation
-    url: https://leadping.ai/docs
-  - type: APIReference
-    url: https://leadping.ai/docs/api-reference
-  - type: GettingStarted
-    url: https://leadping.ai/docs/sending-leads-to-leadping
-  - type: Authentication
-    url: authentication/leadping-authentication.yml
-  - type: Conventions
-    url: conventions/leadping-conventions.yml
-  - type: Idempotency
-    url: conventions/leadping-conventions.yml
-  - type: ErrorCatalog
-    url: errors/leadping-problem-types.yml
-  - type: DataModel
-    url: data-model/leadping-data-model.yml
-  - type: RateLimits
-    url: rate-limits/leadping-rate-limits.yml
-  - type: Vocabulary
-    url: vocabulary/leadping-vocabulary.json
 - aid: leadping:leadping-notifications-api
   name: Leadping Notifications API
   description: >-
@@ -570,76 +535,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/leadping-outbounddelivery-api-openapi.yml
-  - type: Documentation
-    url: https://leadping.ai/docs
-  - type: APIReference
-    url: https://leadping.ai/docs/api-reference
-  - type: GettingStarted
-    url: https://leadping.ai/docs/sending-leads-to-leadping
-  - type: Authentication
-    url: authentication/leadping-authentication.yml
-  - type: Conventions
-    url: conventions/leadping-conventions.yml
-  - type: Idempotency
-    url: conventions/leadping-conventions.yml
-  - type: ErrorCatalog
-    url: errors/leadping-problem-types.yml
-  - type: DataModel
-    url: data-model/leadping-data-model.yml
-  - type: RateLimits
-    url: rate-limits/leadping-rate-limits.yml
-  - type: Vocabulary
-    url: vocabulary/leadping-vocabulary.json
-- aid: leadping:leadping-paymentmethods-api
-  name: Leadping Payment Methods API
-  description: >-
-    Manages organization payment methods and billing invoices. Use these endpoints to add, confirm, inspect,
-    and remove payment methods or retrieve invoices associated with the current organization's billing
-    account.
-  humanURL: https://leadping.ai/docs/api-reference
-  baseURL: https://api.leadping.ai
-  tags:
-  - Payment Methods
-  tags_raw:
-  - PaymentMethods
-  properties:
-  - type: OpenAPI
-    url: openapi/leadping-paymentmethods-api-openapi.yml
-  - type: Documentation
-    url: https://leadping.ai/docs
-  - type: APIReference
-    url: https://leadping.ai/docs/api-reference
-  - type: GettingStarted
-    url: https://leadping.ai/docs/sending-leads-to-leadping
-  - type: Authentication
-    url: authentication/leadping-authentication.yml
-  - type: Conventions
-    url: conventions/leadping-conventions.yml
-  - type: Idempotency
-    url: conventions/leadping-conventions.yml
-  - type: ErrorCatalog
-    url: errors/leadping-problem-types.yml
-  - type: DataModel
-    url: data-model/leadping-data-model.yml
-  - type: RateLimits
-    url: rate-limits/leadping-rate-limits.yml
-  - type: Vocabulary
-    url: vocabulary/leadping-vocabulary.json
-- aid: leadping:leadping-phonenumbers-api
-  name: Leadping Phone Numbers API
-  description: >-
-    Manages phone-number discovery, purchasing, assignment, configuration, and compliance. Use these endpoints
-    to search available numbers, manage owned numbers and caller identity, configure messaging or voice
-    behavior, and monitor registration and warmup state.
-  humanURL: https://leadping.ai/docs/api-reference
-  baseURL: https://api.leadping.ai
-  tags:
-  - Phone Numbers
-  tags_raw:
-  - PhoneNumbers
-  properties:
-  - type: OpenAPI
-    url: openapi/leadping-phonenumbers-api-openapi.yml
   - type: Documentation
     url: https://leadping.ai/docs
   - type: APIReference
@@ -1047,6 +942,105 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/leadping-leadping-api-api-openapi.yml
+- aid: leadping:leadping-lead-statuses-api
+  name: Leadping Lead Statuses API
+  description: >-
+    Manages the lead statuses used to classify and track leads throughout their lifecycle. Use these endpoints
+    to list, create, update, and archive organization-specific lead statuses for consistent pipeline organization
+    and reporting.
+  humanURL: https://leadping.ai/docs/mcp-server
+  baseURL: https://api.leadping.ai/mcp
+  tags:
+  - Lead Statuses
+  properties:
+  - type: OpenAPI
+    url: openapi/leadping-lead-statuses-api-openapi.yml
+  - type: Documentation
+    url: https://leadping.ai/docs
+  - type: APIReference
+    url: https://leadping.ai/docs/api-reference
+  - type: GettingStarted
+    url: https://leadping.ai/docs/sending-leads-to-leadping
+  - type: Authentication
+    url: authentication/leadping-authentication.yml
+  - type: Conventions
+    url: conventions/leadping-conventions.yml
+  - type: Idempotency
+    url: conventions/leadping-conventions.yml
+  - type: ErrorCatalog
+    url: errors/leadping-problem-types.yml
+  - type: DataModel
+    url: data-model/leadping-data-model.yml
+  - type: RateLimits
+    url: rate-limits/leadping-rate-limits.yml
+  - type: Vocabulary
+    url: vocabulary/leadping-vocabulary.json
+- aid: leadping:leadping-payment-methods-api
+  name: Leadping Payment Methods API
+  description: >-
+    Manages organization payment methods and billing invoices. Use these endpoints to add, confirm, inspect,
+    and remove payment methods or retrieve invoices associated with the current organization's billing
+    account.
+  humanURL: https://leadping.ai/docs/mcp-server
+  baseURL: https://api.leadping.ai/mcp
+  tags:
+  - Payment Methods
+  properties:
+  - type: OpenAPI
+    url: openapi/leadping-payment-methods-api-openapi.yml
+  - type: Documentation
+    url: https://leadping.ai/docs
+  - type: APIReference
+    url: https://leadping.ai/docs/api-reference
+  - type: GettingStarted
+    url: https://leadping.ai/docs/sending-leads-to-leadping
+  - type: Authentication
+    url: authentication/leadping-authentication.yml
+  - type: Conventions
+    url: conventions/leadping-conventions.yml
+  - type: Idempotency
+    url: conventions/leadping-conventions.yml
+  - type: ErrorCatalog
+    url: errors/leadping-problem-types.yml
+  - type: DataModel
+    url: data-model/leadping-data-model.yml
+  - type: RateLimits
+    url: rate-limits/leadping-rate-limits.yml
+  - type: Vocabulary
+    url: vocabulary/leadping-vocabulary.json
+- aid: leadping:leadping-phone-numbers-api
+  name: Leadping Phone Numbers API
+  description: >-
+    Manages phone-number discovery, purchasing, assignment, configuration, and compliance. Use these endpoints
+    to search available numbers, manage owned numbers and caller identity, configure messaging or voice
+    behavior, and monitor registration and warmup state.
+  humanURL: https://leadping.ai/docs/mcp-server
+  baseURL: https://api.leadping.ai/mcp
+  tags:
+  - Phone Numbers
+  properties:
+  - type: OpenAPI
+    url: openapi/leadping-phone-numbers-api-openapi.yml
+  - type: Documentation
+    url: https://leadping.ai/docs
+  - type: APIReference
+    url: https://leadping.ai/docs/api-reference
+  - type: GettingStarted
+    url: https://leadping.ai/docs/sending-leads-to-leadping
+  - type: Authentication
+    url: authentication/leadping-authentication.yml
+  - type: Conventions
+    url: conventions/leadping-conventions.yml
+  - type: Idempotency
+    url: conventions/leadping-conventions.yml
+  - type: ErrorCatalog
+    url: errors/leadping-problem-types.yml
+  - type: DataModel
+    url: data-model/leadping-data-model.yml
+  - type: RateLimits
+    url: rate-limits/leadping-rate-limits.yml
+  - type: Vocabulary
+    url: vocabulary/leadping-vocabulary.json
 common:
 - type: CapabilityMap
   url: capabilities/leadping-capability-edges.yml
