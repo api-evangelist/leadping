@@ -55,7 +55,7 @@ tags:
 - MCP
 - Lead intake
 - Conversations
-- Automations
+- Automation
 - Suppression & opt-out
 - Webhook
 tags_raw:
@@ -116,7 +116,7 @@ apis:
   tags:
   - Webhook
   - Communications
-  - Automations
+  - Automation
   tags_raw:
   - Webhooks
   - Communications
@@ -166,6 +166,8 @@ apis:
   humanURL: https://leadping.ai/docs/api-reference
   baseURL: https://api.leadping.ai
   tags:
+  - Automation
+  tags_raw:
   - Automations
   properties:
   - type: OpenAPI
