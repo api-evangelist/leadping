@@ -45,7 +45,8 @@ edges:
     of usage events feeding billing, i.e. usage metering for a SaaS commercial model. Not telecom usage
     mediation: this is the vendor''s own SaaS metering ledger, not network CDR collection.'
 - tag: PaymentMethods
-  spec_file: leadping-paymentmethods-api-openapi.yml
+  spec_file: leadping-payment-methods-api-openapi.yml
+  reanchored_from: leadping-paymentmethods-api-openapi.yml
   capability_id: BC-4250.40
   capability_id_l1: BC-4250
   capability_name: Payment Collection & Dunning
