@@ -16,13 +16,13 @@ servers:
 - url: https://api.leadping.ai
   description: Production
 tags:
-- name: PhoneNumbers
+- name: Phone Numbers
   description: Manages phone-number discovery, purchasing, assignment, configuration, and compliance. Use these endpoints to search available numbers, manage owned numbers and caller identity, configure messaging or voice behavior, and monitor registration and warmup state.
 paths:
   /phone-numbers/search:
     post:
       tags:
-      - PhoneNumbers
+      - Phone Numbers
       summary: Search purchasable organization phone numbers
       description: Searches available phone numbers for purchase, applying country, area, and capability filters for lead communication setup.
       operationId: PhoneNumbers_Search
@@ -44,19 +44,29 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '500':
           description: An unexpected server error occurred.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Internal Server Error
+                status: 500
+                detail: The request could not be completed.
         '200':
           description: Returns the phone number search response.
           content:
@@ -68,11 +78,16 @@ paths:
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -81,6 +96,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -96,12 +116,28 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - physical
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
   /phone-numbers/all/organization:
     post:
       tags:
-      - PhoneNumbers
+      - Phone Numbers
       summary: List current-organization phone numbers
       description: Lists phone numbers visible to the current organization with paging, sorting, and filters for messaging, calling, and warmup management.
       operationId: PhoneNumbers_GetAllForCurrentOrganization
@@ -110,14 +146,10 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
           application/*+json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
         required: true
       responses:
         '200':
@@ -125,25 +157,33 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                - $ref: '#/components/schemas/PagedResultOfPhoneNumberTableRow'
-                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+                $ref: '#/components/schemas/PagedResultOfPhoneNumberTableRow'
         '400':
           description: The request was invalid or malformed.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -152,6 +192,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -167,12 +212,28 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - physical
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
   /phone-numbers/outgoing/conversation/{conversationId}:
     post:
       tags:
-      - PhoneNumbers
+      - Phone Numbers
       summary: Select conversation sender number
       description: Selects the outgoing phone number for an existing conversation, considering assignments, overrides, and delivery eligibility.
       operationId: PhoneNumbers_GetOutgoingForConversation
@@ -209,19 +270,29 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -230,6 +301,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -245,12 +321,28 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - physical
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
   /phone-numbers/outgoing/new:
     post:
       tags:
-      - PhoneNumbers
+      - Phone Numbers
       summary: Select new lead sender number
       description: Selects an outgoing phone number for a new outbound lead message using destination, source, and delivery eligibility rules.
       operationId: PhoneNumbers_GetOutgoingForNewOutbound
@@ -280,19 +372,29 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -301,6 +403,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -316,12 +423,28 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - physical
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
   /phone-numbers/outgoing/manual-override:
     post:
       tags:
-      - PhoneNumbers
+      - Phone Numbers
       summary: Validate sender number override
       description: Validates a manual outgoing-number override before use, checking ownership, destination, and delivery eligibility.
       operationId: PhoneNumbers_ValidateManualOverride
@@ -351,19 +474,29 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -372,6 +505,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -387,12 +525,28 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - physical
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
   /phone-numbers/outgoing/conversation/{conversationId}/override:
     post:
       tags:
-      - PhoneNumbers
+      - Phone Numbers
       summary: Set sender number override
       description: Sets the outgoing phone number override for a conversation so future lead messages use the selected eligible number.
       operationId: PhoneNumbers_SetConversationOverride
@@ -429,19 +583,29 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -450,6 +614,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -465,11 +634,27 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - physical
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
     delete:
       tags:
-      - PhoneNumbers
+      - Phone Numbers
       summary: Clear sender number override
       description: Clears a conversation's outgoing-number override so future lead messages return to automatic number selection.
       operationId: PhoneNumbers_ClearConversationOverride
@@ -492,19 +677,29 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -513,6 +708,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -528,12 +728,28 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - safety-critical
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
   /phone-numbers/{phoneNumberId}:
     get:
       tags:
-      - PhoneNumbers
+      - Phone Numbers
       summary: Get organization phone number details by ID
       description: Returns one phone number visible to the current user, including messaging status, assignment, warmup, and purchase metadata.
       operationId: PhoneNumbers_Get
@@ -556,19 +772,29 @@ paths:
         '404':
           description: The requested resource was not found.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -577,6 +803,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -592,11 +823,27 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: connected
+        consequences:
+        - read
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: false
     put:
       tags:
-      - PhoneNumbers
+      - Phone Numbers
       summary: Update organization phone number settings
       description: Updates phone number settings such as its optional label, assignment, messaging options, or warmup configuration.
       operationId: PhoneNumbers_Update
@@ -633,35 +880,55 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '404':
           description: The requested resource was not found.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The request could not be completed.
         '500':
           description: An unexpected server error occurred.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Internal Server Error
+                status: 500
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -670,6 +937,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -685,11 +957,27 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - physical
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
     delete:
       tags:
-      - PhoneNumbers
+      - Phone Numbers
       summary: Delete an organization phone number by ID
       description: Deletes a phone number from the current organization when it should no longer be used for lead communication.
       operationId: PhoneNumbers_Delete
@@ -706,75 +994,55 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            text/plain:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '404':
           description: The requested resource was not found.
           content:
-            text/plain:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The request could not be completed.
         '500':
           description: An unexpected server error occurred.
           content:
-            text/plain:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Internal Server Error
+                status: 500
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            text/plain:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -783,6 +1051,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -798,12 +1071,28 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - safety-critical
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
   /phone-numbers:
     post:
       tags:
-      - PhoneNumbers
+      - Phone Numbers
       summary: Create an organization phone number for messaging
       description: Purchases or creates a phone number for the current organization so it can be assigned to messaging, calls, and lead follow-up.
       operationId: PhoneNumbers_Create
@@ -833,27 +1122,42 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '500':
           description: An unexpected server error occurred.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Internal Server Error
+                status: 500
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -862,6 +1166,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -877,12 +1186,28 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - physical
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
   /phone-numbers/{phoneNumber}/status:
     get:
       tags:
-      - PhoneNumbers
+      - Phone Numbers
       summary: Get organization phone number provider status
       description: Returns provider and Leadping status for a phone number, including messaging warmup, assignments, and verification state.
       operationId: PhoneNumbers_GetStatus
@@ -925,27 +1250,42 @@ paths:
         '400':
           description: The request was invalid or malformed.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '500':
           description: An internal server error occurred.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Internal Server Error
+                status: 500
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -954,6 +1294,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -969,12 +1314,28 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: connected
+        consequences:
+        - read
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: false
   /phone-numbers/{phoneNumberId}/warmup:
     get:
       tags:
-      - PhoneNumbers
+      - Phone Numbers
       summary: Get organization phone number warmup status
       description: Returns warmup status for a phone number, including limits and recent events used for delivery pacing.
       operationId: PhoneNumbers_GetWarmupStatus
@@ -1017,19 +1378,29 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -1038,6 +1409,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -1053,12 +1429,28 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: connected
+        consequences:
+        - read
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: false
   /phone-numbers/is-available-for-purchase:
     post:
       tags:
-      - PhoneNumbers
+      - Phone Numbers
       summary: Check phone number purchase availability
       description: Checks whether a phone number can be purchased for the current organization before creating or assigning it.
       operationId: PhoneNumbers_IsAvailableForPurchase
@@ -1088,27 +1480,42 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '500':
           description: An unexpected server error occurred.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Internal Server Error
+                status: 500
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -1117,6 +1524,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -1132,207 +1544,46 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - physical
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
 components:
   schemas:
-    OutgoingNumberManualOverrideRequest:
-      required:
-      - fromPhoneNumberId
-      - selection
+    PhoneNumberAvailabilityResponse:
       type: object
       properties:
-        fromPhoneNumberId:
+        phoneNumber:
           type: string
-          description: Sender phone number ID used for this outbound SMS or call.
-        selection:
-          allOf:
-          - $ref: '#/components/schemas/OutgoingNumberSelectionRequest'
-          description: Selected outgoing number and selection rationale returned by Leadping.
-      description: Defines the fields clients can send when working with outgoing number manual override.
-    PhoneNumberStatusResponse:
-      type: object
-      properties:
-        number:
-          type: string
-          description: E.164 phone number exposed by this phone number warmup status.
-        messagesPossible:
-          type: integer
-          description: Indicates whether this phone number can currently send SMS messages.
-          format: int32
-        callsPossible:
-          type: integer
-          description: Indicates whether this phone number can currently place outbound calls.
-          format: int32
-        smsWarmup:
+          description: Phone number used by this phone number availability result for calls, SMS, lookup, or routing.
+        isAvailable:
+          type: boolean
+          description: Indicates whether this phone number is available for purchase or assignment.
+        price:
           type:
           - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/SmsReadinessStatusResponse'
-          description: SMS warmup status for this phone number.
-        outboundCapacity:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/OutboundPhoneNumberCapacity'
-          description: Current outbound SMS and voice capacity for this phone number.
-        optOutMetrics:
-          allOf:
-          - $ref: '#/components/schemas/PhoneNumberOptOutMetricsResponse'
-          description: Recent SMS opt-out metrics used to evaluate sender health and compliance risk.
-        trafficMetrics:
-          allOf:
-          - $ref: '#/components/schemas/PhoneNumberTrafficMetricsResponse'
-          description: Phone number traffic metrics for recent SMS and call activity.
-        recentEvents:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/PhoneNumberMessagingEventResponse'
-            description: Describes a messaging event used to calculate delivery, failure, and opt-out metrics for a phone number.
-          description: Recent workflow events returned for timeline and troubleshooting.
-      description: Describes a phone number's current warmup stage, limits, progress, and readiness for production traffic.
-    SmsReadinessHealthStatus:
-      enum:
-      - Not Evaluated
-      - Evaluating
-      - Healthy
-      - Needs Attention
-      - Blocked
-      type: string
-      description: Summarizes the severity of conditions affecting an organization's ability to send compliant SMS or MMS traffic.
-    RequestDataOptions:
-      type: object
-      properties:
-        pageSize:
-          type: integer
-          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
-          format: int32
-        continuationToken:
+          - number
+          description: Lead price or transaction price supplied to the Leadping API.
+          format: double
+        currency:
           type:
           - 'null'
           - string
-          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
-        orderBy:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/OrderByOption'
-            description: Defines one field and direction used to order an API query result set.
-          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
-        includeCount:
-          type:
-          - 'null'
-          - boolean
-          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
-        search:
-          type:
-          - 'null'
-          - string
-          description: Free-text search term applied to the configured SearchFields.
-        searchFields:
-          type:
-          - 'null'
-          - array
-          items:
-            type: string
-          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
-        filters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/ExactMatchFilter'
-            description: Selects records whose named field equals a supplied scalar value.
-          description: Exact-match conditions that require each named field to equal its supplied value.
-        rangeFilters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/RangeFilter'
-            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
-          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
-      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
-    PhoneLocationSource:
-      type: object
-      properties:
-        method:
-          type: string
-          description: The resolution method, such as telnyx-city-state, coordinates, phone-number, or state-default.
-        query:
-          type:
-          - 'null'
-          - string
-          description: The city, state, coordinates, phone number, or representative ZIP used by the method.
-      description: Describes how a phone location value was resolved.
-    PhoneNumberTrafficMetricsResponse:
-      type: object
-      properties:
-        windowDays:
-          type: integer
-          description: Number of days included in the metrics reporting window.
-          format: int32
-        windowStartedAt:
-          type: string
-          description: UTC timestamp when the metrics reporting window starts.
-          format: date-time
-        smsSentCount:
-          type: integer
-          description: Number of SMS messages sent during this metrics window.
-          format: int32
-        smsFailedCount:
-          type: integer
-          description: Number of SMS messages that failed during this metrics window.
-          format: int32
-        mmsSentCount:
-          type: integer
-          description: Number of MMS messages sent during this metrics window.
-          format: int32
-        mmsFailedCount:
-          type: integer
-          description: Number of MMS messages that failed during this metrics window.
-          format: int32
-        callPlacedCount:
-          type: integer
-          description: Number of outbound calls placed during this metrics window.
-          format: int32
-        callFailedCount:
-          type: integer
-          description: Number of outbound calls that failed during this metrics window.
-          format: int32
-        callConnectedCount:
-          type: integer
-          description: Number of outbound calls that connected during this metrics window.
-          format: int32
-        callShortCount:
-          type: integer
-          description: Number of connected outbound calls shorter than 30 seconds during this metrics window.
-          format: int32
-        callInvalidNumberCount:
-          type: integer
-          description: Number of outbound calls that failed because the destination number was invalid during this metrics window.
-          format: int32
-        trend:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/PhoneNumberTrafficTrendPoint'
-            description: Time-series data point schema for Leadping API phone number traffic trend bucket charts and metrics.
-          description: Time-series buckets that show how the metric changes across the reporting window.
-      description: Describes phone number traffic metrics data returned by Leadping.
-    PhoneNumberSearchResult:
-      type: object
-      properties:
-        number:
-          type: string
-          description: E.164 phone number exposed by this phone number search result.
+          description: ISO currency code used for the monetary amounts in this phone number availability result.
         location:
           type:
           - 'null'
@@ -1340,31 +1591,261 @@ components:
           allOf:
           - $ref: '#/components/schemas/PhoneNumberLocation'
           description: Geographic location metadata for the phone number, lead, or lookup result.
-      description: Result schema for the Leadping API phone number search result returned by lookup and validation endpoints.
-    PhoneNumberAvailabilityRequest:
-      required:
-      - phoneNumber
+      description: Reports whether a phone number is available for purchase or assignment and explains any blocking condition.
+    EligibleOutgoingNumberResponse:
       type: object
       properties:
-        phoneNumber:
+        phoneNumberId:
           type: string
-          description: Phone number to check for availability, formatted for provider lookup.
-      description: Defines the phone number and capability requirements Leadping should verify before purchase or assignment.
-    OrderByOption:
-      type: object
-      properties:
-        field:
+          description: Leadping phone number ID connected to this eligible outgoing phone number.
+        number:
           type: string
-          description: Serializable field name used for sorting; supported names are determined by the queried resource.
-        direction:
+          description: E.164 phone number exposed by this eligible outgoing phone number.
+        displayNumber:
+          type: string
+          description: Human-readable phone number shown in Leadping UI and API responses.
+        healthStatus:
           enum:
-          - asc
-          - desc
+          - Not Evaluated
+          - Evaluating
+          - Healthy
+          - Needs Attention
+          - Blocked
           type:
           - 'null'
           - string
-          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
-      description: Defines one field and direction used to order an API query result set.
+          description: Summarizes the severity of conditions affecting an organization's ability to send compliant SMS or MMS traffic.
+        healthLabel:
+          type:
+          - 'null'
+          - string
+          description: Short label describing the health state for display in dashboards.
+        healthWarning:
+          type:
+          - 'null'
+          - string
+          description: Warning text that explains a potential health or readiness issue.
+        canSend:
+          type: boolean
+          description: Indicates whether Leadping can send outbound messages using this eligible outgoing phone number.
+        selectionReason:
+          allOf:
+          - $ref: '#/components/schemas/OutgoingNumberSelectionReason'
+          description: Reason Leadping selected this outbound sender number.
+        reasonLabel:
+          type: string
+          description: Human-readable label for the reason code on this eligible outgoing phone number.
+        label:
+          type:
+          - 'null'
+          - string
+          description: Short display label for this eligible outgoing phone number, formatted for charts, filters, or list views.
+        campaignId:
+          type:
+          - 'null'
+          - string
+          description: Messaging campaign identifier associated with this eligible outgoing phone number.
+        sourceId:
+          type:
+          - 'null'
+          - string
+          description: Lead source ID used to determine this phone number's outbound eligibility.
+        teamId:
+          type:
+          - 'null'
+          - string
+          description: Organization ID used to determine this phone number's outbound eligibility.
+        isSelected:
+          type: boolean
+          description: Indicates whether this eligible outgoing phone number was selected for the requested operation.
+      description: Describes a Leadping phone number that is eligible to send an outbound message or place a call.
+    PhoneLocationSource:
+      type: object
+      properties:
+        method:
+          type: string
+          description: The resolution method, such as Telnyx-city-state, coordinates, phone-number, or state-default.
+        query:
+          type:
+          - 'null'
+          - string
+          description: The city, state, coordinates, phone number, or representative ZIP used by the method.
+      description: Describes how a phone location value was resolved.
+    SmsReadinessStatusResponse:
+      type: object
+      properties:
+        phoneNumberId:
+          type: string
+          description: The phone number ID associated with this SMS warmup status.
+        phoneNumber:
+          type: string
+          description: The phone number associated with this SMS warmup status.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/SmsReadinessState'
+          description: The current state for this SMS warmup status.
+        healthStatus:
+          allOf:
+          - $ref: '#/components/schemas/SmsReadinessHealthStatus'
+          description: The current delivery-health assessment for this SMS warmup status.
+        healthScore:
+          type: integer
+          description: The health score metric for this SMS warmup status.
+          format: int32
+        progressPercent:
+          type: integer
+          description: The progress percent metric for this SMS warmup status.
+          format: int32
+        warmupEnabled:
+          type: boolean
+          description: Whether warmup is enabled for this SMS warmup status.
+        uiState:
+          allOf:
+          - $ref: '#/components/schemas/SmsReadinessUiState'
+          description: The current UI state for this SMS warmup status.
+      description: Describes SMS warmup status data returned by Leadping.
+    OutgoingNumberSelectionResponse:
+      type: object
+      properties:
+        canSend:
+          type: boolean
+          description: Indicates whether Leadping can send outbound messages using this outgoing number selection response.
+        setupMessage:
+          type:
+          - 'null'
+          - string
+          description: Human-readable setup guidance shown for this outgoing number selection response.
+        phoneNumberId:
+          type:
+          - 'null'
+          - string
+          description: Leadping phone number ID connected to this outgoing number selection response.
+        number:
+          type:
+          - 'null'
+          - string
+          description: E.164 phone number exposed by this outgoing number selection response.
+        displayNumber:
+          type:
+          - 'null'
+          - string
+          description: Human-readable phone number shown in Leadping UI and API responses.
+        healthStatus:
+          enum:
+          - Not Evaluated
+          - Evaluating
+          - Healthy
+          - Needs Attention
+          - Blocked
+          type:
+          - 'null'
+          - string
+          description: Summarizes the severity of conditions affecting an organization's ability to send compliant SMS or MMS traffic.
+        healthLabel:
+          type:
+          - 'null'
+          - string
+          description: Short label describing the health state for display in dashboards.
+        healthWarning:
+          type:
+          - 'null'
+          - string
+          description: Warning text that explains a potential health or readiness issue.
+        selectionReason:
+          enum:
+          - StickyConversation
+          - LeadAssigned
+          - CampaignOrSource
+          - Preferred
+          - LocalArea
+          - HealthyPool
+          - FallbackDefault
+          - ManualOverride
+          type:
+          - 'null'
+          - string
+          description: Explains why Leadping selected, rejected, or substituted an outgoing caller or messaging number.
+        reasonLabel:
+          type:
+          - 'null'
+          - string
+          description: Human-readable label for the reason code on this outgoing number selection response.
+        wasManuallyOverridden:
+          type: boolean
+          description: Indicates whether a user manually overrode Leadping's automatic number selection for this outgoing number selection response.
+        campaignId:
+          type:
+          - 'null'
+          - string
+          description: Messaging campaign identifier associated with this outgoing number selection response.
+        sourceId:
+          type:
+          - 'null'
+          - string
+          description: Lead source ID considered when Leadping selected the outgoing phone number.
+        eligibleNumbers:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/EligibleOutgoingNumberResponse'
+            description: Describes a Leadping phone number that is eligible to send an outbound message or place a call.
+          description: Phone numbers that are eligible to send the requested outbound message or call.
+      description: Describes outgoing number selection data returned by Leadping.
+    PhoneNumberLocation:
+      type: object
+      properties:
+        location:
+          type:
+          - 'null'
+          - string
+          description: Geographic location metadata for the phone number, lead, or lookup result.
+        state:
+          type:
+          - 'null'
+          - string
+          description: State, province, or region for the lead or organization postal address.
+        canonicalCity:
+          type:
+          - 'null'
+          - string
+          description: Canonical city resolved by Leadping from its ZIP-code geography data.
+        canonicalState:
+          type:
+          - 'null'
+          - string
+          description: Canonical state or territory abbreviation resolved by Leadping.
+        countryCode:
+          type:
+          - 'null'
+          - string
+          description: Country code for the phone number or location represented by this phone number location.
+        coordinate:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/Coordinate'
+          description: Latitude and longitude coordinate for this phone number location.
+        coordinateSource:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLocationSource'
+          description: Describes how the coordinate was resolved.
+        timeZoneId:
+          type:
+          - 'null'
+          - string
+          description: IANA or Windows time zone identifier used for local scheduling and reporting.
+        timeZoneSource:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLocationSource'
+          description: Describes how the time zone was resolved.
+      description: Public Leadping API schema for phone number location data.
     PagedResultOfPhoneNumberTableRow:
       type: object
       properties:
@@ -1374,62 +1855,115 @@ components:
             allOf:
             - $ref: '#/components/schemas/PhoneNumberTableRow'
             description: Summarizes phone number data in paginated and searchable results.
-          description: Items included in the current page, in the order determined by the query.
         pageSize:
           type: integer
-          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
           format: int32
         totalCount:
           type:
           - 'null'
           - integer
-          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
           format: int32
         continuationToken:
           type:
           - 'null'
           - string
-          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
-      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
-    PhoneNumberTrafficTrendPoint:
+    IdNamePair:
+      required:
+      - id
+      - name
       type: object
       properties:
-        startAt:
+        id:
           type: string
-          description: UTC timestamp when this reporting bucket starts.
-          format: date-time
-        endAt:
+        name:
           type: string
-          description: UTC timestamp when this reporting bucket ends.
+      description: User summary connected to this automation configuration response.
+    PhoneNumberMessagingEventResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this phone number messaging event.
+        createdAt:
+          type: string
+          description: UTC timestamp when this phone number messaging event was created.
           format: date-time
         label:
           type: string
-          description: Short display label for this phone number traffic trend bucket, formatted for charts, filters, or list views.
-        smsSentCount:
+          description: Short display label for this phone number messaging event, formatted for charts, filters, or list views.
+        eventType:
+          type: string
+          description: Event type used to classify this timeline, SMS, call, or automation event.
+        direction:
+          type: string
+          description: Communication direction for this phone number messaging event, such as inbound or outbound.
+        fromPhoneNumber:
+          type: string
+          description: Sender phone number used for this communication.
+        toPhoneNumber:
+          type: string
+          description: Recipient phone number used for this communication.
+        textPreview:
+          type: string
+          description: Short preview of the SMS or conversation text for this phone number messaging event.
+        isOptOut:
+          type: boolean
+          description: Indicates whether the recipient has opted out of further SMS communication.
+      description: Describes a messaging event used to calculate delivery, failure, and opt-out metrics for a phone number.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
           type: integer
-          description: Number of SMS messages sent during this metrics window.
           format: int32
-        smsFailedCount:
-          type: integer
-          description: Number of SMS messages that failed during this metrics window.
-          format: int32
-        mmsSentCount:
-          type: integer
-          description: Number of MMS messages sent during this metrics window.
-          format: int32
-        mmsFailedCount:
-          type: integer
-          description: Number of MMS messages that failed during this metrics window.
-          format: int32
-        callPlacedCount:
-          type: integer
-          description: Number of outbound calls placed during this metrics window.
-          format: int32
-        callFailedCount:
-          type: integer
-          description: Number of outbound calls that failed during this metrics window.
-          format: int32
-      description: Time-series data point schema for Leadping API phone number traffic trend bucket charts and metrics.
+        continuationToken:
+          type:
+          - 'null'
+          - string
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/OrderByOption'
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+        search:
+          type:
+          - 'null'
+          - string
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/ExactMatchFilter'
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/RangeFilter'
+    PhoneNumberOutboundHealthStatus:
+      enum:
+      - unknown
+      - new
+      - healthy
+      - warmup
+      - limited
+      - cooling_down
+      - suspended
+      - disabled
+      type: string
+      description: Defines phone-number outbound health states used by pacing.
     OutboundPhoneNumberCapacity:
       type: object
       properties:
@@ -1573,299 +2107,6 @@ components:
           description: Start of the next Eastern time hour, when voice hourly capacity resets.
           format: date-time
       description: Reports the sending capacity, current load, and availability of a phone number considered for outbound delivery.
-    PhoneNumberSearchResponse:
-      type: object
-      properties:
-        numbers:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/PhoneNumberSearchResult'
-            description: Result schema for the Leadping API phone number search result returned by lookup and validation endpoints.
-          description: Phone numbers returned or evaluated by this phone number search response.
-      description: Describes phone number search data returned by Leadping.
-    OutgoingNumberSelectionReason:
-      enum:
-      - StickyConversation
-      - LeadAssigned
-      - CampaignOrSource
-      - Preferred
-      - LocalArea
-      - HealthyPool
-      - FallbackDefault
-      - ManualOverride
-      type: string
-      description: Explains why Leadping selected, rejected, or substituted an outgoing caller or messaging number.
-    PhoneNumberRoutingMetadata:
-      type: object
-      properties:
-        smsEnabled:
-          type: boolean
-          description: Indicates whether the phone number can be used for SMS messaging.
-        voiceEnabled:
-          type: boolean
-          description: Indicates whether the phone number can be used for voice calls.
-        teamId:
-          type:
-          - 'null'
-          - string
-          description: Organization ID used to route calls and messages for this phone number.
-        sourceId:
-          type:
-          - 'null'
-          - string
-          description: Lead source ID assigned to this phone number for attribution and routing.
-        campaignId:
-          type:
-          - 'null'
-          - string
-          description: Messaging campaign identifier associated with this phone number routing metadata.
-        tenDlcApplicationId:
-          type:
-          - 'null'
-          - string
-          description: Leadping 10DLC application entity associated with this phone number.
-      description: Public Leadping API schema for phone number routing metadata data.
-    PhoneNumberLocation:
-      type: object
-      properties:
-        location:
-          type:
-          - 'null'
-          - string
-          description: Geographic location metadata for the phone number, lead, or lookup result.
-        state:
-          type:
-          - 'null'
-          - string
-          description: State, province, or region for the lead or organization postal address.
-        canonicalCity:
-          type:
-          - 'null'
-          - string
-          description: Canonical city resolved by Leadping from its ZIP-code geography data.
-        canonicalState:
-          type:
-          - 'null'
-          - string
-          description: Canonical state or territory abbreviation resolved by Leadping.
-        countryCode:
-          type:
-          - 'null'
-          - string
-          description: Country code for the phone number or location represented by this phone number location.
-        coordinate:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/Coordinate'
-          description: Latitude and longitude coordinate for this phone number location.
-        coordinateSource:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/PhoneLocationSource'
-          description: Describes how the coordinate was resolved.
-        timeZoneId:
-          type:
-          - 'null'
-          - string
-          description: IANA or Windows time zone identifier used for local scheduling and reporting.
-        timeZoneSource:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/PhoneLocationSource'
-          description: Describes how the time zone was resolved.
-      description: Public Leadping API schema for phone number location data.
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - 'null'
-          - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
-          type:
-          - 'null'
-          - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-      example:
-        type: https://leadping.ai/docs/errors/validation
-        title: Request validation failed
-        status: 400
-        detail: One or more request fields are invalid.
-        instance: /leads/intake
-    IdNamePair:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          type: string
-          description: Stable unique identifier of the referenced resource.
-        name:
-          type: string
-          description: Human-readable display name of the referenced resource.
-      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
-    OutgoingNumberSelectionResponse:
-      type: object
-      properties:
-        canSend:
-          type: boolean
-          description: Indicates whether Leadping can send outbound messages using this outgoing number selection response.
-        setupMessage:
-          type:
-          - 'null'
-          - string
-          description: Human-readable setup guidance shown for this outgoing number selection response.
-        phoneNumberId:
-          type:
-          - 'null'
-          - string
-          description: Leadping phone number ID connected to this outgoing number selection response.
-        number:
-          type:
-          - 'null'
-          - string
-          description: E.164 phone number exposed by this outgoing number selection response.
-        displayNumber:
-          type:
-          - 'null'
-          - string
-          description: Human-readable phone number shown in Leadping UI and API responses.
-        healthStatus:
-          enum:
-          - Not Evaluated
-          - Evaluating
-          - Healthy
-          - Needs Attention
-          - Blocked
-          type:
-          - 'null'
-          - string
-          description: Summarizes the severity of conditions affecting an organization's ability to send compliant SMS or MMS traffic.
-        healthLabel:
-          type:
-          - 'null'
-          - string
-          description: Short label describing the health state for display in dashboards.
-        healthWarning:
-          type:
-          - 'null'
-          - string
-          description: Warning text that explains a potential health or readiness issue.
-        selectionReason:
-          enum:
-          - StickyConversation
-          - LeadAssigned
-          - CampaignOrSource
-          - Preferred
-          - LocalArea
-          - HealthyPool
-          - FallbackDefault
-          - ManualOverride
-          type:
-          - 'null'
-          - string
-          description: Explains why Leadping selected, rejected, or substituted an outgoing caller or messaging number.
-        reasonLabel:
-          type:
-          - 'null'
-          - string
-          description: Human-readable label for the reason code on this outgoing number selection response.
-        wasManuallyOverridden:
-          type: boolean
-          description: Indicates whether a user manually overrode Leadping's automatic number selection for this outgoing number selection response.
-        campaignId:
-          type:
-          - 'null'
-          - string
-          description: Messaging campaign identifier associated with this outgoing number selection response.
-        sourceId:
-          type:
-          - 'null'
-          - string
-          description: Lead source ID considered when Leadping selected the outgoing phone number.
-        eligibleNumbers:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/EligibleOutgoingNumberResponse'
-            description: Describes a Leadping phone number that is eligible to send an outbound message or place a call.
-          description: Phone numbers that are eligible to send the requested outbound message or call.
-      description: Describes outgoing number selection data returned by Leadping.
-    PhoneNumberAvailabilityResponse:
-      type: object
-      properties:
-        phoneNumber:
-          type: string
-          description: Phone number used by this phone number availability result for calls, SMS, lookup, or routing.
-        isAvailable:
-          type: boolean
-          description: Indicates whether this phone number is available for purchase or assignment.
-        price:
-          type:
-          - 'null'
-          - number
-          description: Lead price or transaction price supplied to the Leadping API.
-          format: double
-        currency:
-          type:
-          - 'null'
-          - string
-          description: ISO currency code used for the monetary amounts in this phone number availability result.
-        location:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/PhoneNumberLocation'
-          description: Geographic location metadata for the phone number, lead, or lookup result.
-      description: Reports whether a phone number is available for purchase or assignment and explains any blocking condition.
-    PhoneNumberOutboundHealthStatus:
-      enum:
-      - unknown
-      - new
-      - healthy
-      - warmup
-      - limited
-      - cooling_down
-      - suspended
-      - disabled
-      type: string
-      description: Defines phone-number outbound health states used by pacing.
-    ExactMatchFilter:
-      type: object
-      properties:
-        value:
-          description: Scalar value the target field must equal; its JSON type should match the field being queried.
-        field:
-          type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records whose named field equals a supplied scalar value.
     OutgoingNumberSelectionRequest:
       type: object
       properties:
@@ -1908,77 +2149,12 @@ components:
           - string
           description: Organization ID used to choose the best outgoing sender number.
       description: Defines the fields clients can send when working with outgoing number selection.
-    RangeFilter:
+    PhoneNumberSearchResult:
       type: object
       properties:
-        greaterThan:
-          description: Exclusive lower bound; matching field values must be greater than this value.
-        greaterThanOrEqual:
-          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
-        lessThan:
-          description: Exclusive upper bound; matching field values must be less than this value.
-        lessThanOrEqual:
-          description: Inclusive upper bound; matching field values must be less than or equal to this value.
-        field:
+        number:
           type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
-    PhoneNumberReadiness:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: Indicates whether phone number warmup is enabled in Leadping.
-        state:
-          enum:
-          - Not Started
-          - In Progress
-          - Paused
-          - Blocked
-          - Ready
-          type:
-          - 'null'
-          - string
-          description: Describes whether an organization is configured and permitted to send SMS or MMS traffic through Leadping.
-        healthStatus:
-          enum:
-          - Not Evaluated
-          - Evaluating
-          - Healthy
-          - Needs Attention
-          - Blocked
-          type:
-          - 'null'
-          - string
-          description: Summarizes the severity of conditions affecting an organization's ability to send compliant SMS or MMS traffic.
-        healthScore:
-          type: integer
-          description: Current warmup health score used to assess phone number warmup.
-          format: int32
-        progressPercent:
-          type: integer
-          description: Warmup completion percentage, from 0 through 100.
-          format: int32
-        callStage:
-          enum:
-          - Stage 0
-          - Stage 1
-          - Stage 2
-          - Stage 3
-          - Stage 4
-          type:
-          - 'null'
-          - string
-          description: Identifies the current traffic-ramp stage of controlled voice warmup for a Leadping-managed phone number.
-      description: Messaging and calling warmup for a Leadping phone number.
-    PhoneNumberSearchRequest:
-      type: object
-      properties:
-        phoneNumber:
-          type:
-          - 'null'
-          - string
-          description: Phone number used by this phone number search request for calls, SMS, lookup, or routing.
+          description: E.164 phone number exposed by this phone number search result.
         location:
           type:
           - 'null'
@@ -1986,77 +2162,74 @@ components:
           allOf:
           - $ref: '#/components/schemas/PhoneNumberLocation'
           description: Geographic location metadata for the phone number, lead, or lookup result.
-      description: Defines the fields clients can send when working with phone number search.
-    SmsReadinessState:
-      enum:
-      - Not Started
-      - In Progress
-      - Paused
-      - Blocked
-      - Ready
-      type: string
-      description: Describes whether an organization is configured and permitted to send SMS or MMS traffic through Leadping.
-    SmsReadinessUiState:
+      description: Result schema for the Leadping API phone number search result returned by lookup and validation endpoints.
+    ExactMatchFilter:
+      required:
+      - field
       type: object
       properties:
-        label:
+        value: {}
+        field:
+          type: string
+    PhoneNumberRequest:
+      required:
+      - number
+      type: object
+      properties:
+        name:
+          type:
+          - 'null'
+          - string
+          description: Human-readable label for the phone number.
+        number:
+          type: string
+          description: E.164 phone number exposed by this phone number update request.
+      description: Defines the fields clients can send when working with phone number update.
+    PhoneNumberResponse:
+      type: object
+      properties:
+        number:
+          type: string
+          description: E.164 phone number exposed by this phone number.
+        phoneIdentityId:
+          type:
+          - 'null'
+          - string
+          description: Identifier of the canonical phone identity for this number.
+        organization:
+          type:
+          - 'null'
+          - object
           allOf:
-          - $ref: '#/components/schemas/SmsReadinessState'
-          description: The human-readable label shown for this SMS readiness UI state.
-        tone:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Organization summary connected to this phone number.
+        leadpingOwned:
+          type: boolean
+          description: Indicates whether Leadping provisions and manages this phone number.
+        routing:
+          allOf:
+          - $ref: '#/components/schemas/PhoneNumberRoutingMetadata'
+          description: Routing metadata that connects this phone number to teams, campaigns, and sources.
+        enabled:
+          type: boolean
+          description: Indicates whether this phone number is active and available in the Leadping API.
+        warmup:
+          allOf:
+          - $ref: '#/components/schemas/PhoneNumberReadiness'
+          description: SMS and call warmup for this phone number.
+        name:
           type: string
-          description: Tone for this SMS readiness UI state.
-        description:
-          type: string
-          description: The human-readable description of this SMS readiness UI state.
-      description: Describes SMS readiness UI state data used in Leadping API requests and responses.
-    PhoneNumberMessagingEventResponse:
-      type: object
-      properties:
         id:
           type: string
-          description: Unique Leadping identifier for this phone number messaging event.
         createdAt:
           type: string
-          description: UTC timestamp when this phone number messaging event was created.
           format: date-time
-        label:
-          type: string
-          description: Short display label for this phone number messaging event, formatted for charts, filters, or list views.
-        eventType:
-          type: string
-          description: Event type used to classify this timeline, SMS, call, or automation event.
-        direction:
-          type: string
-          description: Communication direction for this phone number messaging event, such as inbound or outbound.
-        fromPhoneNumber:
-          type: string
-          description: Sender phone number used for this communication.
-        toPhoneNumber:
-          type: string
-          description: Recipient phone number used for this communication.
-        textPreview:
-          type: string
-          description: Short preview of the SMS or conversation text for this phone number messaging event.
-        isOptOut:
-          type: boolean
-          description: Indicates whether the recipient has opted out of further SMS communication.
-      description: Describes a messaging event used to calculate delivery, failure, and opt-out metrics for a phone number.
-    Coordinate:
-      required:
-      - latitude
-      - longitude
-      type: object
-      properties:
-        latitude:
-          type: number
-          description: Latitude of the geographic coordinate in decimal degrees, from -90 through 90.
-          format: double
-        longitude:
-          type: number
-          description: Longitude of the geographic coordinate in decimal degrees, from -180 through 180.
-          format: double
-      description: Latitude and longitude coordinate for this lead contact profile.
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          format: date-time
+      description: Describes a Leadping-managed phone number, including capabilities, messaging registration, health, and assignment details.
     PhoneNumberTableRow:
       type: object
       properties:
@@ -2105,83 +2278,33 @@ components:
           - string
           description: 10DLC campaign status associated with this sender or SMS event.
       description: Summarizes phone number data in paginated and searchable results.
-    PhoneNumberRequest:
-      required:
-      - name
-      - number
+    PhoneNumberSearchRequest:
       type: object
       properties:
-        number:
-          type: string
-          description: E.164 phone number exposed by this phone number update request.
-        organizationId:
+        phoneNumber:
           type:
           - 'null'
           - string
-          description: Organization ID that owns the phone number being created or updated.
-        enabled:
-          type: boolean
-          description: Indicates whether this phone number update request is active and available in the Leadping API.
-        name:
-          maxLength: 255
-          minLength: 0
-          type: string
-          description: Human-readable display name for the resource, subject to the API's maximum name length.
-        id:
-          type:
-          - 'null'
-          - string
-          description: Stable unique identifier of an existing resource to update; omit it when the API assigns an identifier during creation.
-      description: Defines the fields clients can send when working with phone number update.
-    PhoneNumberResponse:
-      type: object
-      properties:
-        number:
-          type: string
-          description: E.164 phone number exposed by this phone number.
-        phoneIdentityId:
-          type:
-          - 'null'
-          - string
-          description: Identifier of the canonical phone identity for this number.
-        organization:
+          description: Phone number used by this phone number search request for calls, SMS, lookup, or routing.
+        location:
           type:
           - 'null'
           - object
           allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Organization summary connected to this phone number.
-        leadpingOwned:
-          type: boolean
-          description: Indicates whether Leadping provisions and manages this phone number.
-        routing:
-          allOf:
-          - $ref: '#/components/schemas/PhoneNumberRoutingMetadata'
-          description: Routing metadata that connects this phone number to teams, campaigns, and sources.
-        enabled:
-          type: boolean
-          description: Indicates whether this phone number is active and available in the Leadping API.
-        warmup:
-          allOf:
-          - $ref: '#/components/schemas/PhoneNumberReadiness'
-          description: SMS and call warmup for this phone number.
-        name:
-          type: string
-          description: Human-readable display name of the resource.
-        id:
-          type: string
-          description: Stable unique identifier of the resource.
-        createdAt:
-          type: string
-          description: UTC timestamp when the resource was created.
-          format: date-time
-        modifiedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
-          format: date-time
-      description: Describes a Leadping-managed phone number, including capabilities, messaging registration, health, and assignment details.
+          - $ref: '#/components/schemas/PhoneNumberLocation'
+          description: Geographic location metadata for the phone number, lead, or lookup result.
+      description: Defines the fields clients can send when working with phone number search.
+    PhoneNumberSearchResponse:
+      type: object
+      properties:
+        numbers:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/PhoneNumberSearchResult'
+            description: Result schema for the Leadping API phone number search result returned by lookup and validation endpoints.
+          description: Phone numbers returned or evaluated by this phone number search response.
+      description: Describes phone number search data returned by Leadping.
     PhoneNumberOptOutMetricsResponse:
       type: object
       properties:
@@ -2206,51 +2329,149 @@ components:
           description: Percentage of contacted recipients who opted out during this metrics window.
           format: double
       description: Describes phone number opt-out metrics data returned by Leadping.
-    SmsReadinessStatusResponse:
+    PhoneNumberStatusResponse:
       type: object
       properties:
-        phoneNumberId:
-          type: string
-          description: The phone number ID associated with this SMS warmup status.
-        phoneNumber:
-          type: string
-          description: The phone number associated with this SMS warmup status.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/SmsReadinessState'
-          description: The current state for this SMS warmup status.
-        healthStatus:
-          allOf:
-          - $ref: '#/components/schemas/SmsReadinessHealthStatus'
-          description: The current delivery-health assessment for this SMS warmup status.
-        healthScore:
-          type: integer
-          description: The health score metric for this SMS warmup status.
-          format: int32
-        progressPercent:
-          type: integer
-          description: The progress percent metric for this SMS warmup status.
-          format: int32
-        warmupEnabled:
-          type: boolean
-          description: Whether warmup is enabled for this SMS warmup status.
-        uiState:
-          allOf:
-          - $ref: '#/components/schemas/SmsReadinessUiState'
-          description: The current UI state for this SMS warmup status.
-      description: Describes SMS warmup status data returned by Leadping.
-    EligibleOutgoingNumberResponse:
-      type: object
-      properties:
-        phoneNumberId:
-          type: string
-          description: Leadping phone number ID connected to this eligible outgoing phone number.
         number:
           type: string
-          description: E.164 phone number exposed by this eligible outgoing phone number.
-        displayNumber:
+          description: E.164 phone number exposed by this phone number warmup status.
+        messagesPossible:
+          type: integer
+          description: Indicates whether this phone number can currently send SMS messages.
+          format: int32
+        callsPossible:
+          type: integer
+          description: Indicates whether this phone number can currently place outbound calls.
+          format: int32
+        smsWarmup:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/SmsReadinessStatusResponse'
+          description: SMS warmup status for this phone number.
+        outboundCapacity:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/OutboundPhoneNumberCapacity'
+          description: Current outbound SMS and voice capacity for this phone number.
+        optOutMetrics:
+          allOf:
+          - $ref: '#/components/schemas/PhoneNumberOptOutMetricsResponse'
+          description: Recent SMS opt-out metrics used to evaluate sender health and compliance risk.
+        trafficMetrics:
+          allOf:
+          - $ref: '#/components/schemas/PhoneNumberTrafficMetricsResponse'
+          description: Phone number traffic metrics for recent SMS and call activity.
+        recentEvents:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/PhoneNumberMessagingEventResponse'
+            description: Describes a messaging event used to calculate delivery, failure, and opt-out metrics for a phone number.
+          description: Recent workflow events returned for timeline and troubleshooting.
+      description: Describes a phone number's current warmup stage, limits, progress, and readiness for production traffic.
+    Coordinate:
+      required:
+      - latitude
+      - longitude
+      type: object
+      properties:
+        latitude:
+          type: number
+          description: Latitude of the geographic coordinate in decimal degrees, from -90 through 90.
+          format: double
+        longitude:
+          type: number
+          description: Longitude of the geographic coordinate in decimal degrees, from -180 through 180.
+          format: double
+      description: Latitude and longitude coordinate for this lead contact profile.
+    PhoneNumberAvailabilityRequest:
+      required:
+      - phoneNumber
+      type: object
+      properties:
+        phoneNumber:
           type: string
-          description: Human-readable phone number shown in Leadping UI and API responses.
+          description: Phone number to check for availability, formatted for provider lookup.
+      description: Defines the phone number and capability requirements Leadping should verify before purchase or assignment.
+    OutgoingNumberManualOverrideRequest:
+      required:
+      - fromPhoneNumberId
+      - selection
+      type: object
+      properties:
+        fromPhoneNumberId:
+          type: string
+          description: Sender phone number ID used for this outbound SMS or call.
+        selection:
+          allOf:
+          - $ref: '#/components/schemas/OutgoingNumberSelectionRequest'
+          description: Selected outgoing number and selection rationale returned by Leadping.
+      description: Defines the fields clients can send when working with outgoing number manual override.
+    PhoneNumberRoutingMetadata:
+      type: object
+      properties:
+        smsEnabled:
+          type: boolean
+          description: Indicates whether the phone number can be used for SMS messaging.
+        voiceEnabled:
+          type: boolean
+          description: Indicates whether the phone number can be used for voice calls.
+        teamId:
+          type:
+          - 'null'
+          - string
+          description: Organization ID used to route calls and messages for this phone number.
+        sourceId:
+          type:
+          - 'null'
+          - string
+          description: Lead source ID assigned to this phone number for attribution and routing.
+        campaignId:
+          type:
+          - 'null'
+          - string
+          description: Messaging campaign identifier associated with this phone number routing metadata.
+        tenDlcApplicationId:
+          type:
+          - 'null'
+          - string
+          description: Leadping 10DLC application entity associated with this phone number.
+      description: Public Leadping API schema for phone number routing metadata data.
+    OrderByOption:
+      required:
+      - field
+      type: object
+      properties:
+        field:
+          type: string
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
+    PhoneNumberReadiness:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Indicates whether phone number warmup is enabled in Leadping.
+        state:
+          enum:
+          - Not Started
+          - In Progress
+          - Paused
+          - Blocked
+          - Ready
+          type:
+          - 'null'
+          - string
+          description: Describes whether an organization is configured and permitted to send SMS or MMS traffic through Leadping.
         healthStatus:
           enum:
           - Not Evaluated
@@ -2262,50 +2483,215 @@ components:
           - 'null'
           - string
           description: Summarizes the severity of conditions affecting an organization's ability to send compliant SMS or MMS traffic.
-        healthLabel:
+        healthScore:
+          type: integer
+          description: Current warmup health score used to assess phone number warmup.
+          format: int32
+        progressPercent:
+          type: integer
+          description: Warmup completion percentage, from 0 through 100.
+          format: int32
+        callStage:
+          enum:
+          - Stage 0
+          - Stage 1
+          - Stage 2
+          - Stage 3
+          - Stage 4
           type:
           - 'null'
           - string
-          description: Short label describing the health state for display in dashboards.
-        healthWarning:
-          type:
-          - 'null'
-          - string
-          description: Warning text that explains a potential health or readiness issue.
-        canSend:
-          type: boolean
-          description: Indicates whether Leadping can send outbound messages using this eligible outgoing phone number.
-        selectionReason:
-          allOf:
-          - $ref: '#/components/schemas/OutgoingNumberSelectionReason'
-          description: Reason Leadping selected this outbound sender number.
-        reasonLabel:
-          type: string
-          description: Human-readable label for the reason code on this eligible outgoing phone number.
+          description: Identifies the current traffic-ramp stage of controlled voice warmup for a Leadping-managed phone number.
+      description: Messaging and calling warmup for a Leadping phone number.
+    SmsReadinessUiState:
+      type: object
+      properties:
         label:
+          allOf:
+          - $ref: '#/components/schemas/SmsReadinessState'
+          description: The human-readable label shown for this SMS readiness UI state.
+        tone:
+          type: string
+          description: Tone for this SMS readiness UI state.
+        description:
+          type: string
+          description: The human-readable description of this SMS readiness UI state.
+      description: Describes SMS readiness UI state data used in Leadping API requests and responses.
+    SmsReadinessState:
+      enum:
+      - Not Started
+      - In Progress
+      - Paused
+      - Blocked
+      - Ready
+      type: string
+      description: Describes whether an organization is configured and permitted to send SMS or MMS traffic through Leadping.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
           type:
           - 'null'
           - string
-          description: Short display label for this eligible outgoing phone number, formatted for charts, filters, or list views.
-        campaignId:
+          description: URI reference that identifies the problem type.
+        title:
           type:
           - 'null'
           - string
-          description: Messaging campaign identifier associated with this eligible outgoing phone number.
-        sourceId:
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
           type:
           - 'null'
           - string
-          description: Lead source ID used to determine this phone number's outbound eligibility.
-        teamId:
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
           type:
           - 'null'
           - string
-          description: Organization ID used to determine this phone number's outbound eligibility.
-        isSelected:
-          type: boolean
-          description: Indicates whether this eligible outgoing phone number was selected for the requested operation.
-      description: Describes a Leadping phone number that is eligible to send an outbound message or place a call.
+          description: URI reference that identifies this specific occurrence of the problem.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
+        traceId:
+          type: string
+          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+    SmsReadinessHealthStatus:
+      enum:
+      - Not Evaluated
+      - Evaluating
+      - Healthy
+      - Needs Attention
+      - Blocked
+      type: string
+      description: Summarizes the severity of conditions affecting an organization's ability to send compliant SMS or MMS traffic.
+    RangeFilter:
+      required:
+      - field
+      type: object
+      properties:
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
+        field:
+          type: string
+    OutgoingNumberSelectionReason:
+      enum:
+      - StickyConversation
+      - LeadAssigned
+      - CampaignOrSource
+      - Preferred
+      - LocalArea
+      - HealthyPool
+      - FallbackDefault
+      - ManualOverride
+      type: string
+      description: Explains why Leadping selected, rejected, or substituted an outgoing caller or messaging number.
+    PhoneNumberTrafficTrendPoint:
+      type: object
+      properties:
+        startAt:
+          type: string
+          description: UTC timestamp when this reporting bucket starts.
+          format: date-time
+        endAt:
+          type: string
+          description: UTC timestamp when this reporting bucket ends.
+          format: date-time
+        label:
+          type: string
+          description: Short display label for this phone number traffic trend bucket, formatted for charts, filters, or list views.
+        smsSentCount:
+          type: integer
+          description: Number of SMS messages sent during this metrics window.
+          format: int32
+        smsFailedCount:
+          type: integer
+          description: Number of SMS messages that failed during this metrics window.
+          format: int32
+        mmsSentCount:
+          type: integer
+          description: Number of MMS messages sent during this metrics window.
+          format: int32
+        mmsFailedCount:
+          type: integer
+          description: Number of MMS messages that failed during this metrics window.
+          format: int32
+        callPlacedCount:
+          type: integer
+          description: Number of outbound calls placed during this metrics window.
+          format: int32
+        callFailedCount:
+          type: integer
+          description: Number of outbound calls that failed during this metrics window.
+          format: int32
+      description: Time-series data point schema for Leadping API phone number traffic trend bucket charts and metrics.
+    PhoneNumberTrafficMetricsResponse:
+      type: object
+      properties:
+        windowDays:
+          type: integer
+          description: Number of days included in the metrics reporting window.
+          format: int32
+        windowStartedAt:
+          type: string
+          description: UTC timestamp when the metrics reporting window starts.
+          format: date-time
+        smsSentCount:
+          type: integer
+          description: Number of SMS messages sent during this metrics window.
+          format: int32
+        smsFailedCount:
+          type: integer
+          description: Number of SMS messages that failed during this metrics window.
+          format: int32
+        mmsSentCount:
+          type: integer
+          description: Number of MMS messages sent during this metrics window.
+          format: int32
+        mmsFailedCount:
+          type: integer
+          description: Number of MMS messages that failed during this metrics window.
+          format: int32
+        callPlacedCount:
+          type: integer
+          description: Number of outbound calls placed during this metrics window.
+          format: int32
+        callFailedCount:
+          type: integer
+          description: Number of outbound calls that failed during this metrics window.
+          format: int32
+        callConnectedCount:
+          type: integer
+          description: Number of outbound calls that connected during this metrics window.
+          format: int32
+        callShortCount:
+          type: integer
+          description: Number of connected outbound calls shorter than 30 seconds during this metrics window.
+          format: int32
+        callInvalidNumberCount:
+          type: integer
+          description: Number of outbound calls that failed because the destination number was invalid during this metrics window.
+          format: int32
+        trend:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/PhoneNumberTrafficTrendPoint'
+            description: Time-series data point schema for Leadping API phone number traffic trend bucket charts and metrics.
+          description: Time-series buckets that show how the metric changes across the reporting window.
+      description: Describes phone number traffic metrics data returned by Leadping.
   securitySchemes:
     Bearer:
       type: http

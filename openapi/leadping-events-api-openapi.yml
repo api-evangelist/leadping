@@ -49,14 +49,10 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
           application/*+json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
         required: true
       responses:
         '200':
@@ -64,25 +60,33 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                - $ref: '#/components/schemas/PagedResultOfEventTableRow'
-                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+                $ref: '#/components/schemas/PagedResultOfEventTableRow'
         '400':
           description: The request was invalid or malformed.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -91,6 +95,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -106,8 +115,24 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
   /events/organizations/{organizationId}:
     post:
       tags:
@@ -139,14 +164,10 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
           application/*+json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
         required: true
       responses:
         '200':
@@ -154,25 +175,33 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                - $ref: '#/components/schemas/PagedResultOfEventTableRow'
-                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+                $ref: '#/components/schemas/PagedResultOfEventTableRow'
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -181,6 +210,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -196,8 +230,24 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
   /events/conversations/{conversationId}:
     post:
       tags:
@@ -217,14 +267,10 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
           application/*+json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
         required: true
       responses:
         '200':
@@ -232,25 +278,33 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                - $ref: '#/components/schemas/PagedResultOfEventTableRow'
-                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+                $ref: '#/components/schemas/PagedResultOfEventTableRow'
         '400':
           description: The request was invalid or malformed.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -259,6 +313,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -274,8 +333,24 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
   /events/leads/{leadId}:
     post:
       tags:
@@ -295,14 +370,10 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
           application/*+json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
         required: true
       responses:
         '200':
@@ -310,25 +381,33 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                - $ref: '#/components/schemas/PagedResultOfEventTableRow'
-                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+                $ref: '#/components/schemas/PagedResultOfEventTableRow'
         '400':
           description: The request was invalid or malformed.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -337,6 +416,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -352,8 +436,24 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
   /events/{eventId}:
     get:
       tags:
@@ -380,19 +480,29 @@ paths:
         '404':
           description: Event was not found.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -401,6 +511,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -416,8 +531,24 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: connected
+        consequences:
+        - read
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: false
   /events/detail/{eventId}:
     get:
       tags:
@@ -444,19 +575,29 @@ paths:
         '404':
           description: Event was not found.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -465,6 +606,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -480,8 +626,24 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: connected
+        consequences:
+        - read
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: false
   /events/conversations/{conversationId}/notes:
     post:
       tags:
@@ -522,19 +684,29 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -543,6 +715,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -558,61 +735,26 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
 components:
   schemas:
-    IdNamePair:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          type: string
-          description: Stable unique identifier of the referenced resource.
-        name:
-          type: string
-          description: Human-readable display name of the referenced resource.
-      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
-    MessageMediaAttachment:
-      type: object
-      properties:
-        url:
-          type: string
-          description: URL from which the media attachment can be retrieved.
-          format: uri
-        contentType:
-          type:
-          - 'null'
-          - string
-          description: MIME content type of the media attachment.
-        size:
-          type:
-          - 'null'
-          - integer
-          description: Size of the media attachment in bytes.
-          format: int64
-        sha256:
-          type:
-          - 'null'
-          - string
-          description: SHA-256 digest of the media content, when available.
-        fileName:
-          type:
-          - 'null'
-          - string
-          description: Original file name of the media attachment, when available.
-      description: Media attached to an SMS/MMS conversation event.
-    CreateNoteRequest:
-      required:
-      - text
-      type: object
-      properties:
-        text:
-          type: string
-          description: Plain-text note content to add to the conversation timeline.
-      description: Defines the input used for create note.
     PagedResultOfEventTableRow:
       type: object
       properties:
@@ -622,213 +764,32 @@ components:
             allOf:
             - $ref: '#/components/schemas/EventTableRow'
             description: Summarizes event timeline data in paginated and searchable results.
-          description: Items included in the current page, in the order determined by the query.
         pageSize:
           type: integer
-          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
           format: int32
         totalCount:
           type:
           - 'null'
           - integer
-          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
           format: int32
         continuationToken:
           type:
           - 'null'
           - string
-          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
-      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
-    EventDetailResponse:
+    OrderByOption:
+      required:
+      - field
       type: object
       properties:
-        eventType:
+        field:
           type: string
-          description: Event type used to classify this timeline, SMS, call, or automation event.
-        secondaryEventType:
-          type:
-          - 'null'
-          - string
-          description: Secondary event type used for additional event classification.
-        description:
-          type:
-          - 'null'
-          - string
-          description: Human-readable description that explains this event detail response to API users.
-        eventCategory:
-          type:
-          - 'null'
-          - string
-          description: High-level category used to group this Leadping event.
-        timelineType:
-          enum:
-          - Message
-          - Sms
-          - Mms
-          - Call
-          - Voicemail
-          - Note
-          - LeadStatusChange
-          - LeadCreated
-          - LeadUpdated
-          - Notification
-          - Payment
-          - Warmup
-          type:
-          - 'null'
-          - string
-          description: Classifies the kind of activity displayed in a lead or conversation event timeline.
-        timelineCategory:
-          type:
-          - 'null'
-          - string
-          description: Timeline category used to group events for display and filtering.
-        conversationId:
-          type:
-          - 'null'
-          - string
-          description: Conversation ID that links this event detail response to the Leadping inbox thread.
-        summary:
-          type:
-          - 'null'
-          - string
-          description: Short human-readable summary of this event detail response for lists, timelines, and notifications.
         direction:
-          type:
-          - 'null'
-          - string
-          description: Communication direction for this event detail response, such as inbound or outbound.
-        status:
           enum:
-          - Pending
-          - InProgress
-          - Completed
-          - Failed
-          - Cancelled
+          - asc
+          - desc
           type:
           - 'null'
           - string
-          description: Describes whether a Leadping event is pending, processing, completed, failed, or otherwise resolved.
-        statusReason:
-          type:
-          - 'null'
-          - string
-          description: Human-readable reason explaining the current status of this event detail response.
-        fromPhoneNumberId:
-          type:
-          - 'null'
-          - string
-          description: Sender phone number ID used for this outbound SMS or call.
-        outboundPhoneNumberId:
-          type:
-          - 'null'
-          - string
-          description: Phone number ID selected for outbound delivery.
-        fromPhoneNumber:
-          type:
-          - 'null'
-          - string
-          description: Sender phone number used for this communication.
-        toPhoneNumber:
-          type:
-          - 'null'
-          - string
-          description: Recipient phone number used for this communication.
-        queuedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when Leadping queued this event detail response for processing.
-          format: date-time
-        scheduledFor:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when the related delivery or workflow action is scheduled to run.
-          format: date-time
-        sendingStartedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when Leadping began sending this message.
-          format: date-time
-        sentAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when Leadping sent this message to the provider.
-          format: date-time
-        deliveredAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when the provider confirmed delivery.
-          format: date-time
-        receivedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when Leadping received this inbound event or message.
-          format: date-time
-        failedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when processing failed for this event detail response.
-          format: date-time
-        undeliverableAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when the provider marked the message undeliverable.
-          format: date-time
-        blockedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when Leadping blocked this communication.
-          format: date-time
-        canceledAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when this delivery or workflow was canceled.
-          format: date-time
-        user:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: User summary connected to this event detail response.
-        userEmail:
-          type:
-          - 'null'
-          - string
-          description: Email address for the user connected to this event detail response.
-          format: email
-        userId:
-          type: string
-          description: User ID associated with the activity that created this event.
-        leadId:
-          type:
-          - 'null'
-          - string
-          description: Lead ID associated with this event detail record.
-        id:
-          type: string
-          description: Stable unique identifier of the resource.
-        createdAt:
-          type: string
-          description: UTC timestamp when the resource was created.
-          format: date-time
-        modifiedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
-          format: date-time
-      description: Describes event detail data returned by Leadping.
     EventTableRow:
       type: object
       properties:
@@ -1105,118 +1066,35 @@ components:
           description: Email address for the person who created this event timeline table row.
           format: email
       description: Summarizes event timeline data in paginated and searchable results.
-    OrderByOption:
+    MessageMediaAttachment:
       type: object
       properties:
-        field:
+        url:
           type: string
-          description: Serializable field name used for sorting; supported names are determined by the queried resource.
-        direction:
-          enum:
-          - asc
-          - desc
+          description: URL from which the media attachment can be retrieved.
+          format: uri
+        contentType:
           type:
           - 'null'
           - string
-          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
-      description: Defines one field and direction used to order an API query result set.
-    ExactMatchFilter:
-      type: object
-      properties:
-        value:
-          description: Scalar value the target field must equal; its JSON type should match the field being queried.
-        field:
-          type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records whose named field equals a supplied scalar value.
-    RequestDataOptions:
-      type: object
-      properties:
-        pageSize:
-          type: integer
-          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
-          format: int32
-        continuationToken:
+          description: MIME content type of the media attachment.
+        size:
+          type:
+          - 'null'
+          - integer
+          description: Size of the media attachment in bytes.
+          format: int64
+        sha256:
           type:
           - 'null'
           - string
-          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
-        orderBy:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/OrderByOption'
-            description: Defines one field and direction used to order an API query result set.
-          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
-        includeCount:
-          type:
-          - 'null'
-          - boolean
-          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
-        search:
+          description: SHA-256 digest of the media content, when available.
+        fileName:
           type:
           - 'null'
           - string
-          description: Free-text search term applied to the configured SearchFields.
-        searchFields:
-          type:
-          - 'null'
-          - array
-          items:
-            type: string
-          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
-        filters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/ExactMatchFilter'
-            description: Selects records whose named field equals a supplied scalar value.
-          description: Exact-match conditions that require each named field to equal its supplied value.
-        rangeFilters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/RangeFilter'
-            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
-          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
-      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
-    EventTimelineType:
-      enum:
-      - Message
-      - Sms
-      - Mms
-      - Call
-      - Voicemail
-      - Note
-      - LeadStatusChange
-      - LeadCreated
-      - LeadUpdated
-      - Notification
-      - Payment
-      - Warmup
-      type: string
-      description: Classifies the kind of activity displayed in a lead or conversation event timeline.
-    RangeFilter:
-      type: object
-      properties:
-        greaterThan:
-          description: Exclusive lower bound; matching field values must be greater than this value.
-        greaterThanOrEqual:
-          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
-        lessThan:
-          description: Exclusive upper bound; matching field values must be less than this value.
-        lessThanOrEqual:
-          description: Inclusive upper bound; matching field values must be less than or equal to this value.
-        field:
-          type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+          description: Original file name of the media attachment, when available.
+      description: Media attached to an SMS/MMS conversation event.
     ProblemDetails:
       type: object
       properties:
@@ -1246,13 +1124,301 @@ components:
           - 'null'
           - string
           description: URI reference that identifies this specific occurrence of the problem.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
+        traceId:
+          type: string
+          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-      example:
-        type: https://leadping.ai/docs/errors/validation
-        title: Request validation failed
-        status: 400
-        detail: One or more request fields are invalid.
-        instance: /leads/intake
+    ExactMatchFilter:
+      required:
+      - field
+      type: object
+      properties:
+        value: {}
+        field:
+          type: string
+    RangeFilter:
+      required:
+      - field
+      type: object
+      properties:
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
+        field:
+          type: string
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      description: User summary connected to this automation configuration response.
+    CreateNoteRequest:
+      required:
+      - text
+      type: object
+      properties:
+        text:
+          type: string
+          description: Plain-text note content to add to the conversation timeline.
+      description: Defines the input used for create note.
+    EventTimelineType:
+      enum:
+      - Message
+      - Sms
+      - Mms
+      - Call
+      - Voicemail
+      - Note
+      - LeadStatusChange
+      - LeadCreated
+      - LeadUpdated
+      - Notification
+      - Payment
+      - Warmup
+      type: string
+      description: Classifies the kind of activity displayed in a lead or conversation event timeline.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/OrderByOption'
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+        search:
+          type:
+          - 'null'
+          - string
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/ExactMatchFilter'
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/RangeFilter'
+    EventDetailResponse:
+      type: object
+      properties:
+        eventType:
+          type: string
+          description: Event type used to classify this timeline, SMS, call, or automation event.
+        secondaryEventType:
+          type:
+          - 'null'
+          - string
+          description: Secondary event type used for additional event classification.
+        description:
+          type:
+          - 'null'
+          - string
+          description: Human-readable description that explains this event detail response to API users.
+        eventCategory:
+          type:
+          - 'null'
+          - string
+          description: High-level category used to group this Leadping event.
+        timelineType:
+          enum:
+          - Message
+          - Sms
+          - Mms
+          - Call
+          - Voicemail
+          - Note
+          - LeadStatusChange
+          - LeadCreated
+          - LeadUpdated
+          - Notification
+          - Payment
+          - Warmup
+          type:
+          - 'null'
+          - string
+          description: Classifies the kind of activity displayed in a lead or conversation event timeline.
+        timelineCategory:
+          type:
+          - 'null'
+          - string
+          description: Timeline category used to group events for display and filtering.
+        conversationId:
+          type:
+          - 'null'
+          - string
+          description: Conversation ID that links this event detail response to the Leadping inbox thread.
+        summary:
+          type:
+          - 'null'
+          - string
+          description: Short human-readable summary of this event detail response for lists, timelines, and notifications.
+        direction:
+          type:
+          - 'null'
+          - string
+          description: Communication direction for this event detail response, such as inbound or outbound.
+        status:
+          enum:
+          - Pending
+          - InProgress
+          - Completed
+          - Failed
+          - Cancelled
+          type:
+          - 'null'
+          - string
+          description: Describes whether a Leadping event is pending, processing, completed, failed, or otherwise resolved.
+        statusReason:
+          type:
+          - 'null'
+          - string
+          description: Human-readable reason explaining the current status of this event detail response.
+        fromPhoneNumberId:
+          type:
+          - 'null'
+          - string
+          description: Sender phone number ID used for this outbound SMS or call.
+        outboundPhoneNumberId:
+          type:
+          - 'null'
+          - string
+          description: Phone number ID selected for outbound delivery.
+        fromPhoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Sender phone number used for this communication.
+        toPhoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Recipient phone number used for this communication.
+        queuedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping queued this event detail response for processing.
+          format: date-time
+        scheduledFor:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the related delivery or workflow action is scheduled to run.
+          format: date-time
+        sendingStartedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping began sending this message.
+          format: date-time
+        sentAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping sent this message to the provider.
+          format: date-time
+        deliveredAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the provider confirmed delivery.
+          format: date-time
+        receivedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping received this inbound event or message.
+          format: date-time
+        failedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when processing failed for this event detail response.
+          format: date-time
+        undeliverableAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the provider marked the message undeliverable.
+          format: date-time
+        blockedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping blocked this communication.
+          format: date-time
+        canceledAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when this delivery or workflow was canceled.
+          format: date-time
+        user:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: User summary connected to this event detail response.
+        userEmail:
+          type:
+          - 'null'
+          - string
+          description: Email address for the user connected to this event detail response.
+          format: email
+        userId:
+          type: string
+          description: User ID associated with the activity that created this event.
+        leadId:
+          type:
+          - 'null'
+          - string
+          description: Lead ID associated with this event detail record.
+        id:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          format: date-time
+      description: Describes event detail data returned by Leadping.
   securitySchemes:
     Bearer:
       type: http

@@ -31,14 +31,10 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
           application/*+json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
         required: true
       responses:
         '200':
@@ -46,17 +42,33 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                - $ref: '#/components/schemas/PagedResultOfUsageLedgerTableRow'
-                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+                $ref: '#/components/schemas/PagedResultOfUsageLedgerTableRow'
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -65,6 +77,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -80,8 +97,24 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
   /usage/summary/my:
     get:
       tags:
@@ -114,11 +147,16 @@ paths:
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -127,6 +165,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -142,256 +185,26 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: connected
+        consequences:
+        - read
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: false
 components:
   schemas:
-    IdNamePair:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          type: string
-          description: Stable unique identifier of the referenced resource.
-        name:
-          type: string
-          description: Human-readable display name of the referenced resource.
-      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
-    UsageChannel:
-      enum:
-      - lead
-      - sms
-      - mms
-      - email
-      - voice
-      - phone_number
-      - warmup
-      - website
-      - openai
-      - domain
-      - 10dlc
-      - payment
-      - connection
-      - automation
-      type: string
-      description: Identifies the messaging, calling, phone-number, lookup, or platform channel that generated billable usage.
-    UsageSummaryLine:
-      type: object
-      properties:
-        channel:
-          allOf:
-          - $ref: '#/components/schemas/UsageChannel'
-          description: Channel for this usage summary line.
-        billableUnit:
-          allOf:
-          - $ref: '#/components/schemas/BillableUnit'
-          description: Billable unit for this usage summary line.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/UsageStatus'
-          description: The current status for this usage summary line.
-        quantity:
-          type: number
-          description: Quantity for this usage summary line.
-          format: double
-        customerChargeAmount:
-          type: number
-          description: The monetary customer charge amount for this usage summary line.
-          format: double
-        recordCount:
-          type: integer
-          description: The record count for this usage summary line.
-          format: int32
-      description: Describes usage summary line data used in Leadping API requests and responses.
-    UsageSummaryResponse:
-      type: object
-      properties:
-        periodStart:
-          type: string
-          description: UTC timestamp for period start on this usage summary.
-          format: date-time
-        periodEnd:
-          type: string
-          description: UTC timestamp for period end on this usage summary.
-          format: date-time
-        customerChargeTotal:
-          type: number
-          description: The customer charge total for this usage summary.
-          format: double
-        billableQuantityTotal:
-          type: number
-          description: The billable quantity total for this usage summary.
-          format: double
-        transactionCount:
-          type: integer
-          description: The usage record count for this usage summary.
-          format: int32
-        pendingInvoiceCount:
-          type: integer
-          description: The pending invoice count for this usage summary.
-          format: int32
-        failedCount:
-          type: integer
-          description: The failed count for this usage summary.
-          format: int32
-        lines:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/UsageSummaryLine'
-            description: Describes usage summary line data used in Leadping API requests and responses.
-          description: The lines included with this usage summary.
-        counters:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/UsageCounterLine'
-            description: Describes one named usage total displayed in organization billing and activity summaries.
-          description: The named usage counters included with this usage summary.
-      description: Describes usage summary response data used by Leadping.
-    OrderByOption:
-      type: object
-      properties:
-        field:
-          type: string
-          description: Serializable field name used for sorting; supported names are determined by the queried resource.
-        direction:
-          enum:
-          - asc
-          - desc
-          type:
-          - 'null'
-          - string
-          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
-      description: Defines one field and direction used to order an API query result set.
-    ExactMatchFilter:
-      type: object
-      properties:
-        value:
-          description: Scalar value the target field must equal; its JSON type should match the field being queried.
-        field:
-          type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records whose named field equals a supplied scalar value.
-    RequestDataOptions:
-      type: object
-      properties:
-        pageSize:
-          type: integer
-          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
-        orderBy:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/OrderByOption'
-            description: Defines one field and direction used to order an API query result set.
-          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
-        includeCount:
-          type:
-          - 'null'
-          - boolean
-          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
-        search:
-          type:
-          - 'null'
-          - string
-          description: Free-text search term applied to the configured SearchFields.
-        searchFields:
-          type:
-          - 'null'
-          - array
-          items:
-            type: string
-          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
-        filters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/ExactMatchFilter'
-            description: Selects records whose named field equals a supplied scalar value.
-          description: Exact-match conditions that require each named field to equal its supplied value.
-        rangeFilters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/RangeFilter'
-            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
-          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
-      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
-    UsageStatus:
-      enum:
-      - recorded
-      - rated
-      - pending_invoice
-      - invoiced
-      - charged
-      - failed
-      - refunded_credited
-      - non_billable_internal
-      - blocked_due_to_billing
-      type: string
-      description: Describes whether a metered usage record is pending, rated, billed, reconciled, excluded, or failed.
-    PagedResultOfUsageLedgerTableRow:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/UsageLedgerTableRow'
-            description: Describes usage ledger data used in Leadping API requests and responses.
-          description: Items included in the current page, in the order determined by the query.
-        pageSize:
-          type: integer
-          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
-      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
-    BillableUnit:
-      enum:
-      - lead_received
-      - phone_identity_lookup
-      - sms_segment
-      - mms_message
-      - email_message
-      - voice_minute
-      - phone_number_month
-      - warmup_sms_segment
-      - warmup_voice_minute
-      - website_setup
-      - openai_operation
-      - domain_registration
-      - 10dlc_application
-      - 10dlc_campaign_month
-      - payment_processing_fee
-      - connection_action
-      - automation_run
-      type: string
-      description: Identifies the metered unit used to price Leadping usage, such as a message, call minute, lookup, or phone number.
     UsageLedgerTableRow:
       type: object
       properties:
@@ -484,21 +297,20 @@ components:
           description: UTC timestamp for created at on this usage ledger.
           format: date-time
       description: Describes usage ledger data used in Leadping API requests and responses.
-    RangeFilter:
+    OrderByOption:
+      required:
+      - field
       type: object
       properties:
-        greaterThan:
-          description: Exclusive lower bound; matching field values must be greater than this value.
-        greaterThanOrEqual:
-          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
-        lessThan:
-          description: Exclusive upper bound; matching field values must be less than this value.
-        lessThanOrEqual:
-          description: Inclusive upper bound; matching field values must be less than or equal to this value.
         field:
           type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
     UsageCounterLine:
       type: object
       properties:
@@ -520,6 +332,27 @@ components:
           description: The display order for this usage counter.
           format: int32
       description: Describes one named usage total displayed in organization billing and activity summaries.
+    BillableUnit:
+      enum:
+      - lead_received
+      - phone_identity_lookup
+      - sms_segment
+      - mms_message
+      - email_message
+      - voice_minute
+      - phone_number_month
+      - warmup_sms_segment
+      - warmup_voice_minute
+      - website_setup
+      - openai_operation
+      - domain_registration
+      - 10dlc_application
+      - 10dlc_campaign_month
+      - payment_processing_fee
+      - connection_action
+      - automation_run
+      type: string
+      description: Identifies the metered unit used to price Leadping usage, such as a message, call minute, lookup, or phone number.
     ProblemDetails:
       type: object
       properties:
@@ -549,13 +382,215 @@ components:
           - 'null'
           - string
           description: URI reference that identifies this specific occurrence of the problem.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
+        traceId:
+          type: string
+          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-      example:
-        type: https://leadping.ai/docs/errors/validation
-        title: Request validation failed
-        status: 400
-        detail: One or more request fields are invalid.
-        instance: /leads/intake
+    ExactMatchFilter:
+      required:
+      - field
+      type: object
+      properties:
+        value: {}
+        field:
+          type: string
+    PagedResultOfUsageLedgerTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/UsageLedgerTableRow'
+            description: Describes usage ledger data used in Leadping API requests and responses.
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+    RangeFilter:
+      required:
+      - field
+      type: object
+      properties:
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
+        field:
+          type: string
+    UsageSummaryLine:
+      type: object
+      properties:
+        channel:
+          allOf:
+          - $ref: '#/components/schemas/UsageChannel'
+          description: Channel for this usage summary line.
+        billableUnit:
+          allOf:
+          - $ref: '#/components/schemas/BillableUnit'
+          description: Billable unit for this usage summary line.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/UsageStatus'
+          description: The current status for this usage summary line.
+        quantity:
+          type: number
+          description: Quantity for this usage summary line.
+          format: double
+        customerChargeAmount:
+          type: number
+          description: The monetary customer charge amount for this usage summary line.
+          format: double
+        recordCount:
+          type: integer
+          description: The record count for this usage summary line.
+          format: int32
+      description: Describes usage summary line data used in Leadping API requests and responses.
+    UsageSummaryResponse:
+      type: object
+      properties:
+        periodStart:
+          type: string
+          description: UTC timestamp for period start on this usage summary.
+          format: date-time
+        periodEnd:
+          type: string
+          description: UTC timestamp for period end on this usage summary.
+          format: date-time
+        customerChargeTotal:
+          type: number
+          description: The customer charge total for this usage summary.
+          format: double
+        billableQuantityTotal:
+          type: number
+          description: The billable quantity total for this usage summary.
+          format: double
+        transactionCount:
+          type: integer
+          description: The usage record count for this usage summary.
+          format: int32
+        pendingInvoiceCount:
+          type: integer
+          description: The pending invoice count for this usage summary.
+          format: int32
+        failedCount:
+          type: integer
+          description: The failed count for this usage summary.
+          format: int32
+        lines:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/UsageSummaryLine'
+            description: Describes usage summary line data used in Leadping API requests and responses.
+          description: The lines included with this usage summary.
+        counters:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/UsageCounterLine'
+            description: Describes one named usage total displayed in organization billing and activity summaries.
+          description: The named usage counters included with this usage summary.
+      description: Describes usage summary response data used by Leadping.
+    UsageStatus:
+      enum:
+      - recorded
+      - rated
+      - pending_invoice
+      - invoiced
+      - charged
+      - failed
+      - refunded_credited
+      - non_billable_internal
+      - blocked_due_to_billing
+      type: string
+      description: Describes whether a metered usage record is pending, rated, billed, reconciled, excluded, or failed.
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      description: User summary connected to this automation configuration response.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/OrderByOption'
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+        search:
+          type:
+          - 'null'
+          - string
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/ExactMatchFilter'
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/RangeFilter'
+    UsageChannel:
+      enum:
+      - lead
+      - sms
+      - mms
+      - email
+      - voice
+      - phone_number
+      - warmup
+      - website
+      - openai
+      - domain
+      - 10dlc
+      - payment
+      - connection
+      - automation
+      type: string
+      description: Identifies the messaging, calling, phone-number, lookup, or platform channel that generated billable usage.
   securitySchemes:
     Bearer:
       type: http

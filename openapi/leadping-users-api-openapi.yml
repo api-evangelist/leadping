@@ -28,29 +28,52 @@ paths:
       operationId: Users_GetPaymentMethodForCurrentUser
       responses:
         '200':
-          description: Returns the stripe payment method response.
+          description: Returns the Stripe payment method response.
           content:
             application/json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/StripePaymentMethodResponse'
-                description: Describes stripe payment method data used in Leadping API requests and responses.
+                description: Describes Stripe payment method data used in Leadping API requests and responses.
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -66,8 +89,24 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: connected
+        consequences:
+        - read
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: false
   /users/me:
     get:
       tags:
@@ -87,19 +126,29 @@ paths:
         '404':
           description: The requested resource was not found.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -115,8 +164,24 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: connected
+        consequences:
+        - read
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: false
     put:
       tags:
       - Users
@@ -149,19 +214,29 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -177,8 +252,113 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
+  /users/me/notification-preferences:
+    put:
+      tags:
+      - Users
+      summary: Updates the current user's notification preferences without requiring profile…
+      description: Replaces the notification channel and delivery preferences stored for the authenticated user.
+      operationId: Users_UpdateNotificationPreferencesForCurrentUser
+      requestBody:
+        description: The notification preferences to store for the current user.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UserNotificationPreferences'
+              description: Describes user notification preferences data used in Leadping API requests and responses.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UserNotificationPreferences'
+              description: Describes user notification preferences data used in Leadping API requests and responses.
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/UserResponse'
+                description: Describes user data returned by Leadping.
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
+      security:
+      - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
   /users/change-billing-plan:
     put:
       tags:
@@ -212,27 +392,55 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '404':
           description: The requested resource was not found.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -248,8 +456,24 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
   /users/compliance:
     put:
       tags:
@@ -283,19 +507,29 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -311,23 +545,43 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
 components:
   schemas:
-    IdNamePair:
-      required:
-      - id
-      - name
+    MobileDevicePreferences:
       type: object
       properties:
-        id:
-          type: string
-          description: Stable unique identifier of the referenced resource.
-        name:
-          type: string
-          description: Human-readable display name of the referenced resource.
-      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
+        device:
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related device.
+        inboundPhoneCallsEnabled:
+          type: boolean
+          description: Whether inbound phone calls are enabled for this user device.
+        updatedAt:
+          type:
+          - 'null'
+          - string
+          description: The date and time this device preference was last updated.
+          format: date-time
+      description: Describes notification and calling preferences saved for one of the user's mobile devices.
     UserNotificationPreferences:
       type: object
       properties:
@@ -422,40 +676,46 @@ components:
           type: boolean
           description: Whether usage limit hit notifications are enabled for this user notification preferences.
       description: Describes user notification preferences data used in Leadping API requests and responses.
-    StripePaymentMethodResponse:
-      required:
-      - id
-      - brand
-      - last4
+    ProblemDetails:
       type: object
       properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this Stripe payment method.
-        brand:
-          type: string
-          description: Card network brand, such as Visa, Mastercard, or American Express.
-        last4:
-          type: string
-          description: UTC timestamp for last4 on this Stripe payment method.
-        expMonth:
-          type: integer
-          description: Two-digit month when the card expires.
-          format: int32
-        expYear:
-          type: integer
-          description: Four-digit year when the card expires.
-          format: int32
-        isDefault:
-          type: boolean
-          description: Whether this Stripe payment method is default.
-        createdAt:
+        type:
           type:
           - 'null'
           - string
-          description: UTC timestamp for created at on this Stripe payment method.
-          format: date-time
-      description: Describes stripe payment method data used in Leadping API requests and responses.
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
+        traceId:
+          type: string
+          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
     UserResponse:
       type: object
       properties:
@@ -472,7 +732,7 @@ components:
           type:
           - 'null'
           - string
-          description: UTC timestamp for last name on this user.
+          description: Last name of the Leadping user.
         phone:
           type:
           - 'null'
@@ -585,191 +845,17 @@ components:
           description: The human-readable personal data deletion reason explaining this user.
         name:
           type: string
-          description: Human-readable display name of the resource.
         id:
           type: string
-          description: Stable unique identifier of the resource.
         createdAt:
           type: string
-          description: UTC timestamp when the resource was created.
           format: date-time
         modifiedAt:
           type:
           - 'null'
           - string
-          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
           format: date-time
       description: Describes user data returned by Leadping.
-    MobileDevicePreferences:
-      type: object
-      properties:
-        device:
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Identifier and display name of the related device.
-        inboundPhoneCallsEnabled:
-          type: boolean
-          description: Whether inbound phone calls are enabled for this user device.
-        updatedAt:
-          type:
-          - 'null'
-          - string
-          description: The date and time this device preference was last updated.
-          format: date-time
-      description: Describes notification and calling preferences saved for one of the user's mobile devices.
-    BillingPlan:
-      enum:
-      - Annual
-      - Monthly
-      type: string
-      description: Identifies the Leadping subscription plan that determines organization features, allowances, and billing behavior.
-    ComplianceUpdateRequest:
-      type: object
-      properties:
-        compliance:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/UserCompliance'
-          description: Compliance for this compliance update.
-        source:
-          type:
-          - 'null'
-          - string
-          description: Source for this compliance update.
-      description: Defines the input used for compliance update.
-    TrustedFormCertificate:
-      type: object
-      properties:
-        id:
-          type:
-          - 'null'
-          - string
-          description: Unique Leadping identifier for this TrustedForm certificate.
-        url:
-          type: string
-          description: The URL associated with this TrustedForm certificate.
-          format: uri
-        source:
-          type:
-          - 'null'
-          - string
-          description: Source for this TrustedForm certificate.
-        createdAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for created at on this TrustedForm certificate.
-          format: date-time
-      description: Describes trusted form certificate data used in Leadping API requests and responses.
-    UserRequest:
-      required:
-      - phone
-      - name
-      type: object
-      properties:
-        email:
-          type:
-          - 'null'
-          - string
-          description: Email address for the person represented by this user profile request.
-          format: email
-        firstName:
-          type:
-          - 'null'
-          - string
-          description: First name of the lead, user, or contact represented by this user profile request.
-        lastName:
-          type:
-          - 'null'
-          - string
-          description: Last name of the lead, user, or contact represented by this user profile request.
-        phone:
-          type: string
-          description: Phone details for the lead, user, or organization represented by this user profile request.
-        timeZoneId:
-          type:
-          - 'null'
-          - string
-          description: IANA time zone identifier used when displaying dates and times for this user.
-        billingPlan:
-          enum:
-          - Annual
-          - Monthly
-          type:
-          - 'null'
-          - string
-          description: Identifies the Leadping subscription plan that determines organization features, allowances, and billing behavior.
-        currentOrganization:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Organization currently selected for the user session or profile.
-        compliance:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/UserCompliance'
-          description: User compliance settings and attestations captured for Leadping account review.
-        notificationPreferences:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/UserNotificationPreferences'
-          description: Notification preferences configured for the user.
-        mobileDevicePreferences:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/MobileDevicePreferences'
-            description: Describes notification and calling preferences saved for one of the user's mobile devices.
-          description: Mobile notification preferences configured for the user.
-        name:
-          maxLength: 255
-          minLength: 0
-          type: string
-          description: Human-readable display name for the resource, subject to the API's maximum name length.
-        id:
-          type:
-          - 'null'
-          - string
-          description: Stable unique identifier of an existing resource to update; omit it when the API assigns an identifier during creation.
-      description: Defines the fields clients can send when working with user profile.
-    UserCompliance:
-      type: object
-      properties:
-        acceptedTerms:
-          type: boolean
-          description: Whether the user accepted terms for this user compliance.
-        acceptedToSubscription:
-          type: boolean
-          description: Whether the user accepted subscription for this user compliance.
-        acceptedSms:
-          type: boolean
-          description: Whether the user accepted SMS for this user compliance.
-        acceptedBaa:
-          type: boolean
-          description: Whether the user accepted BAA for this user compliance.
-        acceptedEmail:
-          type: boolean
-          description: Whether the user accepted email for this user compliance.
-        trustedFormCertificates:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/TrustedFormCertificate'
-            description: Describes trusted form certificate data used in Leadping API requests and responses.
-          description: The TrustedForm certificates included with this user compliance.
-      description: Describes user compliance data used in Leadping API requests and responses.
     OrganizationDunningInfo:
       type: object
       properties:
@@ -830,34 +916,40 @@ components:
           description: Date and time when this Leadping organization dunning info was last updated.
           format: date-time
       description: Dunning state recorded after a failed recurring payment.
-    UserIdentity:
+    UserCompliance:
       type: object
       properties:
-        issuer:
-          type: string
-          description: Identity provider or tenant that issued the sign-in identity, such as contoso.com or facebook.com.
-        issuerAssignedId:
-          type: string
-          description: Stable unique user identifier assigned by the identity provider within the issuer's namespace.
-        signInType:
-          type: string
-          description: Sign-in method represented by the identity, such as emailAddress, userName, or federated.
-      description: Identifies an external sign-in identity linked to a Leadping user, including its provider, provider-assigned user identifier, and authentication method.
-    ChangeBillingPlanRequest:
-      required:
-      - billingPlan
-      type: object
-      properties:
-        billingPlan:
-          allOf:
-          - $ref: '#/components/schemas/BillingPlan'
-          description: Billing plan for this billing plan.
-        userId:
+        acceptedTerms:
+          type: boolean
+          description: Whether the user accepted terms for this user compliance.
+        acceptedToSubscription:
+          type: boolean
+          description: Whether the user accepted subscription for this user compliance.
+        acceptedSms:
+          type: boolean
+          description: Whether the user accepted SMS for this user compliance.
+        acceptedBaa:
+          type: boolean
+          description: Whether the user accepted BAA for this user compliance.
+        acceptedEmail:
+          type: boolean
+          description: Whether the user accepted email for this user compliance.
+        trustedFormCertificates:
           type:
           - 'null'
-          - string
-          description: The user ID associated with this billing plan.
-      description: Defines the input used for change billing plan.
+          - array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/TrustedFormCertificate'
+            description: Describes trusted form certificate data used in Leadping API requests and responses.
+          description: The TrustedForm certificates included with this user compliance.
+      description: Describes user compliance data used in Leadping API requests and responses.
+    BillingPlan:
+      enum:
+      - Annual
+      - Monthly
+      type: string
+      description: Identifies the Leadping subscription plan that determines organization features, allowances, and billing behavior.
     OrganizationBillingState:
       type: object
       properties:
@@ -937,42 +1029,154 @@ components:
           description: UTC timestamp when Leadping last processed a payment-method event for the organization.
           format: date-time
       description: Customer-safe billing state for a Leadping organization.
-    ProblemDetails:
+    IdNamePair:
+      required:
+      - id
+      - name
       type: object
       properties:
-        type:
+        id:
+          type: string
+        name:
+          type: string
+      description: User summary connected to this automation configuration response.
+    UserIdentity:
+      required:
+      - issuer
+      - issuerAssignedId
+      - signInType
+      type: object
+      properties:
+        issuer:
+          type: string
+          description: Identity provider or tenant that issued the user's sign-in identity.
+        issuerAssignedId:
+          type: string
+          description: Unique user identifier assigned by the identity provider.
+        signInType:
+          type: string
+          description: Sign-in method represented by the identity, such as email address, username, or federated login.
+      description: Identifies an external sign-in identity linked to a Leadping user, including its provider, provider-assigned user identifier, and authentication method.
+    UserRequest:
+      required:
+      - phone
+      type: object
+      properties:
+        name:
           type:
           - 'null'
           - string
-          description: URI reference that identifies the problem type.
-        title:
+          description: Display name for the user.
+        firstName:
           type:
           - 'null'
           - string
-          description: Short, human-readable summary of the problem.
-        status:
+          description: First name of the lead, user, or contact represented by this user profile request.
+        lastName:
           type:
           - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
+          - string
+          description: Last name of the lead, user, or contact represented by this user profile request.
+        phone:
+          type: string
+          description: Phone details for the lead, user, or organization represented by this user profile request.
+        timeZoneId:
+          type:
+          - 'null'
+          - string
+          description: IANA time zone identifier used when displaying dates and times for this user.
+        notificationPreferences:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/UserNotificationPreferences'
+          description: Notification preferences configured for the user.
+      description: Defines the fields clients can send when working with user profile.
+    ChangeBillingPlanRequest:
+      required:
+      - billingPlan
+      type: object
+      properties:
+        billingPlan:
+          allOf:
+          - $ref: '#/components/schemas/BillingPlan'
+          description: Billing plan for this billing plan.
+      description: Defines the input used for change billing plan.
+    StripePaymentMethodResponse:
+      required:
+      - id
+      - brand
+      - last4
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this Stripe payment method.
+        brand:
+          type: string
+          description: Card network brand, such as Visa, Mastercard, or American Express.
+        last4:
+          type: string
+          description: Last four digits of the payment card number.
+        expMonth:
+          type: integer
+          description: Two-digit month when the card expires.
           format: int32
-        detail:
+        expYear:
+          type: integer
+          description: Four-digit year when the card expires.
+          format: int32
+        isDefault:
+          type: boolean
+          description: Whether this Stripe payment method is default.
+        createdAt:
           type:
           - 'null'
           - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
+          description: UTC timestamp for created at on this Stripe payment method.
+          format: date-time
+      description: Describes Stripe payment method data used in Leadping API requests and responses.
+    ComplianceUpdateRequest:
+      type: object
+      properties:
+        compliance:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/UserCompliance'
+          description: Compliance for this compliance update.
+        source:
           type:
           - 'null'
           - string
-          description: URI reference that identifies this specific occurrence of the problem.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-      example:
-        type: https://leadping.ai/docs/errors/validation
-        title: Request validation failed
-        status: 400
-        detail: One or more request fields are invalid.
-        instance: /leads/intake
+          description: Source for this compliance update.
+      description: Defines the input used for compliance update.
+    TrustedFormCertificate:
+      type: object
+      properties:
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique Leadping identifier for this TrustedForm certificate.
+        url:
+          type: string
+          description: The URL associated with this TrustedForm certificate.
+          format: uri
+        source:
+          type:
+          - 'null'
+          - string
+          description: Source for this TrustedForm certificate.
+        createdAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for created at on this TrustedForm certificate.
+          format: date-time
+      description: Describes trusted form certificate data used in Leadping API requests and responses.
   securitySchemes:
     Bearer:
       type: http

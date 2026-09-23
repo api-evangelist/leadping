@@ -16,19 +16,19 @@ servers:
 - url: https://api.leadping.ai
   description: Production
 tags:
-- name: LeadStatuses
+- name: Lead Statuses
   description: Manages the lead statuses used to classify and track leads throughout their lifecycle. Use these endpoints to list, create, update, and archive organization-specific lead statuses for consistent pipeline organization and reporting.
 paths:
   /lead-statuses:
     get:
       tags:
-      - LeadStatuses
+      - Lead Statuses
       summary: List the current organization's lead statuses
       description: Lists the current organization's active lead statuses for organizing and tracking leads through the sales workflow.
       operationId: LeadStatuses_GetAll
       responses:
         '200':
-          description: The active lead statuses available to the current organization.
+          description: OK
           content:
             application/json:
               schema:
@@ -39,17 +39,17 @@ paths:
                   description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
         '401':
           description: Authentication credentials are missing or invalid.
-          headers:
-            WWW-Authenticate:
-              description: Bearer authentication challenge returned when credentials are missing or invalid.
-              schema:
-                type: string
           content:
             application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -58,6 +58,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -73,11 +78,27 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: connected
+        consequences:
+        - read
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: false
     post:
       tags:
-      - LeadStatuses
+      - Lead Statuses
       summary: Create an organization lead status
       description: Creates a reusable lead status for the current organization to categorize, organize, and track leads consistently throughout its sales and follow-up workflow.
       operationId: LeadStatuses_Create
@@ -97,36 +118,39 @@ paths:
         required: true
       responses:
         '201':
-          description: The newly created lead status.
+          description: Created
           content:
-            text/plain:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/LeadStatusResponse'
-                description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
             application/json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/LeadStatusResponse'
                 description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/LeadStatusResponse'
-                description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
-        '401':
-          description: Authentication credentials are missing or invalid.
-          headers:
-            WWW-Authenticate:
-              description: Bearer authentication challenge returned when credentials are missing or invalid.
-              schema:
-                type: string
+        '400':
+          description: The request was invalid or failed validation.
           content:
             application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -135,6 +159,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -150,12 +179,28 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
   /lead-statuses/{id}:
     put:
       tags:
-      - LeadStatuses
+      - Lead Statuses
       summary: Update an organization lead status
       description: Updates the name, color, and display order of a lead status owned by the current organization so pipeline stages remain clear and consistently organized.
       operationId: LeadStatuses_Update
@@ -182,36 +227,52 @@ paths:
         required: true
       responses:
         '200':
-          description: The updated lead status.
+          description: OK
           content:
-            text/plain:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/LeadStatusResponse'
-                description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
             application/json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/LeadStatusResponse'
                 description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/LeadStatusResponse'
-                description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
-        '401':
-          description: Authentication credentials are missing or invalid.
-          headers:
-            WWW-Authenticate:
-              description: Bearer authentication challenge returned when credentials are missing or invalid.
-              schema:
-                type: string
+        '400':
+          description: The request was invalid or failed validation.
           content:
             application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
+        '404':
+          description: The requested resource was not found.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The request could not be completed.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -220,6 +281,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -235,11 +301,27 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
     delete:
       tags:
-      - LeadStatuses
+      - Lead Statuses
       summary: Archive an organization lead status
       description: Archives a lead status for the current organization so it is unavailable for new assignments while existing lead history is preserved.
       operationId: LeadStatuses_Archive
@@ -252,30 +334,37 @@ paths:
           type: string
       responses:
         '200':
-          description: '`true` after the lead status is archived.'
+          description: OK
           content:
-            text/plain:
-              schema:
-                type: boolean
             application/json:
               schema:
                 type: boolean
-            text/json:
-              schema:
-                type: boolean
-        '401':
-          description: Authentication credentials are missing or invalid.
-          headers:
-            WWW-Authenticate:
-              description: Bearer authentication challenge returned when credentials are missing or invalid.
-              schema:
-                type: string
+        '404':
+          description: The requested resource was not found.
           content:
             application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The request could not be completed.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -284,6 +373,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -299,10 +393,66 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - safety-critical
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
 components:
   schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
+        traceId:
+          type: string
+          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
     LeadStatusResponse:
       type: object
       properties:
@@ -334,16 +484,6 @@ components:
           description: Date and time when the lead status was last modified.
           format: date-time
       description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
-    LeadStatusCategory:
-      enum:
-      - Open
-      - Qualified
-      - Converted
-      - Lost
-      - Invalid
-      - Duplicate
-      type: string
-      description: Controlled lead status change categories used for reporting, automation, and analytics.
     LeadStatusRequest:
       type: object
       properties:
@@ -376,42 +516,16 @@ components:
           description: Relative display order for the lead status.
           format: int32
       description: Defines the editable values used to create or update a lead status.
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - 'null'
-          - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
-          type:
-          - 'null'
-          - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-      example:
-        type: https://leadping.ai/docs/errors/validation
-        title: Request validation failed
-        status: 400
-        detail: One or more request fields are invalid.
-        instance: /leads/intake
+    LeadStatusCategory:
+      enum:
+      - Open
+      - Qualified
+      - Converted
+      - Lost
+      - Invalid
+      - Duplicate
+      type: string
+      description: Controlled lead status change categories used for reporting, automation, and analytics.
   securitySchemes:
     Bearer:
       type: http

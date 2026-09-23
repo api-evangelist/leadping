@@ -37,93 +37,57 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
-          text/json:
-            schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
           application/*+json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
         required: true
       responses:
         '200':
           description: Returns the paged conversation response.
           content:
-            text/plain:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/PagedResultOfConversationResponse'
-                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
             application/json:
               schema:
-                allOf:
-                - $ref: '#/components/schemas/PagedResultOfConversationResponse'
-                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/PagedResultOfConversationResponse'
-                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+                $ref: '#/components/schemas/PagedResultOfConversationResponse'
         '400':
           description: The request was invalid or failed validation.
           content:
-            text/plain:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '500':
           description: An unexpected server error occurred.
           content:
-            text/plain:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Internal Server Error
+                status: 500
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            text/plain:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -132,6 +96,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -147,8 +116,123 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
+  /conversations/{id}/mark-read:
+    post:
+      tags:
+      - Conversations
+      summary: Marks an inbox conversation as read
+      description: Updates the conversation's read state for the current user's inbox and returns whether the conversation was found.
+      operationId: Conversations_MarkAsRead
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the conversation to mark as read.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: boolean
+            application/json:
+              schema:
+                type: boolean
+            text/json:
+              schema:
+                type: boolean
+        '404':
+          description: The requested resource was not found.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The request could not be completed.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
+      security:
+      - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
   /conversations/lead/{leadId}:
     post:
       tags:
@@ -168,93 +252,57 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
-          text/json:
-            schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
           application/*+json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
         required: true
       responses:
         '200':
           description: Returns the paged conversation response.
           content:
-            text/plain:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/PagedResultOfConversationResponse'
-                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
             application/json:
               schema:
-                allOf:
-                - $ref: '#/components/schemas/PagedResultOfConversationResponse'
-                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/PagedResultOfConversationResponse'
-                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+                $ref: '#/components/schemas/PagedResultOfConversationResponse'
         '400':
           description: The request was invalid or failed validation.
           content:
-            text/plain:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '500':
           description: An unexpected server error occurred.
           content:
-            text/plain:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Internal Server Error
+                status: 500
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            text/plain:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -263,6 +311,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -278,66 +331,40 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
 components:
   schemas:
-    CurrentLeadStatusSummary:
+    OrderByOption:
+      required:
+      - field
       type: object
       properties:
-        id:
-          type:
-          - 'null'
-          - string
-          description: Unique Leadping identifier for this current lead status change summary.
-        category:
-          enum:
-          - Open
-          - Qualified
-          - Converted
-          - Lost
-          - Invalid
-          - Duplicate
-          type:
-          - 'null'
-          - string
-          description: Controlled lead status change categories used for reporting, automation, and analytics.
-        outcome:
-          type:
-          - 'null'
-          - string
-          description: Current lead status change outcome assigned to the lead.
-        displayName:
+        field:
           type: string
-          description: Human-readable display name shown for this current lead status change summary.
-        changedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when the lead status change last changed.
-          format: date-time
-        changedByUserId:
-          type:
-          - 'null'
-          - string
-          description: User ID of the person who last changed the lead status change.
-        changedByAutomationId:
-          type:
-          - 'null'
-          - string
-          description: Automation ID that last changed the lead status change.
-        source:
+        direction:
           enum:
-          - User
-          - AI
-          - Automation
-          - System
-          - API
+          - asc
+          - desc
           type:
           - 'null'
           - string
-          description: Known sources that can change a lead's current lead status change.
-      description: Summary schema for Leadping API current lead status change summary data used in dashboards and reports.
     ConversationResponse:
       type: object
       properties:
@@ -462,113 +489,6 @@ components:
           - string
           description: Phone number ID currently active for outbound delivery.
       description: Describes conversation data returned by Leadping.
-    PagedResultOfConversationResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/ConversationResponse'
-            description: Describes conversation data returned by Leadping.
-          description: Items included in the current page, in the order determined by the query.
-        pageSize:
-          type: integer
-          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
-      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
-    OrderByOption:
-      type: object
-      properties:
-        field:
-          type: string
-          description: Serializable field name used for sorting; supported names are determined by the queried resource.
-        direction:
-          enum:
-          - asc
-          - desc
-          type:
-          - 'null'
-          - string
-          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
-      description: Defines one field and direction used to order an API query result set.
-    ExactMatchFilter:
-      type: object
-      properties:
-        value:
-          description: Scalar value the target field must equal; its JSON type should match the field being queried.
-        field:
-          type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records whose named field equals a supplied scalar value.
-    RequestDataOptions:
-      type: object
-      properties:
-        pageSize:
-          type: integer
-          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
-        orderBy:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/OrderByOption'
-            description: Defines one field and direction used to order an API query result set.
-          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
-        includeCount:
-          type:
-          - 'null'
-          - boolean
-          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
-        search:
-          type:
-          - 'null'
-          - string
-          description: Free-text search term applied to the configured SearchFields.
-        searchFields:
-          type:
-          - 'null'
-          - array
-          items:
-            type: string
-          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
-        filters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/ExactMatchFilter'
-            description: Selects records whose named field equals a supplied scalar value.
-          description: Exact-match conditions that require each named field to equal its supplied value.
-        rangeFilters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/RangeFilter'
-            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
-          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
-      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
     IdNameValue:
       required:
       - id
@@ -579,29 +499,11 @@ components:
           type:
           - 'null'
           - string
-          description: Optional machine-readable or display value associated with the referenced resource.
         id:
           type: string
-          description: Stable unique identifier of the referenced resource.
         name:
           type: string
-          description: Human-readable display name of the referenced resource.
-      description: Extends an identifier-and-name resource reference with an optional string value used for display or selection metadata.
-    RangeFilter:
-      type: object
-      properties:
-        greaterThan:
-          description: Exclusive lower bound; matching field values must be greater than this value.
-        greaterThanOrEqual:
-          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
-        lessThan:
-          description: Exclusive upper bound; matching field values must be less than this value.
-        lessThanOrEqual:
-          description: Inclusive upper bound; matching field values must be less than or equal to this value.
-        field:
-          type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
+      description: Phone number used by this conversation response for calls, SMS, lookup, or routing.
     ProblemDetails:
       type: object
       properties:
@@ -631,13 +533,155 @@ components:
           - 'null'
           - string
           description: URI reference that identifies this specific occurrence of the problem.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
+        traceId:
+          type: string
+          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-      example:
-        type: https://leadping.ai/docs/errors/validation
-        title: Request validation failed
-        status: 400
-        detail: One or more request fields are invalid.
-        instance: /leads/intake
+    ExactMatchFilter:
+      required:
+      - field
+      type: object
+      properties:
+        value: {}
+        field:
+          type: string
+    CurrentLeadStatusSummary:
+      type: object
+      properties:
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique Leadping identifier for this current lead status change summary.
+        category:
+          enum:
+          - Open
+          - Qualified
+          - Converted
+          - Lost
+          - Invalid
+          - Duplicate
+          type:
+          - 'null'
+          - string
+          description: Controlled lead status change categories used for reporting, automation, and analytics.
+        outcome:
+          type:
+          - 'null'
+          - string
+          description: Current lead status change outcome assigned to the lead.
+        displayName:
+          type: string
+          description: Human-readable display name shown for this current lead status change summary.
+        changedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the lead status change last changed.
+          format: date-time
+        changedByUserId:
+          type:
+          - 'null'
+          - string
+          description: User ID of the person who last changed the lead status change.
+        changedByAutomationId:
+          type:
+          - 'null'
+          - string
+          description: Automation ID that last changed the lead status change.
+        source:
+          enum:
+          - User
+          - AI
+          - Automation
+          - System
+          - API
+          type:
+          - 'null'
+          - string
+          description: Known sources that can change a lead's current lead status change.
+      description: Summary schema for Leadping API current lead status change summary data used in dashboards and reports.
+    RangeFilter:
+      required:
+      - field
+      type: object
+      properties:
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
+        field:
+          type: string
+    PagedResultOfConversationResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ConversationResponse'
+            description: Describes conversation data returned by Leadping.
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/OrderByOption'
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+        search:
+          type:
+          - 'null'
+          - string
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/ExactMatchFilter'
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/RangeFilter'
   securitySchemes:
     Bearer:
       type: http

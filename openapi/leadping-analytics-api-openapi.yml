@@ -59,27 +59,42 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -95,19 +110,134 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: connected
+        consequences:
+        - read
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: false
 components:
   schemas:
-    AnalyticsBucketSize:
-      enum:
-      - 3
-      - 0
-      - 1
-      - 2
-      type: integer
-      description: Selects the time interval used to aggregate points in a Leadping analytics trend series.
-      format: int32
+    CustomerLeadSourceBreakdown:
+      type: object
+      properties:
+        source:
+          type: string
+          description: Source classification for this Leadping customer lead source breakdown.
+        leads:
+          type: integer
+          description: Number of leads represented by this Leadping customer lead source breakdown.
+          format: int32
+        percent:
+          type: number
+          description: Percent expressed as a percentage.
+          format: double
+      description: Attributes an organization's lead volume, qualification, and conversion outcomes to a specific acquisition source.
+    AnalyticsTrendPointOfdecimal:
+      type: object
+      properties:
+        startAt:
+          type: string
+          description: Date and time when this Leadping analytics trend point was start.
+          format: date-time
+        endAt:
+          type: string
+          description: Date and time when this Leadping analytics trend point was end.
+          format: date-time
+        label:
+          type: string
+          description: Human-readable label for this Leadping analytics trend point.
+        value:
+          type: number
+          description: Value associated with this Leadping analytics trend point.
+          format: double
+      description: Associates a typed analytics value with one normalized time bucket in a trend series.
+    CustomerCommunicationUsagePoint:
+      type: object
+      properties:
+        startAt:
+          type: string
+          description: Date and time when this Leadping customer communication usage point was start.
+          format: date-time
+        endAt:
+          type: string
+          description: Date and time when this Leadping customer communication usage point was end.
+          format: date-time
+        label:
+          type: string
+          description: Human-readable label for this Leadping customer communication usage point.
+        smsSent:
+          type: integer
+          description: Number of SMS messages sent during the reporting period.
+          format: int32
+        smsReceived:
+          type: integer
+          description: Number of SMS messages received during the reporting period.
+          format: int32
+        smsErrors:
+          type: integer
+          description: Number of SMS messages that failed or were blocked in this time bucket.
+          format: int32
+        calls:
+          type: integer
+          description: Number of calls represented by this Leadping customer communication usage point.
+          format: int32
+        callsPlaced:
+          type: integer
+          description: Number of outbound calls placed in this time bucket.
+          format: int32
+        callsReceived:
+          type: integer
+          description: Number of inbound calls received in this time bucket.
+          format: int32
+        callErrors:
+          type: integer
+          description: Number of calls that failed or were blocked in this time bucket.
+          format: int32
+        callMinutes:
+          type: number
+          description: Total connected call duration, in minutes, during the reporting period.
+          format: double
+        spend:
+          type: number
+          description: Spend represented by this Leadping customer communication usage point.
+          format: double
+      description: Measures organization messaging and calling activity within one analytics time bucket.
+    CustomerNeedsAttentionItem:
+      type: object
+      properties:
+        severity:
+          type: string
+          description: Severity associated with this Leadping customer needs attention item.
+        title:
+          type: string
+          description: Human-readable title for this Leadping customer needs attention item.
+        detail:
+          type: string
+          description: Human-readable detail for this Leadping customer needs attention item.
+        actionHref:
+          type:
+          - 'null'
+          - string
+          description: Relative URL for the recommended follow-up action.
+        actionText:
+          type:
+          - 'null'
+          - string
+          description: Action text associated with this Leadping customer needs attention item.
+      description: Identifies an organization-level issue or opportunity and provides severity, supporting context, and a recommended action.
     CustomerAnalyticsResponse:
       type: object
       properties:
@@ -158,7 +288,7 @@ components:
           description: Date and time when this Leadping customer analytics was generated.
           format: date-time
       description: Aggregates an organization's lead performance, response speed, communication usage, automation health, and activation insights.
-    AnalyticsTrendPointOfdecimal:
+    AnalyticsTrendPointOfint:
       type: object
       properties:
         startAt:
@@ -173,168 +303,10 @@ components:
           type: string
           description: Human-readable label for this Leadping analytics trend point.
         value:
-          type: number
+          type: integer
           description: Value associated with this Leadping analytics trend point.
-          format: double
+          format: int32
       description: Associates a typed analytics value with one normalized time bucket in a trend series.
-    CustomerFailingAutomation:
-      type: object
-      properties:
-        automationId:
-          type:
-          - 'null'
-          - string
-          description: Unique identifier of the automation associated with this Leadping customer failing automation.
-        name:
-          type: string
-          description: Human-readable name of the customer failing automation.
-        failedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the customer failing automation failed.
-          format: date-time
-        error:
-          type:
-          - 'null'
-          - string
-          description: Error associated with this Leadping customer failing automation.
-      description: Identifies an automation with recent execution failures and summarizes its affected leads and failure context.
-    CustomerNeedsAttentionItem:
-      type: object
-      properties:
-        severity:
-          type: string
-          description: Severity associated with this Leadping customer needs attention item.
-        title:
-          type: string
-          description: Human-readable title for this Leadping customer needs attention item.
-        detail:
-          type: string
-          description: Human-readable detail for this Leadping customer needs attention item.
-        actionHref:
-          type:
-          - 'null'
-          - string
-          description: Relative URL for the recommended follow-up action.
-        actionText:
-          type:
-          - 'null'
-          - string
-          description: Action text associated with this Leadping customer needs attention item.
-      description: Identifies an organization-level issue or opportunity and provides severity, supporting context, and a recommended action.
-    CustomerLeadTrend:
-      type: object
-      properties:
-        total:
-          type: integer
-          description: Total number of total records represented by this Leadping customer lead trend.
-          format: int32
-        comparison:
-          allOf:
-          - $ref: '#/components/schemas/AnalyticsComparison'
-          description: Date and time when this Leadping customer lead trend was comparison.
-        points:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AnalyticsTrendPointOfint'
-            description: Associates a typed analytics value with one normalized time bucket in a trend series.
-          description: Collection of points included with this Leadping customer lead trend.
-      description: Measures lead creation, qualification, and conversion activity within one reporting time bucket.
-    CustomerResponseMetrics:
-      type: object
-      properties:
-        averageMinutes:
-          type:
-          - 'null'
-          - number
-          description: Average minutes measured in minutes.
-          format: double
-        medianMinutes:
-          type:
-          - 'null'
-          - number
-          description: Median minutes measured in minutes.
-          format: double
-        respondedWithinFiveMinutesPercent:
-          type: number
-          description: Responded within five minutes percent expressed as a percentage.
-          format: double
-        respondedLeads:
-          type: integer
-          description: Number of responded leads represented by this Leadping customer response metrics.
-          format: int32
-        unrespondedLeads:
-          type: integer
-          description: Number of unresponded leads represented by this Leadping customer response metrics.
-          format: int32
-        unreadMessages:
-          type: integer
-          description: Number of unread messages represented by this Leadping customer response metrics.
-          format: int32
-        missedCalls:
-          type: integer
-          description: Number of calls missed during the reporting period.
-          format: int32
-        averageMinutesTrend:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AnalyticsTrendPointOfdecimal'
-            description: Associates a typed analytics value with one normalized time bucket in a trend series.
-          description: Collection of average minutes trend included with this Leadping customer response metrics.
-      description: Measures how quickly and consistently an organization responds to leads across supported communication channels.
-    CustomerCommunicationUsagePoint:
-      type: object
-      properties:
-        startAt:
-          type: string
-          description: Date and time when this Leadping customer communication usage point was start.
-          format: date-time
-        endAt:
-          type: string
-          description: Date and time when this Leadping customer communication usage point was end.
-          format: date-time
-        label:
-          type: string
-          description: Human-readable label for this Leadping customer communication usage point.
-        smsSent:
-          type: integer
-          description: Number of SMS messages sent during the reporting period.
-          format: int32
-        smsReceived:
-          type: integer
-          description: Number of SMS messages received during the reporting period.
-          format: int32
-        calls:
-          type: integer
-          description: Number of calls represented by this Leadping customer communication usage point.
-          format: int32
-        callMinutes:
-          type: number
-          description: Total connected call duration, in minutes, during the reporting period.
-          format: double
-        spend:
-          type: number
-          description: Spend represented by this Leadping customer communication usage point.
-          format: double
-      description: Measures organization messaging and calling activity within one analytics time bucket.
-    CustomerLeadSourceBreakdown:
-      type: object
-      properties:
-        source:
-          type: string
-          description: Source classification for this Leadping customer lead source breakdown.
-        leads:
-          type: integer
-          description: Number of leads represented by this Leadping customer lead source breakdown.
-          format: int32
-        percent:
-          type: number
-          description: Percent expressed as a percentage.
-          format: double
-      description: Attributes an organization's lead volume, qualification, and conversion outcomes to a specific acquisition source.
     CustomerAutomationHealth:
       type: object
       properties:
@@ -358,6 +330,13 @@ components:
           type: integer
           description: Total number of failure records represented by this Leadping customer automation health.
           format: int32
+        trend:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/CustomerAutomationHealthPoint'
+            description: Measures automation execution activity within one analytics time bucket.
+          description: Automation execution activity over the reporting period.
         lastFailure:
           type:
           - 'null'
@@ -373,25 +352,130 @@ components:
             description: Identifies an automation with recent execution failures and summarizes its affected leads and failure context.
           description: Collection of failing automations included with this Leadping customer automation health.
       description: Summarizes automation coverage, execution success, failures, and workflows requiring organization attention.
-    AnalyticsTrendPointOfint:
+    CustomerLeadTrend:
+      type: object
+      properties:
+        total:
+          type: integer
+          description: Total number of total records represented by this Leadping customer lead trend.
+          format: int32
+        totalErrors:
+          type: integer
+          description: Total number of lead submissions rejected during intake.
+          format: int32
+        comparison:
+          allOf:
+          - $ref: '#/components/schemas/AnalyticsComparison'
+          description: Date and time when this Leadping customer lead trend was comparison.
+        points:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AnalyticsTrendPointOfint'
+            description: Associates a typed analytics value with one normalized time bucket in a trend series.
+          description: Collection of points included with this Leadping customer lead trend.
+        errorPoints:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AnalyticsTrendPointOfint'
+            description: Associates a typed analytics value with one normalized time bucket in a trend series.
+          description: Lead intake errors grouped into the same reporting buckets as Points.
+      description: Measures lead creation, qualification, and conversion activity within one reporting time bucket.
+    AnalyticsBucketSize:
+      enum:
+      - 3
+      - 0
+      - 1
+      - 2
+      type: integer
+      description: Selects the time interval used to aggregate points in a Leadping analytics trend series.
+      format: int32
+    AnalyticsComparison:
+      type: object
+      properties:
+        current:
+          type: number
+          description: Metric value for the current reporting period.
+          format: double
+        previous:
+          type: number
+          description: Metric value for the preceding comparison period.
+          format: double
+        changePercent:
+          type:
+          - 'null'
+          - number
+          description: Percentage change between the current and previous reporting periods.
+          format: double
+        direction:
+          type: string
+          description: Direction classification for this Leadping analytics comparison.
+      description: Compares a metric with the preceding period and reports its absolute and percentage change.
+    CustomerAutomationHealthPoint:
       type: object
       properties:
         startAt:
           type: string
-          description: Date and time when this Leadping analytics trend point was start.
+          description: Gets or sets the start at.
           format: date-time
         endAt:
           type: string
-          description: Date and time when this Leadping analytics trend point was end.
+          description: Gets or sets the end at.
           format: date-time
         label:
           type: string
-          description: Human-readable label for this Leadping analytics trend point.
-        value:
+          description: Gets or sets the label.
+        executions:
           type: integer
-          description: Value associated with this Leadping analytics trend point.
+          description: Gets or sets the executions.
           format: int32
-      description: Associates a typed analytics value with one normalized time bucket in a trend series.
+        successCount:
+          type: integer
+          description: Gets or sets the success count.
+          format: int32
+        failureCount:
+          type: integer
+          description: Gets or sets the failure count.
+          format: int32
+      description: Measures automation execution activity within one analytics time bucket.
+    AnalyticsDateRange:
+      type: object
+      properties:
+        startAt:
+          type: string
+          description: Date and time when this Leadping analytics date range was start.
+          format: date-time
+        endAt:
+          type: string
+          description: Date and time when this Leadping analytics date range was end.
+          format: date-time
+        bucketSize:
+          allOf:
+          - $ref: '#/components/schemas/AnalyticsBucketSize'
+          description: Bucket size associated with this Leadping analytics date range.
+      description: Defines the inclusive reporting window and comparison window used to calculate Leadping analytics.
+    CustomerActivationHealthItem:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Key associated with this Leadping customer activation health item.
+        label:
+          type: string
+          description: Human-readable label for this Leadping customer activation health item.
+        status:
+          type: string
+          description: Current status for this Leadping customer activation health item.
+        detail:
+          type: string
+          description: Human-readable detail for this Leadping customer activation health item.
+        actionHref:
+          type:
+          - 'null'
+          - string
+          description: Relative URL for the recommended follow-up action.
+      description: Describes the state, severity, and recommended next action for one organization activation requirement.
     CustomerAnalyticsSummary:
       type: object
       properties:
@@ -466,6 +550,20 @@ components:
           type: string
           description: Current wallet status for this Leadping customer analytics summary.
       description: Summarizes an organization's primary lead, response, communication, and conversion KPIs for the selected period.
+    CustomerActivationHealth:
+      type: object
+      properties:
+        overallStatus:
+          type: string
+          description: Current overall status for this Leadping customer activation health.
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/CustomerActivationHealthItem'
+            description: Describes the state, severity, and recommended next action for one organization activation requirement.
+          description: Collection of items included with this Leadping customer activation health.
+      description: Summarizes an organization's progress and blockers across onboarding, billing, telephony, compliance, and launch readiness.
     ProblemDetails:
       type: object
       properties:
@@ -495,48 +593,60 @@ components:
           - 'null'
           - string
           description: URI reference that identifies this specific occurrence of the problem.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
+        traceId:
+          type: string
+          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-      example:
-        type: https://leadping.ai/docs/errors/validation
-        title: Request validation failed
-        status: 400
-        detail: One or more request fields are invalid.
-        instance: /leads/intake
-    CustomerActivationHealth:
+    CustomerResponseMetrics:
       type: object
       properties:
-        overallStatus:
-          type: string
-          description: Current overall status for this Leadping customer activation health.
-        items:
+        averageMinutes:
+          type:
+          - 'null'
+          - number
+          description: Average minutes measured in minutes.
+          format: double
+        medianMinutes:
+          type:
+          - 'null'
+          - number
+          description: Median minutes measured in minutes.
+          format: double
+        respondedWithinFiveMinutesPercent:
+          type: number
+          description: Responded within five minutes percent expressed as a percentage.
+          format: double
+        respondedLeads:
+          type: integer
+          description: Number of responded leads represented by this Leadping customer response metrics.
+          format: int32
+        unrespondedLeads:
+          type: integer
+          description: Number of unresponded leads represented by this Leadping customer response metrics.
+          format: int32
+        unreadMessages:
+          type: integer
+          description: Number of unread messages represented by this Leadping customer response metrics.
+          format: int32
+        missedCalls:
+          type: integer
+          description: Number of calls missed during the reporting period.
+          format: int32
+        averageMinutesTrend:
           type: array
           items:
             allOf:
-            - $ref: '#/components/schemas/CustomerActivationHealthItem'
-            description: Describes the state, severity, and recommended next action for one organization activation requirement.
-          description: Collection of items included with this Leadping customer activation health.
-      description: Summarizes an organization's progress and blockers across onboarding, billing, telephony, compliance, and launch readiness.
-    CustomerActivationHealthItem:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Key associated with this Leadping customer activation health item.
-        label:
-          type: string
-          description: Human-readable label for this Leadping customer activation health item.
-        status:
-          type: string
-          description: Current status for this Leadping customer activation health item.
-        detail:
-          type: string
-          description: Human-readable detail for this Leadping customer activation health item.
-        actionHref:
-          type:
-          - 'null'
-          - string
-          description: Relative URL for the recommended follow-up action.
-      description: Describes the state, severity, and recommended next action for one organization activation requirement.
+            - $ref: '#/components/schemas/AnalyticsTrendPointOfdecimal'
+            description: Associates a typed analytics value with one normalized time bucket in a trend series.
+          description: Collection of average minutes trend included with this Leadping customer response metrics.
+      description: Measures how quickly and consistently an organization responds to leads across supported communication channels.
     CustomerCommunicationUsage:
       type: object
       properties:
@@ -559,6 +669,10 @@ components:
         callsReceived:
           type: integer
           description: Number of inbound calls received during the reporting period.
+          format: int32
+        callErrors:
+          type: integer
+          description: Number of calls that failed or were blocked during the reporting period.
           format: int32
         answeredCalls:
           type: integer
@@ -584,43 +698,29 @@ components:
             description: Measures organization messaging and calling activity within one analytics time bucket.
           description: Collection of trend included with this Leadping customer communication usage.
       description: Aggregates an organization's SMS, MMS, and calling activity, delivery outcomes, and billable usage over time.
-    AnalyticsDateRange:
+    CustomerFailingAutomation:
       type: object
       properties:
-        startAt:
-          type: string
-          description: Date and time when this Leadping analytics date range was start.
-          format: date-time
-        endAt:
-          type: string
-          description: Date and time when this Leadping analytics date range was end.
-          format: date-time
-        bucketSize:
-          allOf:
-          - $ref: '#/components/schemas/AnalyticsBucketSize'
-          description: Bucket size associated with this Leadping analytics date range.
-      description: Defines the inclusive reporting window and comparison window used to calculate Leadping analytics.
-    AnalyticsComparison:
-      type: object
-      properties:
-        current:
-          type: number
-          description: Metric value for the current reporting period.
-          format: double
-        previous:
-          type: number
-          description: Metric value for the preceding comparison period.
-          format: double
-        changePercent:
+        automationId:
           type:
           - 'null'
-          - number
-          description: Percentage change between the current and previous reporting periods.
-          format: double
-        direction:
+          - string
+          description: Unique identifier of the automation associated with this Leadping customer failing automation.
+        name:
           type: string
-          description: Direction classification for this Leadping analytics comparison.
-      description: Compares a metric with the preceding period and reports its absolute and percentage change.
+          description: Human-readable name of the customer failing automation.
+        failedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the customer failing automation failed.
+          format: date-time
+        error:
+          type:
+          - 'null'
+          - string
+          description: Error associated with this Leadping customer failing automation.
+      description: Identifies an automation with recent execution failures and summarizes its affected leads and failure context.
   securitySchemes:
     Bearer:
       type: http

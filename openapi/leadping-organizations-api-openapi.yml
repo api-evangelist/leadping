@@ -1,8 +1,7 @@
 openapi: 3.2.0
 info:
   title: Leadping Organizations API
-  description: The Leadping API helps businesses capture and manage leads, automate follow-up, send SMS and MMS messages, place calls, track conversations, enforce contact suppression, and analyze communication workflows. Use this OpenAPI 3.1 contract to integrate lead sources, build organization tools, or generate a typed API client. Authenticate protected operations with a Leadping user access token or WorkOS organization API key. Lead intake operations also accept a Leadping source key.
-  termsOfService: https://leadping.ai/docs/terms-of-service
+  version: v1
   contact:
     name: Leadping Support
     url: https://leadping.ai/contact
@@ -10,8 +9,8 @@ info:
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
-  version: v1
-  summary: Lead management, messaging, calling, and automation API
+  termsOfService: https://leadping.ai/docs/terms-of-service
+  description: 'Operations tagged Organizations across 2 of this provider''s published API definitions: leadping-openapi.json, leadping-organizations-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.leadping.ai
   description: Production
@@ -38,19 +37,29 @@ paths:
         '404':
           description: The specified organization was not found.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -66,8 +75,24 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: connected
+        consequences:
+        - read
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: false
     post:
       tags:
       - Organizations
@@ -100,19 +125,29 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -128,8 +163,24 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
     put:
       tags:
       - Organizations
@@ -162,19 +213,29 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -190,8 +251,27 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
+    servers:
+    - url: https://api.leadping.ai
+      description: Production
   /organizations/me/options:
     get:
       tags:
@@ -213,11 +293,16 @@ paths:
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -233,8 +318,27 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: connected
+        consequences:
+        - read
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: false
+    servers:
+    - url: https://api.leadping.ai
+      description: Production
   /organizations/me/switch:
     post:
       tags:
@@ -268,19 +372,42 @@ paths:
         '403':
           description: The authenticated user is not authorized for this operation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -296,8 +423,27 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
+    servers:
+    - url: https://api.leadping.ai
+      description: Production
   /organizations/me/members:
     get:
       tags:
@@ -319,11 +465,16 @@ paths:
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -332,6 +483,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -347,8 +503,24 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: connected
+        consequences:
+        - read
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: false
     post:
       tags:
       - Organizations
@@ -381,27 +553,42 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '403':
           description: The authenticated user is not authorized for this operation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -417,8 +604,27 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
+    servers:
+    - url: https://api.leadping.ai
+      description: Production
   /organizations/me/members/{userId}:
     put:
       tags:
@@ -459,27 +665,42 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '403':
           description: The authenticated user is not authorized for this operation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -495,8 +716,24 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
     delete:
       tags:
       - Organizations
@@ -516,57 +753,42 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            text/plain:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '403':
           description: The authenticated user is not authorized for this operation.
           content:
-            text/plain:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            text/plain:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -582,8 +804,112 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - safety-critical
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
+    servers:
+    - url: https://api.leadping.ai
+      description: Production
+  /organizations/me/membership:
+    delete:
+      tags:
+      - Organizations
+      summary: Leave the current organization without changing its subscription or deleting…
+      description: Removes the authenticated user's membership from the current organization while preserving the organization and its billing state.
+      operationId: Organizations_LeaveCurrentOrganization
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: The request was invalid or failed validation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
+      security:
+      - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - safety-critical
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
+    servers:
+    - url: https://api.leadping.ai
+      description: Production
   /organizations/me/invitations:
     get:
       tags:
@@ -605,11 +931,16 @@ paths:
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -618,6 +949,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -633,8 +969,24 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: connected
+        consequences:
+        - read
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: false
     post:
       tags:
       - Organizations
@@ -667,19 +1019,29 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -688,6 +1050,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -703,8 +1070,27 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
+    servers:
+    - url: https://api.leadping.ai
+      description: Production
   /organizations/me/invitations/{invitationId}/resend:
     post:
       tags:
@@ -741,39 +1127,29 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            text/plain:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            text/plain:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -782,6 +1158,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -797,8 +1178,27 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
+    servers:
+    - url: https://api.leadping.ai
+      description: Production
   /organizations/me/invitations/{invitationId}:
     delete:
       tags:
@@ -819,39 +1219,29 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            text/plain:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            text/plain:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            application/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-            text/json:
-              schema:
-                allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
-                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -860,6 +1250,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -875,8 +1270,27 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - safety-critical
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
+    servers:
+    - url: https://api.leadping.ai
+      description: Production
   /organizations/me/10dlc/notes:
     put:
       tags:
@@ -910,19 +1324,29 @@ paths:
         '400':
           description: The request was invalid or failed validation.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -931,6 +1355,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -946,28 +1375,43 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
+    servers:
+    - url: https://api.leadping.ai
+      description: Production
   /organizations/api-keys/my:
     post:
       tags:
       - Organizations
       summary: List current-organization API keys
-      description: Retrieves a paged list of API keys owned by the caller's current Leadping organization, with support for filtering, sorting, and pagination.
+      description: The operation enforces organization ownership or platform-admin authorization and returns state suitable for membership, billing, and support workflows.
       operationId: Organizations_GetAllApiKeysForCurrentUser
       requestBody:
         description: Pagination, filtering, and sorting options.
         content:
           application/json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
           application/*+json:
             schema:
-              allOf:
-              - $ref: '#/components/schemas/RequestDataOptions'
-              description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
+              $ref: '#/components/schemas/RequestDataOptions'
         required: true
       responses:
         '200':
@@ -976,24 +1420,34 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/PagedResultOfOrganizationTableRow'
-                description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
+                - $ref: '#/components/schemas/OrganizationApiKeyListResponse'
+                description: A page of safe organization API-key previews.
         '400':
           description: The request was invalid or malformed.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
         '401':
           description: Authentication credentials are missing or invalid.
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
         '403':
           description: The authenticated user or organization does not have permission to perform this operation.
           content:
@@ -1002,6 +1456,11 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
         '429':
           description: The API rate limit for this account or client has been exceeded.
           headers:
@@ -1017,9 +1476,331 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/ProblemDetails'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
       security:
       - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
+    servers:
+    - url: https://api.leadping.ai
+      description: Production
+  /organizations/api-keys/{id}:
+    get:
+      tags:
+      - Organizations
+      summary: Gets a safe API key detail row for a key the caller can access
+      description: The operation enforces organization ownership or platform-admin authorization and returns state suitable for membership, billing, and support workflows.
+      operationId: Organizations_GetApiKey
+      parameters:
+      - name: id
+        in: path
+        description: The API key ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The API key detail was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/OrganizationApiKeyPreviewResponse'
+                description: Safe identifying and usage metadata for an organization API key. This model never contains the secret credential.
+        '404':
+          description: The API key was not found.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The request could not be completed.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
+      security:
+      - Bearer: []
+      x-agentic-access:
+        action-class: connected
+        consequences:
+        - read
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: false
+    post:
+      tags:
+      - Organizations
+      summary: Creates an organization-owned API key
+      description: The operation enforces organization ownership or platform-admin authorization and returns state suitable for membership, billing, and support workflows.
+      operationId: Organizations_IssueApiKey
+      parameters:
+      - name: id
+        in: path
+        description: The organization ID that will own the API key.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The key expiration selection. Null expiration means no limit.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/OrganizationApiKeyRequest'
+              description: Defines the display name and access configuration for a new Leadping organization API key.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/OrganizationApiKeyRequest'
+              description: Defines the display name and access configuration for a new Leadping organization API key.
+        required: true
+      responses:
+        '200':
+          description: The API key was created successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/OrganizationApiKeyIssueResponse'
+                description: Returns a newly issued organization API key and its identifying metadata; the secret credential is shown only in this response.
+        '400':
+          description: The request was invalid.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: The request could not be completed.
+        '403':
+          description: The caller cannot manage this organization API key.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
+      security:
+      - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - write
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
+    delete:
+      tags:
+      - Organizations
+      summary: Deletes an organization-owned API key without deleting the organization
+      description: The operation enforces organization ownership or platform-admin authorization and returns state suitable for membership, billing, and support workflows.
+      operationId: Organizations_DeleteApiKey
+      parameters:
+      - name: id
+        in: path
+        description: The API key ID to revoke.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The API key was successfully revoked.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/OrganizationApiKeyRevokeResponse'
+                description: Confirms that an organization API key was revoked.
+        '404':
+          description: The API key was not found.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: The request could not be completed.
+        '401':
+          description: Authentication credentials are missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Unauthorized
+                status: 401
+                detail: The request could not be completed.
+        '403':
+          description: The authenticated user or organization does not have permission to perform this operation.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Forbidden
+                status: 403
+                detail: The request could not be completed.
+        '429':
+          description: The API rate limit for this account or client has been exceeded.
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying the request.
+              schema:
+                minimum: 0
+                type: integer
+                format: int32
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ProblemDetails'
+                description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+              example:
+                type: about:blank
+                title: Too Many Requests
+                status: 429
+                detail: The request could not be completed.
+      security:
+      - Bearer: []
+      x-agentic-access:
+        action-class: acting
+        consequences:
+        - safety-critical
+        subject:
+          required: true
+        authorization:
+          source: OpenAPI security requirements
+          audience: https://api.leadping.ai
+        audit:
+          recommended: true
+    servers:
+    - url: https://api.leadping.ai
+      description: Production
   /organizations/invitations/token/{token}:
+    servers:
+    - url: https://api.leadping.ai
+      description: Production
     get:
       tags:
       - Organizations
@@ -1048,7 +1829,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
+                - $ref: '#/components/schemas/ProblemDetails_2'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
         '429':
           description: The API rate limit for this account or client has been exceeded.
@@ -1063,10 +1844,13 @@ paths:
             application/problem+json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
+                - $ref: '#/components/schemas/ProblemDetails_2'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
       security: []
   /organizations/invitations/accept:
+    servers:
+    - url: https://api.leadping.ai
+      description: Production
     post:
       tags:
       - Organizations
@@ -1102,7 +1886,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
+                - $ref: '#/components/schemas/ProblemDetails_2'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
         '429':
           description: The API rate limit for this account or client has been exceeded.
@@ -1117,824 +1901,22 @@ paths:
             application/problem+json:
               schema:
                 allOf:
-                - $ref: '#/components/schemas/ProblemDetails'
+                - $ref: '#/components/schemas/ProblemDetails_2'
                 description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
       security: []
 components:
   schemas:
-    OrganizationTableRow:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this organization.
-        name:
-          type: string
-          description: The human-readable name shown for this organization.
-        organization:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Identifier and display name of the related organization.
-        industry:
-          type:
-          - 'null'
-          - string
-          description: Industry for this organization.
-        userCount:
-          type: integer
-          description: The user count for this organization.
-          format: int32
-        accountBalance:
-          type:
-          - 'null'
-          - number
-          description: Account balance for this organization.
-          format: double
-        billingPlan:
-          enum:
-          - Annual
-          - Monthly
-          type:
-          - 'null'
-          - string
-          description: Identifies the Leadping subscription plan that determines organization features, allowances, and billing behavior.
-        subscriptionStatus:
-          enum:
-          - Pending
-          - Active
-          - Overdue
-          - Canceled
-          type:
-          - 'null'
-          - string
-          description: Describes an organization's billing subscription lifecycle, including trial, active, delinquent, canceled, and expired states.
-        lastSubscriptionEventAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when this Leadping organization table row was last subscription event.
-          format: date-time
-        subscriptionCancelAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when this Leadping organization table row was subscription cancel.
-          format: date-time
-        paymentFailedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when this Leadping organization table row was payment failed.
-          format: date-time
-        phone:
-          type: string
-          description: The phone number associated with this organization.
-        website:
-          type: string
-          description: The website URL associated with this organization.
-        status:
-          enum:
-          - SettingUp
-          - SetupCompleted
-          - Active
-          type:
-          - 'null'
-          - string
-          description: Describes an organization's account lifecycle and whether it can actively use Leadping services.
-        enabled:
-          type: boolean
-          description: Whether this organization is enabled.
-        apiKeyPreview:
-          type:
-          - 'null'
-          - string
-          description: The masked API key preview owned by this organization.
-        apiKeyPermissions:
-          type:
-          - 'null'
-          - array
-          items:
-            type: string
-          description: WorkOS permission slugs granted to this organization API key.
-        apiKeyIssuedAt:
-          type:
-          - 'null'
-          - string
-          description: The date and time this organization API key was issued.
-          format: date-time
-        apiKeyFirstUsedAt:
-          type:
-          - 'null'
-          - string
-          description: The date and time this organization API key was first used.
-          format: date-time
-        apiKeyLastUsedAt:
-          type:
-          - 'null'
-          - string
-          description: The date and time this organization API key was last used.
-          format: date-time
-        apiKeyExpiresAt:
-          type:
-          - 'null'
-          - string
-          description: The date and time this organization API key expires, or null when it has no expiration.
-          format: date-time
-        apiKeyTotalUses:
-          type: integer
-          description: The total number of tracked uses for this organization API key.
-          format: int64
-        setupStep:
-          enum:
-          - DomainFinding
-          - DomainOptionsFound
-          - SiteGenerating
-          - SiteGenerated
-          - BrandSubmitted
-          - BrandApproved
-          - CampaignSubmitted
-          - CampaignApproved
-          - CarrierReviewing
-          - TenDlcComplete
-          - Complete
-          type:
-          - 'null'
-          - string
-          description: Identifies a discrete billing, telephony, compliance, or configuration stage in organization provisioning.
-        activationStatus:
-          enum:
-          - DraftOnboarding
-          - PaymentMethodPending
-          - PaymentMethodConfirmed
-          - SubscriptionPending
-          - SubscriptionReceived
-          - SubscriptionActive
-          - LaunchReviewPending
-          - TelephonyProvisioningPending
-          - TelephonyPartiallyProvisioned
-          - TelephonyReady
-          - AwaitingReview
-          - DomainSelection
-          - WebsiteSetup
-          - ComplianceRegistration
-          - ReadyForApproval
-          - Active
-          - Failed
-          - Blocked
-          - BlockedRequiresOperatorAction
-          - ManuallyBypassed
-          type:
-          - 'null'
-          - string
-          description: Summarizes an organization's overall progress from initial Leadping onboarding through launch readiness.
-        websiteStatus:
-          enum:
-          - NotStarted
-          - DomainSuggestionsPending
-          - DomainSelectionPending
-          - DomainPurchasePending
-          - DomainPurchased
-          - WebsiteGenerationQueued
-          - WebsiteGenerating
-          - WebsiteDeploymentQueued
-          - WebsiteDeploying
-          - WebsiteLive
-          - WebsiteFailed
-          - ManuallyBypassed
-          type:
-          - 'null'
-          - string
-          description: Describes an organization website's lifecycle from discovery and verification through activation, suspension, or removal.
-        tenDlcStatus:
-          enum:
-          - NotStarted
-          - DraftGenerated
-          - DraftIncomplete
-          - ReadyToSubmit
-          - Submitted
-          - PendingTelnyxReview
-          - Approved
-          - Rejected
-          - NeedsChanges
-          - ResubmissionReady
-          - Failed
-          type:
-          - 'null'
-          - string
-          description: Describes an organization's overall 10DLC registration lifecycle across brand and messaging campaign submission.
-        needsAdminReview:
-          type: boolean
-          description: Whether needs admin review applies to this organization.
-        modifiedAt:
-          type: string
-          description: UTC timestamp for modified at on this organization.
-          format: date-time
-      description: Describes organization data used in Leadping API requests and responses.
-    OrganizationSwitchRequest:
+    IdNamePair:
       required:
-      - organizationId
-      type: object
-      properties:
-        organizationId:
-          type: string
-          description: Organization ID to switch into for the current Leadping session.
-      description: Defines the fields clients can send when working with organization switch.
-    RequestDataOptions:
-      type: object
-      properties:
-        pageSize:
-          type: integer
-          description: Maximum number of items requested for one page; the server may enforce a lower maximum or apply a default.
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-          description: Opaque cursor returned by the previous paged response; omit it when requesting the first page and do not parse or modify it.
-        orderBy:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/OrderByOption'
-            description: Defines one field and direction used to order an API query result set.
-          description: Sort instructions applied in priority order, with the first entry acting as the primary sort.
-        includeCount:
-          type:
-          - 'null'
-          - boolean
-          description: Whether the response should include the total number of matching records; counting may increase query cost or latency.
-        search:
-          type:
-          - 'null'
-          - string
-          description: Free-text search term applied to the configured SearchFields.
-        searchFields:
-          type:
-          - 'null'
-          - array
-          items:
-            type: string
-          description: Serializable string field names searched for Search; supported names are determined by the queried resource.
-        filters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/ExactMatchFilter'
-            description: Selects records whose named field equals a supplied scalar value.
-          description: Exact-match conditions that require each named field to equal its supplied value.
-        rangeFilters:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/RangeFilter'
-            description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
-          description: Range conditions that constrain comparable fields with inclusive or exclusive lower and upper bounds.
-      description: Defines cursor pagination, sorting, search, exact-match filters, and range filters for a structured API query.
-    OrganizationDunningInfo:
-      type: object
-      properties:
-        stage:
-          type:
-          - 'null'
-          - string
-          description: Current stage for this Leadping organization dunning info.
-        paymentFailedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when this Leadping organization dunning info was payment failed.
-          format: date-time
-        lastFailedInvoiceStatus:
-          type:
-          - 'null'
-          - string
-          description: Current last failed invoice status for this Leadping organization dunning info.
-        retryAttemptCount:
-          type: integer
-          description: Total number of retry attempt records represented by this Leadping organization dunning info.
-          format: int32
-        nextRetryAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the next retry is scheduled.
-          format: date-time
-        gracePeriodEndsAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when this Leadping organization dunning info was grace period ends.
-          format: date-time
-        outboundRestrictedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when this Leadping organization dunning info was outbound restricted.
-          format: date-time
-        outboundSuspendedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when this Leadping organization dunning info was outbound suspended.
-          format: date-time
-        finalCancellationAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when this Leadping organization dunning info was final cancellation.
-          format: date-time
-        lastUpdatedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when this Leadping organization dunning info was last updated.
-          format: date-time
-      description: Dunning state recorded after a failed recurring payment.
-    ActivationTimelineEvent:
+      - id
+      - name
       type: object
       properties:
         id:
           type: string
-          description: Unique Leadping identifier for this activation timeline event.
-        type:
-          type: string
-          description: The type classification for this activation timeline event.
-        title:
-          type: string
-          description: Title for this activation timeline event.
-        details:
-          type:
-          - 'null'
-          - string
-          description: Details for this activation timeline event.
-        status:
-          type: string
-          description: The current status for this activation timeline event.
-        actor:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Identifier and display name of the related actor.
-        failureReason:
-          type:
-          - 'null'
-          - string
-          description: The human-readable failure reason explaining this activation timeline event.
-        createdAt:
-          type: string
-          description: UTC timestamp for created at on this activation timeline event.
-          format: date-time
-      description: Describes activation timeline event data used in Leadping API requests and responses.
-    StreetAddress:
-      type: object
-      properties:
-        line1:
-          type:
-          - 'null'
-          - string
-          description: Primary delivery line, such as a street address, post-office box, or company name.
-        line2:
-          type:
-          - 'null'
-          - string
-          description: Secondary delivery line, such as an apartment, suite, unit, floor, or building.
-        city:
-          type:
-          - 'null'
-          - string
-          description: City, town, village, or other postal locality.
-        state:
-          type:
-          - 'null'
-          - string
-          description: State or equivalent first-level administrative subdivision when that label is used by the country.
-        province:
-          type:
-          - 'null'
-          - string
-          description: Province or territory when represented separately from State by the source or destination system.
-        region:
-          type:
-          - 'null'
-          - string
-          description: Region, district, county, prefecture, or other administrative area not represented by state or province.
-        postalCode:
-          type:
-          - 'null'
-          - string
-          description: Postal routing code, such as a ZIP code or postcode, formatted according to the destination country.
-        country:
-          type:
-          - 'null'
-          - string
-          description: Two-letter ISO 3166-1 alpha-2 country code, such as US, GB, or CA.
-        additionalInfo:
-          type:
-          - 'null'
-          - string
-          description: Additional address context or delivery instructions that do not fit the structured fields.
-      description: Describes a physical or mailing address using international locality, administrative-area, postal-code, and country fields.
-    PagedResultOfOrganizationTableRow:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/OrganizationTableRow'
-            description: Describes organization data used in Leadping API requests and responses.
-          description: Items included in the current page, in the order determined by the query.
-        pageSize:
-          type: integer
-          description: Effective page-size limit used for this response, which may differ from the requested size because of server defaults or limits.
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          description: Total number of records matching the query across all pages, or null when counting was not requested or computed.
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-          description: Opaque cursor for requesting the next page, or null when no additional page is available; clients must not parse or modify it.
-      description: Returns one page of query results together with page-size, optional total-count, and opaque continuation-cursor metadata.
-    ActivationSubscriptionStatus:
-      enum:
-      - Pending
-      - Active
-      - Failed
-      - Canceled
-      type: string
-      description: Describes whether an organization's subscription is ready, blocked, or still incomplete during activation.
-    OrganizationInvitationStatus:
-      enum:
-      - Pending
-      - Accepted
-      - Expired
-      - Revoked
-      - Resent
-      - Failed to send
-      type: string
-      description: Describes the lifecycle of an organization membership invitation from issuance through acceptance, expiration, or revocation.
-    ActivationDomainOption:
-      type: object
-      properties:
-        domainName:
-          type: string
-          description: The domain name associated with this activation domain option.
-        whyItFits:
-          type: string
-          description: Why it fits for this activation domain option.
-        industryRelevance:
-          type: string
-          description: Industry relevance for this activation domain option.
-        trustConcerns:
-          type:
-          - 'null'
-          - string
-          description: Trust concerns for this activation domain option.
-        estimatedAnnualCost:
-          type:
-          - 'null'
-          - number
-          description: Estimated annual cost for this activation domain option.
-          format: double
-        availabilityStatus:
-          type: string
-          description: The current availability status for this activation domain option.
-        recommended:
-          type: boolean
-          description: Whether this activation domain option is recommended.
-      description: Describes activation domain option data used in Leadping API requests and responses.
-    AcceptOrganizationInvitationRequest:
-      required:
-      - token
-      type: object
-      properties:
-        token:
-          type: string
-          description: The token supplied to authorize or complete this organization invitation.
-        email:
-          type:
-          - 'null'
-          - string
-          description: The email address associated with this organization invitation.
-          format: email
-        firstName:
-          type:
-          - 'null'
-          - string
-          description: First name for this organization invitation.
-        lastName:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for last name on this organization invitation.
-      description: Defines the input used for accept organization invitation.
-    OrganizationSwitchOption:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this organization switch option.
         name:
           type: string
-          description: The human-readable name shown for this organization switch option.
-        role:
-          allOf:
-          - $ref: '#/components/schemas/OrganizationMemberRole'
-          description: Role for this organization switch option.
-        isCurrent:
-          type: boolean
-          description: Whether this organization switch option is current.
-        lastUsedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for last used at on this organization switch option.
-          format: date-time
-        organizationStatus:
-          enum:
-          - SettingUp
-          - SetupCompleted
-          - Active
-          type:
-          - 'null'
-          - string
-          description: Describes an organization's account lifecycle and whether it can actively use Leadping services.
-        activationStatus:
-          enum:
-          - DraftOnboarding
-          - PaymentMethodPending
-          - PaymentMethodConfirmed
-          - SubscriptionPending
-          - SubscriptionReceived
-          - SubscriptionActive
-          - LaunchReviewPending
-          - TelephonyProvisioningPending
-          - TelephonyPartiallyProvisioned
-          - TelephonyReady
-          - AwaitingReview
-          - DomainSelection
-          - WebsiteSetup
-          - ComplianceRegistration
-          - ReadyForApproval
-          - Active
-          - Failed
-          - Blocked
-          - BlockedRequiresOperatorAction
-          - ManuallyBypassed
-          type:
-          - 'null'
-          - string
-          description: Summarizes an organization's overall progress from initial Leadping onboarding through launch readiness.
-        tenDlcStatus:
-          enum:
-          - NotStarted
-          - DraftGenerated
-          - DraftIncomplete
-          - ReadyToSubmit
-          - Submitted
-          - PendingTelnyxReview
-          - Approved
-          - Rejected
-          - NeedsChanges
-          - ResubmissionReady
-          - Failed
-          type:
-          - 'null'
-          - string
-          description: Describes an organization's overall 10DLC registration lifecycle across brand and messaging campaign submission.
-        needsAdminReview:
-          type: boolean
-          description: Whether needs admin review applies to this organization switch option.
-        activationSummary:
-          type:
-          - 'null'
-          - string
-          description: Activation summary for this organization switch option.
-        hasPaymentMethod:
-          type: boolean
-          description: Whether the organization has a default billing payment method.
-        readyForCustomerTraffic:
-          type: boolean
-          description: Whether ready for customer traffic applies to this organization switch option.
-      description: Describes organization switch option data used in Leadping API requests and responses.
-    OrganizationMemberResponse:
-      type: object
-      properties:
-        organization:
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Organization for this organization user.
-        user:
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: User for this organization user.
-        userEmail:
-          type:
-          - 'null'
-          - string
-          description: User email for this organization user.
-          format: email
-        role:
-          allOf:
-          - $ref: '#/components/schemas/OrganizationMemberRole'
-          description: Role for this organization user.
-        createdByUserId:
-          type:
-          - 'null'
-          - string
-          description: The created by user ID associated with this organization user.
-        removedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for removed at on this organization user.
-          format: date-time
-        removedByUserId:
-          type:
-          - 'null'
-          - string
-          description: The removed by user ID associated with this organization user.
-        lastUsedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for last used at on this organization user.
-          format: date-time
-        licenseBillingStatus:
-          type:
-          - 'null'
-          - string
-          description: The billing status for this user's organization license.
-        licenseQuantity:
-          type:
-          - 'null'
-          - integer
-          description: The quantity on the shared organization user license item after this change.
-          format: int64
-        licenseRenewalDate:
-          type:
-          - 'null'
-          - string
-          description: The renewal date used for this user's license proration.
-          format: date-time
-        name:
-          type: string
-          description: Human-readable display name of the resource.
-        id:
-          type: string
-          description: Stable unique identifier of the resource.
-        createdAt:
-          type: string
-          description: UTC timestamp when the resource was created.
-          format: date-time
-        modifiedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
-          format: date-time
-      description: Describes organization user data returned by Leadping.
-    OrganizationInvitationResponse:
-      type: object
-      properties:
-        safeMessage:
-          type:
-          - 'null'
-          - string
-          description: Safe message for this organization invitation.
-        id:
-          type: string
-          description: Unique Leadping identifier for this organization invitation.
-        organization:
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Identifier and display name of the related organization.
-        email:
-          type: string
-          description: The email address associated with this organization invitation.
-          format: email
-        role:
-          allOf:
-          - $ref: '#/components/schemas/OrganizationMemberRole'
-          description: Role for this organization invitation.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/OrganizationInvitationStatus'
-          description: The current status for this organization invitation.
-        createdAt:
-          type: string
-          description: UTC timestamp for created at on this organization invitation.
-          format: date-time
-        expiresAt:
-          type: string
-          description: UTC timestamp for expires at on this organization invitation.
-          format: date-time
-        sentAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for sent at on this organization invitation.
-          format: date-time
-        resentAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for resent at on this organization invitation.
-          format: date-time
-        acceptedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for accepted at on this organization invitation.
-          format: date-time
-        revokedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for revoked at on this organization invitation.
-          format: date-time
-        sendFailureReason:
-          type:
-          - 'null'
-          - string
-          description: The human-readable send failure reason explaining this organization invitation.
-        licenseBillingStatus:
-          type:
-          - 'null'
-          - string
-          description: The billing status for the paid license created by this invitation.
-        licenseQuantity:
-          type:
-          - 'null'
-          - integer
-          description: The quantity on the shared organization user license subscription item after this change.
-          format: int64
-        licenseRenewalDate:
-          type:
-          - 'null'
-          - string
-          description: The renewal date used for proration of this license.
-          format: date-time
-        licenseActivatedAt:
-          type:
-          - 'null'
-          - string
-          description: The date and time this invitation's paid license was created.
-          format: date-time
-        licenseReleasedAt:
-          type:
-          - 'null'
-          - string
-          description: The date and time this invitation's paid license was released.
-          format: date-time
-      description: Describes organization invitation data returned by Leadping.
-    OrderByOption:
-      type: object
-      properties:
-        field:
-          type: string
-          description: Serializable field name used for sorting; supported names are determined by the queried resource.
-        direction:
-          enum:
-          - asc
-          - desc
-          type:
-          - 'null'
-          - string
-          description: Identifies whether query results are ordered from lower to higher values or from higher to lower values.
-      description: Defines one field and direction used to order an API query result set.
-    WebsiteLifecycleStatus:
-      enum:
-      - NotStarted
-      - DomainSuggestionsPending
-      - DomainSelectionPending
-      - DomainPurchasePending
-      - DomainPurchased
-      - WebsiteGenerationQueued
-      - WebsiteGenerating
-      - WebsiteDeploymentQueued
-      - WebsiteDeploying
-      - WebsiteLive
-      - WebsiteFailed
-      - ManuallyBypassed
-      type: string
-      description: Describes an organization website's lifecycle from discovery and verification through activation, suspension, or removal.
+      description: User summary connected to this automation configuration response.
     OrganizationActivationState:
       type: object
       properties:
@@ -2165,6 +2147,1167 @@ components:
           description: UTC timestamp for updated at on this organization activation state.
           format: date-time
       description: Describes organization activation state data used in Leadping API requests and responses.
+    OrganizationMemberRequest:
+      type: object
+      properties:
+        userId:
+          type:
+          - 'null'
+          - string
+          description: User ID to add, update, or remove from the organization.
+        email:
+          type:
+          - 'null'
+          - string
+          description: Email address for the person represented by this organization user request.
+          format: email
+        role:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationMemberRole'
+          description: Organization role assigned to the user.
+      description: Defines the fields clients can send when working with organization user.
+    TenDlcApplicationStatus:
+      enum:
+      - NotStarted
+      - DraftGenerated
+      - DraftIncomplete
+      - ReadyToSubmit
+      - Submitted
+      - PendingTelnyxReview
+      - Approved
+      - Rejected
+      - NeedsChanges
+      - ResubmissionReady
+      - Failed
+      type: string
+      description: Describes an organization's overall 10DLC registration lifecycle across brand and messaging campaign submission.
+    OrganizationApiKeyRequest:
+      type: object
+      properties:
+        name:
+          type:
+          - 'null'
+          - string
+          description: Human-readable name used to identify the key.
+        expiresInDays:
+          type:
+          - 'null'
+          - integer
+          description: Number of days before the key expires. Null means no expiration.
+          format: int32
+        permissions:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: WorkOS permission slugs granted to the API key.
+      description: Defines the display name and access configuration for a new Leadping organization API key.
+    OrganizationRequest:
+      type: object
+      properties:
+        name:
+          type:
+          - 'null'
+          - string
+          description: Primary organization name.
+        secondaryName:
+          type:
+          - 'null'
+          - string
+          description: Alternate organization name or DBA shown in Leadping.
+        phone:
+          type:
+          - 'null'
+          - string
+          description: Phone details for the lead, user, or organization represented by this organization profile request.
+        address:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/StreetAddress'
+          description: Postal address for the organization, lead, or contact represented by this organization profile request.
+        website:
+          type:
+          - 'null'
+          - string
+          description: Organization website URL used for compliance, brand review, and lead attribution.
+        vertical:
+          type:
+          - 'null'
+          - string
+          description: Industry vertical used for lead routing, compliance review, and reporting.
+        description:
+          type:
+          - 'null'
+          - string
+          description: Human-readable description that explains this organization profile request to API users.
+        ein:
+          type:
+          - 'null'
+          - string
+          description: Employer Identification Number used for organization and 10DLC verification.
+        isYoungerThan90:
+          type:
+          - 'null'
+          - boolean
+          description: Whether the organization was formed less than 90 days ago.
+      description: Defines the fields clients can send when working with organization profile.
+    OrganizationApiKeyIssueResponse:
+      type: object
+      properties:
+        secret:
+          type: string
+          description: Secret token returned once when the Leadping API key is issued.
+        expiresAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the organization API key issue expires.
+          format: date-time
+        apiKey:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationApiKeyPreviewResponse'
+          description: API key associated with this Leadping organization API key issue.
+      description: Returns a newly issued organization API key and its identifying metadata; the secret credential is shown only in this response.
+    OrganizationSwitchRequest:
+      required:
+      - organizationId
+      type: object
+      properties:
+        organizationId:
+          type: string
+          description: Organization ID to switch into for the current Leadping session.
+      description: Defines the fields clients can send when working with organization switch.
+    OrganizationCompliancePolicy:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether this organization compliance policy is enabled.
+        allowedStates:
+          type: array
+          items:
+            type: string
+          description: The allowed states included with this organization compliance policy.
+        allowedProducts:
+          type: array
+          items:
+            type: string
+          description: The allowed products included with this organization compliance policy.
+        requireLeadState:
+          type: boolean
+          description: Whether this organization compliance policy requires lead state.
+        requireAgentLicenseState:
+          type: boolean
+          description: Whether this organization compliance policy requires agent license state.
+        requireProduct:
+          type: boolean
+          description: Whether this organization compliance policy requires product.
+        requireTrustedFormForAutomations:
+          type: boolean
+          description: Whether this organization compliance policy requires TrustedForm for automations.
+        requireSourceComplianceApproval:
+          type: boolean
+          description: Whether this organization compliance policy requires source compliance approval.
+      description: Describes organization compliance policy data used in Leadping API requests and responses.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/OrderByOption'
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+        search:
+          type:
+          - 'null'
+          - string
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/ExactMatchFilter'
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/RangeFilter'
+    OrganizationApiKeyPreviewResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the API key.
+        name:
+          type: string
+          description: Human-readable name of the API key.
+        organization:
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Organization that owns the API key.
+        enabled:
+          type: boolean
+          description: Whether the API key can currently authenticate requests.
+        preview:
+          type:
+          - 'null'
+          - string
+          description: Masked value that can be used to identify the key without revealing its secret.
+        permissions:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: Permission slugs granted to the API key.
+        issuedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the API key was issued.
+          format: date-time
+        firstUsedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the API key was first used.
+          format: date-time
+        lastUsedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the API key was last used.
+          format: date-time
+        expiresAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the API key expires, or null when it does not expire.
+          format: date-time
+        totalUses:
+          type: integer
+          description: Total number of tracked uses.
+          format: int64
+        createdAt:
+          type: string
+          description: Date and time when Leadping began tracking the API key.
+          format: date-time
+        modifiedAt:
+          type: string
+          description: Date and time when the tracked API-key metadata was last modified.
+          format: date-time
+      description: Safe identifying and usage metadata for an organization API key. This model never contains the secret credential.
+    ActivationSubscriptionStatus:
+      enum:
+      - Pending
+      - Active
+      - Failed
+      - Canceled
+      type: string
+      description: Describes whether an organization's subscription is ready, blocked, or still incomplete during activation.
+    IdNameValue:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        value:
+          type:
+          - 'null'
+          - string
+        id:
+          type: string
+        name:
+          type: string
+      description: Phone number used by this conversation response for calls, SMS, lookup, or routing.
+    ExactMatchFilter:
+      required:
+      - field
+      type: object
+      properties:
+        value: {}
+        field:
+          type: string
+    OrganizationDunningInfo:
+      type: object
+      properties:
+        stage:
+          type:
+          - 'null'
+          - string
+          description: Current stage for this Leadping organization dunning info.
+        paymentFailedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when this Leadping organization dunning info was payment failed.
+          format: date-time
+        lastFailedInvoiceStatus:
+          type:
+          - 'null'
+          - string
+          description: Current last failed invoice status for this Leadping organization dunning info.
+        retryAttemptCount:
+          type: integer
+          description: Total number of retry attempt records represented by this Leadping organization dunning info.
+          format: int32
+        nextRetryAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the next retry is scheduled.
+          format: date-time
+        gracePeriodEndsAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when this Leadping organization dunning info was grace period ends.
+          format: date-time
+        outboundRestrictedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when this Leadping organization dunning info was outbound restricted.
+          format: date-time
+        outboundSuspendedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when this Leadping organization dunning info was outbound suspended.
+          format: date-time
+        finalCancellationAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when this Leadping organization dunning info was final cancellation.
+          format: date-time
+        lastUpdatedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when this Leadping organization dunning info was last updated.
+          format: date-time
+      description: Dunning state recorded after a failed recurring payment.
+    OrganizationMemberResponse:
+      type: object
+      properties:
+        organization:
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Organization for this organization user.
+        user:
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: User for this organization user.
+        userEmail:
+          type:
+          - 'null'
+          - string
+          description: User email for this organization user.
+          format: email
+        role:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationMemberRole'
+          description: Role for this organization user.
+        createdByUserId:
+          type:
+          - 'null'
+          - string
+          description: The created by user ID associated with this organization user.
+        removedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for removed at on this organization user.
+          format: date-time
+        removedByUserId:
+          type:
+          - 'null'
+          - string
+          description: The removed by user ID associated with this organization user.
+        lastUsedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for last used at on this organization user.
+          format: date-time
+        licenseBillingStatus:
+          type:
+          - 'null'
+          - string
+          description: The billing status for this user's organization license.
+        licenseQuantity:
+          type:
+          - 'null'
+          - integer
+          description: The quantity on the shared organization user license item after this change.
+          format: int64
+        licenseRenewalDate:
+          type:
+          - 'null'
+          - string
+          description: The renewal date used for this user's license proration.
+          format: date-time
+        name:
+          type: string
+        id:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          format: date-time
+      description: Describes organization user data returned by Leadping.
+    OrganizationMemberTableRow:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this organization user.
+        user:
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related user.
+        userEmail:
+          type:
+          - 'null'
+          - string
+          description: User email for this organization user.
+          format: email
+        role:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationMemberRole'
+          description: Role for this organization user.
+        createdAt:
+          type: string
+          description: UTC timestamp for created at on this organization user.
+          format: date-time
+        licenseBillingStatus:
+          type:
+          - 'null'
+          - string
+          description: The billing status for this user's organization license.
+        licenseRenewalDate:
+          type:
+          - 'null'
+          - string
+          description: The renewal date used for this user's license proration.
+          format: date-time
+      description: Describes organization user data used in Leadping API requests and responses.
+    WebsiteLifecycleStatus:
+      enum:
+      - NotStarted
+      - DomainSuggestionsPending
+      - DomainSelectionPending
+      - DomainPurchasePending
+      - DomainPurchased
+      - WebsiteGenerationQueued
+      - WebsiteGenerating
+      - WebsiteDeploymentQueued
+      - WebsiteDeploying
+      - WebsiteLive
+      - WebsiteFailed
+      - ManuallyBypassed
+      type: string
+      description: Describes an organization website's lifecycle from discovery and verification through activation, suspension, or removal.
+    ActivationPaymentStatus:
+      enum:
+      - PaymentMethodPending
+      - PaymentMethodConfirmed
+      - Failed
+      type: string
+      description: Describes whether valid funding and payment prerequisites are satisfied during organization activation.
+    ActivationTimelineEvent:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this activation timeline event.
+        type:
+          type: string
+          description: The type classification for this activation timeline event.
+        title:
+          type: string
+          description: Title for this activation timeline event.
+        details:
+          type:
+          - 'null'
+          - string
+          description: Details for this activation timeline event.
+        status:
+          type: string
+          description: The current status for this activation timeline event.
+        actor:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related actor.
+        failureReason:
+          type:
+          - 'null'
+          - string
+          description: The human-readable failure reason explaining this activation timeline event.
+        createdAt:
+          type: string
+          description: UTC timestamp for created at on this activation timeline event.
+          format: date-time
+      description: Describes activation timeline event data used in Leadping API requests and responses.
+    OrganizationApiKeyRevokeResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the revoked API key.
+        revokedAt:
+          type: string
+          description: Date and time when the API key was revoked.
+          format: date-time
+      description: Confirms that an organization API key was revoked.
+    OrganizationMemberRole:
+      enum:
+      - Owner
+      - Admin
+      - Agent
+      type: string
+      description: Identifies an organization member's access level and permission scope within Leadping.
+    OrganizationInvitationTableRow:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this organization invitation.
+        organization:
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related organization.
+        email:
+          type: string
+          description: The email address associated with this organization invitation.
+          format: email
+        role:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationMemberRole'
+          description: Role for this organization invitation.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationInvitationStatus'
+          description: The current status for this organization invitation.
+        createdAt:
+          type: string
+          description: UTC timestamp for created at on this organization invitation.
+          format: date-time
+        expiresAt:
+          type: string
+          description: UTC timestamp for expires at on this organization invitation.
+          format: date-time
+        sentAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for sent at on this organization invitation.
+          format: date-time
+        resentAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for resent at on this organization invitation.
+          format: date-time
+        acceptedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for accepted at on this organization invitation.
+          format: date-time
+        revokedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for revoked at on this organization invitation.
+          format: date-time
+        sendFailureReason:
+          type:
+          - 'null'
+          - string
+          description: The human-readable send failure reason explaining this organization invitation.
+        licenseBillingStatus:
+          type:
+          - 'null'
+          - string
+          description: The billing status for the paid license created by this invitation.
+        licenseQuantity:
+          type:
+          - 'null'
+          - integer
+          description: The quantity on the shared organization user license subscription item after this change.
+          format: int64
+        licenseRenewalDate:
+          type:
+          - 'null'
+          - string
+          description: The renewal date used for proration of this license.
+          format: date-time
+        licenseActivatedAt:
+          type:
+          - 'null'
+          - string
+          description: The date and time this invitation's paid license was created.
+          format: date-time
+        licenseReleasedAt:
+          type:
+          - 'null'
+          - string
+          description: The date and time this invitation's paid license was released.
+          format: date-time
+      description: Describes organization invitation data used in Leadping API requests and responses.
+    ActivationLaunchReviewStatus:
+      enum:
+      - NotReady
+      - Pending
+      - Approved
+      - NotRequired
+      - Blocked
+      type: string
+      description: Describes the administrative review decision that determines whether an organization can launch Leadping workflows.
+    TenDlcNotesRequest:
+      type: object
+      properties:
+        notes:
+          maxLength: 4000
+          type:
+          - 'null'
+          - string
+          description: Notes to store with the 10DLC application, or null to clear them.
+      description: Updates the internal notes associated with a 10DLC application.
+    ActivationOnboardingStatus:
+      enum:
+      - Draft
+      - Submitted
+      - Failed
+      type: string
+      description: Describes completion and blocking state for an organization's core Leadping onboarding requirements.
+    CustomerActivationStatus:
+      enum:
+      - DraftOnboarding
+      - PaymentMethodPending
+      - PaymentMethodConfirmed
+      - SubscriptionPending
+      - SubscriptionReceived
+      - SubscriptionActive
+      - LaunchReviewPending
+      - TelephonyProvisioningPending
+      - TelephonyPartiallyProvisioned
+      - TelephonyReady
+      - AwaitingReview
+      - DomainSelection
+      - WebsiteSetup
+      - ComplianceRegistration
+      - ReadyForApproval
+      - Active
+      - Failed
+      - Blocked
+      - BlockedRequiresOperatorAction
+      - ManuallyBypassed
+      type: string
+      description: Summarizes an organization's overall progress from initial Leadping onboarding through launch readiness.
+    OrganizationApiKeyListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/OrganizationApiKeyPreviewResponse'
+            description: Safe identifying and usage metadata for an organization API key. This model never contains the secret credential.
+          description: Safe API-key previews in the current page.
+        pageSize:
+          type: integer
+          description: Number of API keys in the current page.
+          format: int32
+        totalCount:
+          type: integer
+          description: Total number of API keys matching the request.
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+          description: Opaque token for retrieving the next page, or null when this is the last page.
+      description: A page of safe organization API-key previews.
+    OrderByOption:
+      required:
+      - field
+      type: object
+      properties:
+        field:
+          type: string
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
+    OrganizationSwitchOption:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this organization switch option.
+        name:
+          type: string
+          description: The human-readable name shown for this organization switch option.
+        role:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationMemberRole'
+          description: Role for this organization switch option.
+        isCurrent:
+          type: boolean
+          description: Whether this organization switch option is current.
+        lastUsedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for last used at on this organization switch option.
+          format: date-time
+        organizationStatus:
+          enum:
+          - SettingUp
+          - SetupCompleted
+          - Active
+          type:
+          - 'null'
+          - string
+          description: Describes an organization's account lifecycle and whether it can actively use Leadping services.
+        activationStatus:
+          enum:
+          - DraftOnboarding
+          - PaymentMethodPending
+          - PaymentMethodConfirmed
+          - SubscriptionPending
+          - SubscriptionReceived
+          - SubscriptionActive
+          - LaunchReviewPending
+          - TelephonyProvisioningPending
+          - TelephonyPartiallyProvisioned
+          - TelephonyReady
+          - AwaitingReview
+          - DomainSelection
+          - WebsiteSetup
+          - ComplianceRegistration
+          - ReadyForApproval
+          - Active
+          - Failed
+          - Blocked
+          - BlockedRequiresOperatorAction
+          - ManuallyBypassed
+          type:
+          - 'null'
+          - string
+          description: Summarizes an organization's overall progress from initial Leadping onboarding through launch readiness.
+        tenDlcStatus:
+          enum:
+          - NotStarted
+          - DraftGenerated
+          - DraftIncomplete
+          - ReadyToSubmit
+          - Submitted
+          - PendingTelnyxReview
+          - Approved
+          - Rejected
+          - NeedsChanges
+          - ResubmissionReady
+          - Failed
+          type:
+          - 'null'
+          - string
+          description: Describes an organization's overall 10DLC registration lifecycle across brand and messaging campaign submission.
+        needsAdminReview:
+          type: boolean
+          description: Whether needs admin review applies to this organization switch option.
+        activationSummary:
+          type:
+          - 'null'
+          - string
+          description: Activation summary for this organization switch option.
+        hasPaymentMethod:
+          type: boolean
+          description: Whether the organization has a default billing payment method.
+        readyForCustomerTraffic:
+          type: boolean
+          description: Whether ready for customer traffic applies to this organization switch option.
+      description: Describes organization switch option data used in Leadping API requests and responses.
+    TenDlcApplicationDraft:
+      type: object
+      properties:
+        companyName:
+          type:
+          - 'null'
+          - string
+          description: Company name for this 10DLC application draft.
+        contactName:
+          type:
+          - 'null'
+          - string
+          description: Contact name for this 10DLC application draft.
+        contactEmail:
+          type:
+          - 'null'
+          - string
+          description: Contact email for this 10DLC application draft.
+          format: email
+        contactPhone:
+          type:
+          - 'null'
+          - string
+          description: Contact phone for this 10DLC application draft.
+        ein:
+          type:
+          - 'null'
+          - string
+          description: EIN for this 10DLC application draft.
+        websiteUrl:
+          type:
+          - 'null'
+          - string
+          description: Public business website URL submitted to carriers during brand review.
+          format: uri
+        industry:
+          type:
+          - 'null'
+          - string
+          description: The Telnyx brand vertical for this 10DLC application draft. The JSON name is retained for backward compatibility.
+        useCase:
+          type:
+          - 'null'
+          - string
+          description: Use case for this 10DLC application draft.
+        useCaseDescription:
+          type:
+          - 'null'
+          - string
+          description: Use case description for this 10DLC application draft.
+        messageExamples:
+          type: array
+          items:
+            type: string
+          description: The message examples included with this 10DLC application draft.
+        optInLanguage:
+          type:
+          - 'null'
+          - string
+          description: Opt in language for this 10DLC application draft.
+        privacyPolicyUrl:
+          type:
+          - 'null'
+          - string
+          description: Public privacy-policy URL that explains how messaging recipient data is handled.
+          format: uri
+        termsUrl:
+          type:
+          - 'null'
+          - string
+          description: Public terms-of-service URL governing the messaging program.
+          format: uri
+        expectedMonthlyVolume:
+          type:
+          - 'null'
+          - integer
+          description: Expected monthly volume for this 10DLC application draft.
+          format: int32
+        trustedFormRequired:
+          type: boolean
+          description: Whether TrustedForm required applies to this 10DLC application draft.
+        complianceWarnings:
+          type: array
+          items:
+            type: string
+          description: The compliance warnings included with this 10DLC application draft.
+        missingFields:
+          type: array
+          items:
+            type: string
+          description: The missing fields included with this 10DLC application draft.
+        brandStatus:
+          allOf:
+          - $ref: '#/components/schemas/TenDlcRegistrationStatus'
+          description: The current provider review status for the submitted brand.
+        campaignStatus:
+          allOf:
+          - $ref: '#/components/schemas/TenDlcRegistrationStatus'
+          description: The current provider review status for the submitted campaign.
+        lastSubmittedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for last submitted at on this 10DLC application draft.
+          format: date-time
+        rejectionReason:
+          type:
+          - 'null'
+          - string
+          description: The human-readable rejection reason explaining this 10DLC application draft.
+        updatedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for updated at on this 10DLC application draft.
+          format: date-time
+        version:
+          type: integer
+          description: Version for this 10DLC application draft.
+          format: int32
+      description: Describes 10DLC application draft data used in Leadping API requests and responses.
+    StreetAddress:
+      type: object
+      properties:
+        line1:
+          type:
+          - 'null'
+          - string
+        line2:
+          type:
+          - 'null'
+          - string
+        city:
+          type:
+          - 'null'
+          - string
+        state:
+          type:
+          - 'null'
+          - string
+        province:
+          type:
+          - 'null'
+          - string
+        region:
+          type:
+          - 'null'
+          - string
+        postalCode:
+          type:
+          - 'null'
+          - string
+        country:
+          type:
+          - 'null'
+          - string
+        additionalInfo:
+          type:
+          - 'null'
+          - string
+      description: Postal street address for the lead contact profile.
+    OrganizationInvitationRequest:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          type: string
+          description: The email address associated with this organization invitation.
+          format: email
+        role:
+          allOf:
+          - $ref: '#/components/schemas/OrganizationMemberRole'
+          description: Role for this organization invitation.
+      description: Defines the input used for organization invitation.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
+        traceId:
+          type: string
+          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+    ActivationTelephonyStatus:
+      enum:
+      - NotStarted
+      - ProvisioningPending
+      - PartiallyProvisioned
+      - Ready
+      - Failed
+      - BlockedRequiresOperatorAction
+      type: string
+      description: Describes whether phone numbers, calling, messaging, and provider resources are ready for organization launch.
+    ActivationDomainOption:
+      type: object
+      properties:
+        domainName:
+          type: string
+          description: The domain name associated with this activation domain option.
+        whyItFits:
+          type: string
+          description: Why it fits for this activation domain option.
+        industryRelevance:
+          type: string
+          description: Industry relevance for this activation domain option.
+        trustConcerns:
+          type:
+          - 'null'
+          - string
+          description: Trust concerns for this activation domain option.
+        estimatedAnnualCost:
+          type:
+          - 'null'
+          - number
+          description: Estimated annual cost for this activation domain option.
+          format: double
+        availabilityStatus:
+          type: string
+          description: The current availability status for this activation domain option.
+        recommended:
+          type: boolean
+          description: Whether this activation domain option is recommended.
+      description: Describes activation domain option data used in Leadping API requests and responses.
+    RangeFilter:
+      required:
+      - field
+      type: object
+      properties:
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
+        field:
+          type: string
+    OrganizationBillingState:
+      type: object
+      properties:
+        hasStripeCustomer:
+          type: boolean
+          description: Indicates whether the organization has a Stripe customer account.
+        hasPaymentMethod:
+          type: boolean
+          description: Indicates whether the organization has a saved default payment method.
+        phoneNumberQuantity:
+          type:
+          - 'null'
+          - integer
+          description: Number of phone numbers included in the organization's subscription plan.
+          format: int64
+        organizationMemberQuantity:
+          type:
+          - 'null'
+          - integer
+          description: Number of user licenses included in the organization's subscription plan.
+          format: int64
+        organizationMemberAssignedQuantity:
+          type:
+          - 'null'
+          - integer
+          description: Number of user licenses currently assigned to organization members.
+          format: int64
+        pendingBillingPlan:
+          enum:
+          - Annual
+          - Monthly
+          type:
+          - 'null'
+          - string
+          description: Identifies the Leadping subscription plan that determines organization features, allowances, and billing behavior.
+        billingPlanChangeEffectiveAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the scheduled billing plan change takes effect.
+          format: date-time
+        planRenewalAt:
+          type:
+          - 'null'
+          - string
+          description: Current plan renewal date.
+          format: date-time
+        planPeriodStartAt:
+          type:
+          - 'null'
+          - string
+          description: Start of the current plan billing period.
+          format: date-time
+        cancelAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the active subscription is scheduled to cancel.
+          format: date-time
+        dunning:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/OrganizationDunningInfo'
+          description: Customer-safe payment recovery state for the organization.
+        lastSubscriptionEventAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping last processed a subscription event for the organization.
+          format: date-time
+        lastPaymentMethodEventAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when Leadping last processed a payment-method event for the organization.
+          format: date-time
+      description: Customer-safe billing state for a Leadping organization.
     OrganizationResponse:
       type: object
       properties:
@@ -2319,7 +3462,7 @@ components:
           items:
             allOf:
             - $ref: '#/components/schemas/IdNameValue'
-            description: Extends an identifier-and-name resource reference with an optional string value used for display or selection metadata.
+            description: Phone number used by this conversation response for calls, SMS, lookup, or routing.
           description: Phone numbers assigned to this organization.
         site:
           type:
@@ -2361,290 +3504,45 @@ components:
           description: Compliance policy configuration for the organization.
         name:
           type: string
-          description: Human-readable display name of the resource.
         id:
           type: string
-          description: Stable unique identifier of the resource.
         createdAt:
           type: string
-          description: UTC timestamp when the resource was created.
           format: date-time
         modifiedAt:
           type:
           - 'null'
           - string
-          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
           format: date-time
       description: Describes organization profile data returned by Leadping.
-    OrganizationBillingState:
-      type: object
-      properties:
-        hasStripeCustomer:
-          type: boolean
-          description: Indicates whether the organization has a Stripe customer account.
-        hasPaymentMethod:
-          type: boolean
-          description: Indicates whether the organization has a saved default payment method.
-        phoneNumberQuantity:
-          type:
-          - 'null'
-          - integer
-          description: Number of phone numbers included in the organization's subscription plan.
-          format: int64
-        organizationMemberQuantity:
-          type:
-          - 'null'
-          - integer
-          description: Number of user licenses included in the organization's subscription plan.
-          format: int64
-        organizationMemberAssignedQuantity:
-          type:
-          - 'null'
-          - integer
-          description: Number of user licenses currently assigned to organization members.
-          format: int64
-        pendingBillingPlan:
-          enum:
-          - Annual
-          - Monthly
-          type:
-          - 'null'
-          - string
-          description: Identifies the Leadping subscription plan that determines organization features, allowances, and billing behavior.
-        billingPlanChangeEffectiveAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the scheduled billing plan change takes effect.
-          format: date-time
-        planRenewalAt:
-          type:
-          - 'null'
-          - string
-          description: Current plan renewal date.
-          format: date-time
-        planPeriodStartAt:
-          type:
-          - 'null'
-          - string
-          description: Start of the current plan billing period.
-          format: date-time
-        cancelAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when the active subscription is scheduled to cancel.
-          format: date-time
-        dunning:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/OrganizationDunningInfo'
-          description: Customer-safe payment recovery state for the organization.
-        lastSubscriptionEventAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when Leadping last processed a subscription event for the organization.
-          format: date-time
-        lastPaymentMethodEventAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when Leadping last processed a payment-method event for the organization.
-          format: date-time
-      description: Customer-safe billing state for a Leadping organization.
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - 'null'
-          - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
-          type:
-          - 'null'
-          - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-      example:
-        type: https://leadping.ai/docs/errors/validation
-        title: Request validation failed
-        status: 400
-        detail: One or more request fields are invalid.
-        instance: /leads/intake
-    IdNamePair:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          type: string
-          description: Stable unique identifier of the referenced resource.
-        name:
-          type: string
-          description: Human-readable display name of the referenced resource.
-      description: Provides a compact API reference to another resource using its stable identifier and human-readable display name.
-    OrganizationMemberRole:
+    OrganizationInvitationStatus:
       enum:
-      - Owner
-      - Admin
-      - Agent
+      - Awaiting confirmation
+      - Pending
+      - Accepted
+      - Expired
+      - Revoked
+      - Resent
+      - Failed to send
       type: string
-      description: Identifies an organization member's access level and permission scope within Leadping.
-    ActivationTelephonyStatus:
+      description: Describes the lifecycle of an organization membership invitation from issuance through acceptance, expiration, or revocation.
+    TenDlcRegistrationStatus:
       enum:
-      - NotStarted
-      - ProvisioningPending
-      - PartiallyProvisioned
-      - Ready
+      - NotSubmitted
+      - Pending
+      - Approved
+      - Rejected
       - Failed
-      - BlockedRequiresOperatorAction
       type: string
-      description: Describes whether phone numbers, calling, messaging, and provider resources are ready for organization launch.
-    TenDlcApplicationDraft:
+      description: Defines the provider lifecycle for an individual 10DLC brand or campaign.
+    OrganizationInvitationResponse:
       type: object
       properties:
-        companyName:
+        safeMessage:
           type:
           - 'null'
           - string
-          description: Company name for this 10DLC application draft.
-        contactName:
-          type:
-          - 'null'
-          - string
-          description: Contact name for this 10DLC application draft.
-        contactEmail:
-          type:
-          - 'null'
-          - string
-          description: Contact email for this 10DLC application draft.
-          format: email
-        contactPhone:
-          type:
-          - 'null'
-          - string
-          description: Contact phone for this 10DLC application draft.
-        ein:
-          type:
-          - 'null'
-          - string
-          description: EIN for this 10DLC application draft.
-        websiteUrl:
-          type:
-          - 'null'
-          - string
-          description: Public business website URL submitted to carriers during brand review.
-          format: uri
-        industry:
-          type:
-          - 'null'
-          - string
-          description: The Telnyx brand vertical for this 10DLC application draft. The JSON name is retained for backward compatibility.
-        useCase:
-          type:
-          - 'null'
-          - string
-          description: Use case for this 10DLC application draft.
-        useCaseDescription:
-          type:
-          - 'null'
-          - string
-          description: Use case description for this 10DLC application draft.
-        messageExamples:
-          type: array
-          items:
-            type: string
-          description: The message examples included with this 10DLC application draft.
-        optInLanguage:
-          type:
-          - 'null'
-          - string
-          description: Opt in language for this 10DLC application draft.
-        privacyPolicyUrl:
-          type:
-          - 'null'
-          - string
-          description: Public privacy-policy URL that explains how messaging recipient data is handled.
-          format: uri
-        termsUrl:
-          type:
-          - 'null'
-          - string
-          description: Public terms-of-service URL governing the messaging program.
-          format: uri
-        expectedMonthlyVolume:
-          type:
-          - 'null'
-          - integer
-          description: Expected monthly volume for this 10DLC application draft.
-          format: int32
-        trustedFormRequired:
-          type: boolean
-          description: Whether TrustedForm required applies to this 10DLC application draft.
-        complianceWarnings:
-          type: array
-          items:
-            type: string
-          description: The compliance warnings included with this 10DLC application draft.
-        missingFields:
-          type: array
-          items:
-            type: string
-          description: The missing fields included with this 10DLC application draft.
-        brandStatus:
-          allOf:
-          - $ref: '#/components/schemas/TenDlcRegistrationStatus'
-          description: The current provider review status for the submitted brand.
-        campaignStatus:
-          allOf:
-          - $ref: '#/components/schemas/TenDlcRegistrationStatus'
-          description: The current provider review status for the submitted campaign.
-        lastSubmittedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for last submitted at on this 10DLC application draft.
-          format: date-time
-        rejectionReason:
-          type:
-          - 'null'
-          - string
-          description: The human-readable rejection reason explaining this 10DLC application draft.
-        updatedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for updated at on this 10DLC application draft.
-          format: date-time
-        version:
-          type: integer
-          description: Version for this 10DLC application draft.
-          format: int32
-      description: Describes ten dlc application draft data used in Leadping API requests and responses.
-    OrganizationInvitationTableRow:
-      type: object
-      properties:
+          description: Safe message for this organization invitation.
         id:
           type: string
           description: Unique Leadping identifier for this organization invitation.
@@ -2730,360 +3628,68 @@ components:
           - string
           description: The date and time this invitation's paid license was released.
           format: date-time
-      description: Describes organization invitation data used in Leadping API requests and responses.
-    TenDlcApplicationStatus:
-      enum:
-      - NotStarted
-      - DraftGenerated
-      - DraftIncomplete
-      - ReadyToSubmit
-      - Submitted
-      - PendingTelnyxReview
-      - Approved
-      - Rejected
-      - NeedsChanges
-      - ResubmissionReady
-      - Failed
-      type: string
-      description: Describes an organization's overall 10DLC registration lifecycle across brand and messaging campaign submission.
-    ActivationPaymentStatus:
-      enum:
-      - PaymentMethodPending
-      - PaymentMethodConfirmed
-      - Failed
-      type: string
-      description: Describes whether valid funding and payment prerequisites are satisfied during organization activation.
-    ExactMatchFilter:
-      type: object
-      properties:
-        value:
-          description: Scalar value the target field must equal; its JSON type should match the field being queried.
-        field:
-          type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records whose named field equals a supplied scalar value.
-    OrganizationInvitationRequest:
+      description: Describes organization invitation data returned by Leadping.
+    AcceptOrganizationInvitationRequest:
       required:
-      - email
+      - token
       type: object
       properties:
-        email:
+        token:
           type: string
+          description: The token supplied to authorize or complete this organization invitation.
+        email:
+          type:
+          - 'null'
+          - string
           description: The email address associated with this organization invitation.
           format: email
-        role:
-          allOf:
-          - $ref: '#/components/schemas/OrganizationMemberRole'
-          description: Role for this organization invitation.
-      description: Defines the input used for organization invitation.
-    OrganizationCompliancePolicy:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: Whether this organization compliance policy is enabled.
-        allowedStates:
-          type: array
-          items:
-            type: string
-          description: The allowed states included with this organization compliance policy.
-        allowedProducts:
-          type: array
-          items:
-            type: string
-          description: The allowed products included with this organization compliance policy.
-        requireLeadState:
-          type: boolean
-          description: Whether this organization compliance policy requires lead state.
-        requireAgentLicenseState:
-          type: boolean
-          description: Whether this organization compliance policy requires agent license state.
-        requireProduct:
-          type: boolean
-          description: Whether this organization compliance policy requires product.
-        requireTrustedFormForAutomations:
-          type: boolean
-          description: Whether this organization compliance policy requires TrustedForm for automations.
-        requireSourceComplianceApproval:
-          type: boolean
-          description: Whether this organization compliance policy requires source compliance approval.
-      description: Describes organization compliance policy data used in Leadping API requests and responses.
-    OrganizationMemberTableRow:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this organization user.
-        user:
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Identifier and display name of the related user.
-        userEmail:
+        firstName:
           type:
           - 'null'
           - string
-          description: User email for this organization user.
-          format: email
-        role:
-          allOf:
-          - $ref: '#/components/schemas/OrganizationMemberRole'
-          description: Role for this organization user.
-        createdAt:
-          type: string
-          description: UTC timestamp for created at on this organization user.
-          format: date-time
-        licenseBillingStatus:
+          description: First name for this organization invitation.
+        lastName:
           type:
           - 'null'
           - string
-          description: The billing status for this user's organization license.
-        licenseRenewalDate:
-          type:
-          - 'null'
-          - string
-          description: The renewal date used for this user's license proration.
-          format: date-time
-      description: Describes organization user data used in Leadping API requests and responses.
-    RangeFilter:
+          description: UTC timestamp for last name on this organization invitation.
+      description: Defines the input used for accept organization invitation.
+    ProblemDetails_2:
       type: object
       properties:
-        greaterThan:
-          description: Exclusive lower bound; matching field values must be greater than this value.
-        greaterThanOrEqual:
-          description: Inclusive lower bound; matching field values must be greater than or equal to this value.
-        lessThan:
-          description: Exclusive upper bound; matching field values must be less than this value.
-        lessThanOrEqual:
-          description: Inclusive upper bound; matching field values must be less than or equal to this value.
-        field:
-          type: string
-          description: Serializable field name to evaluate; supported names are determined by the queried resource.
-      description: Selects records by applying inclusive or exclusive lower and upper bounds to a named comparable field.
-    ActivationOnboardingStatus:
-      enum:
-      - Draft
-      - Submitted
-      - Failed
-      type: string
-      description: Describes completion and blocking state for an organization's core Leadping onboarding requirements.
-    TenDlcNotesRequest:
-      type: object
-      properties:
-        notes:
-          maxLength: 4000
+        type:
           type:
           - 'null'
           - string
-          description: Notes to store with the 10DLC application, or null to clear them.
-      description: Updates the internal notes associated with a 10DLC application.
-    OrganizationRequest:
-      required:
-      - name
-      type: object
-      properties:
-        secondaryName:
+          description: URI reference that identifies the problem type.
+        title:
           type:
           - 'null'
           - string
-          description: Alternate organization name or DBA shown in Leadping.
+          description: Short, human-readable summary of the problem.
         status:
-          enum:
-          - SettingUp
-          - SetupCompleted
-          - Active
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
           type:
           - 'null'
           - string
-          description: Describes an organization's account lifecycle and whether it can actively use Leadping services.
-        enabled:
-          type:
-          - 'null'
-          - boolean
-          description: Indicates whether this organization profile request is active and available in the Leadping API.
-        autoRefillEnabled:
-          type:
-          - 'null'
-          - boolean
-          description: Indicates whether automatic wallet refill is enabled for the organization.
-        autoRefillAmount:
-          type:
-          - 'null'
-          - number
-          description: Wallet refill amount charged when automatic refill is triggered.
-          format: double
-        autoRefillTrigger:
-          type:
-          - 'null'
-          - number
-          description: Wallet balance threshold that triggers automatic refill.
-          format: double
-        phone:
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
           type:
           - 'null'
           - string
-          description: Phone details for the lead, user, or organization represented by this organization profile request.
-        address:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/StreetAddress'
-          description: Postal address for the organization, lead, or contact represented by this organization profile request.
-        billingName:
-          type:
-          - 'null'
-          - string
-          description: Name used for invoices, receipts, and payment processor billing records.
-        billingAddress:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/StreetAddress'
-          description: Postal address used for invoices, receipts, and payment processor billing records.
-        billingTaxId:
-          type:
-          - 'null'
-          - string
-          description: Tax identifier printed on billing documents. This may differ from the organization verification EIN.
-        website:
-          type:
-          - 'null'
-          - string
-          description: Organization website URL used for compliance, brand review, and lead attribution.
-        vertical:
-          type:
-          - 'null'
-          - string
-          description: Industry vertical used for lead routing, compliance review, and reporting.
-        description:
-          type:
-          - 'null'
-          - string
-          description: Human-readable description that explains this organization profile request to API users.
-        ein:
-          type:
-          - 'null'
-          - string
-          description: Employer Identification Number used for organization and 10DLC verification.
-        isYoungerThan90:
-          type:
-          - 'null'
-          - boolean
-          description: Indicates whether the organization serves customers younger than 90, for compliance and underwriting context.
-        einDocument:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNameValue'
-          description: Uploaded EIN document reference used for organization verification.
-        phones:
-          type:
-          - 'null'
-          - array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/IdNameValue'
-            description: Extends an identifier-and-name resource reference with an optional string value used for display or selection metadata.
-          description: Phone numbers assigned to this organization.
-        compliancePolicy:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/OrganizationCompliancePolicy'
-          description: Compliance policy configuration for the organization.
-        name:
-          maxLength: 255
-          minLength: 0
-          type: string
-          description: Human-readable display name for the resource, subject to the API's maximum name length.
-        id:
-          type:
-          - 'null'
-          - string
-          description: Stable unique identifier of an existing resource to update; omit it when the API assigns an identifier during creation.
-      description: Defines the fields clients can send when working with organization profile.
-    CustomerActivationStatus:
-      enum:
-      - DraftOnboarding
-      - PaymentMethodPending
-      - PaymentMethodConfirmed
-      - SubscriptionPending
-      - SubscriptionReceived
-      - SubscriptionActive
-      - LaunchReviewPending
-      - TelephonyProvisioningPending
-      - TelephonyPartiallyProvisioned
-      - TelephonyReady
-      - AwaitingReview
-      - DomainSelection
-      - WebsiteSetup
-      - ComplianceRegistration
-      - ReadyForApproval
-      - Active
-      - Failed
-      - Blocked
-      - BlockedRequiresOperatorAction
-      - ManuallyBypassed
-      type: string
-      description: Summarizes an organization's overall progress from initial Leadping onboarding through launch readiness.
-    TenDlcRegistrationStatus:
-      enum:
-      - NotSubmitted
-      - Pending
-      - Approved
-      - Rejected
-      - Failed
-      type: string
-      description: Defines the provider lifecycle for an individual 10DLC brand or campaign.
-    IdNameValue:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        value:
-          type:
-          - 'null'
-          - string
-          description: Optional machine-readable or display value associated with the referenced resource.
-        id:
-          type: string
-          description: Stable unique identifier of the referenced resource.
-        name:
-          type: string
-          description: Human-readable display name of the referenced resource.
-      description: Extends an identifier-and-name resource reference with an optional string value used for display or selection metadata.
-    ActivationLaunchReviewStatus:
-      enum:
-      - NotReady
-      - Pending
-      - Approved
-      - NotRequired
-      - Blocked
-      type: string
-      description: Describes the administrative review decision that determines whether an organization can launch Leadping workflows.
-    OrganizationMemberRequest:
-      type: object
-      properties:
-        userId:
-          type:
-          - 'null'
-          - string
-          description: User ID to add, update, or remove from the organization.
-        email:
-          type:
-          - 'null'
-          - string
-          description: Email address for the person represented by this organization user request.
-          format: email
-        role:
-          allOf:
-          - $ref: '#/components/schemas/OrganizationMemberRole'
-          description: Organization role assigned to the user.
-      description: Defines the fields clients can send when working with organization user.
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
   securitySchemes:
     Bearer:
       type: http
@@ -3098,3 +3704,6 @@ components:
 externalDocs:
   description: Leadping API documentation, authentication guide, concepts, and integration guidance.
   url: https://leadping.ai/docs/api-reference
+x-refined-from:
+- leadping-openapi.json
+- leadping-organizations-api-openapi.yml
