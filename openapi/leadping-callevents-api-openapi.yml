@@ -418,6 +418,27 @@ paths:
           recommended: true
 components:
   schemas:
+    PagedResultOfCallEventTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/CallEventTableRow'
+            description: Summarizes call event data in paginated and searchable results.
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
     OrderByOption:
       required:
       - field
@@ -472,6 +493,26 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+    CommunicationConsoleEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of this diagnostic console entry.
+        stage:
+          type: string
+          description: Communication-processing stage that produced the entry, such as validation, routing, or provider delivery.
+        status:
+          type: string
+          description: Outcome or state recorded for this processing stage.
+        message:
+          type: string
+          description: User-safe diagnostic message describing what occurred at this stage.
+        occurredAt:
+          type: string
+          description: UTC timestamp when this communication-processing event occurred.
+          format: date-time
+      description: Describes one durable diagnostic entry from the processing of a communication.
     ExactMatchFilter:
       required:
       - field
@@ -480,27 +521,48 @@ components:
         value: {}
         field:
           type: string
-    PagedResultOfCallEventTableRow:
+    RequestDataOptions:
       type: object
       properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/CallEventTableRow'
-            description: Summarizes call event data in paginated and searchable results.
         pageSize:
           type: integer
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
           format: int32
         continuationToken:
           type:
           - 'null'
           - string
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/OrderByOption'
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+        search:
+          type:
+          - 'null'
+          - string
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/ExactMatchFilter'
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/RangeFilter'
     RangeFilter:
       required:
       - field
@@ -668,68 +730,6 @@ components:
           - string
           description: Display name for the organization associated with this call event.
       description: Summarizes call event data in paginated and searchable results.
-    CommunicationConsoleEntry:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier of this diagnostic console entry.
-        stage:
-          type: string
-          description: Communication-processing stage that produced the entry, such as validation, routing, or provider delivery.
-        status:
-          type: string
-          description: Outcome or state recorded for this processing stage.
-        message:
-          type: string
-          description: User-safe diagnostic message describing what occurred at this stage.
-        occurredAt:
-          type: string
-          description: UTC timestamp when this communication-processing event occurred.
-          format: date-time
-      description: Describes one durable diagnostic entry from the processing of a communication.
-    RequestDataOptions:
-      type: object
-      properties:
-        pageSize:
-          type: integer
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-        orderBy:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/OrderByOption'
-        includeCount:
-          type:
-          - 'null'
-          - boolean
-        search:
-          type:
-          - 'null'
-          - string
-        searchFields:
-          type:
-          - 'null'
-          - array
-          items:
-            type: string
-        filters:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/ExactMatchFilter'
-        rangeFilters:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/RangeFilter'
   securitySchemes:
     Bearer:
       type: http

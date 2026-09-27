@@ -51,13 +51,14 @@ tags:
 - Communications
 - Voice/calling
 - Compliance & consent
-- agent-native
+- Agent-Native
 - MCP
 - Lead intake
 - Conversations
 - Automation
 - Suppression & opt-out
 - Webhook
+- A2A
 tags_raw:
 - Lead management
 - Sales & marketing automation
@@ -74,6 +75,8 @@ tags_raw:
 - Automations
 - Suppression & opt-out
 - Webhooks
+- agent-native
+- A2A
 apis:
 - name: Leadping MCP Servers
   description: >-
@@ -86,12 +89,13 @@ apis:
   baseURL: https://api.leadping.ai/mcp
   tags:
   - MCP
-  - agent-native
+  - Agent-Native
   - Lead Management
   tags_raw:
   - MCP
   - Agent-native
   - Lead management
+  - agent-native
   properties:
   - type: MCPServer
     url: mcp/leadping-mcp.yml
@@ -1160,3 +1164,10 @@ x-enrichment:
   status: enriched
   artifacts_added: 7
   pass: local-v1
+x-a2a:
+  verified: true
+  probed: '2026-09-26'
+  url: "https://api.leadping.ai/.well-known/agent-card.json"
+  grade: "flavored"
+  protocol_version: "1.0"
+  control: 404

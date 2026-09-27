@@ -134,6 +134,36 @@ components:
         name:
           type: string
       description: User summary connected to this automation configuration response.
+    TelephonyLoginRequest:
+      type: object
+      properties:
+        device:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related device.
+      description: Identifies the Leadping user and calling context for which a short-lived telephony client token should be issued.
+    TelephonyLoginResponse:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username for this telephony login.
+        password:
+          type: string
+          description: Password for this telephony login.
+        expiresAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for expires at on this telephony login.
+          format: date-time
+        callbackToken:
+          type: string
+          description: Callback token for this telephony login.
+      description: Provides the short-lived access token and client configuration required to initialize an authenticated Leadping calling session.
     ProblemDetails:
       type: object
       properties:
@@ -174,36 +204,6 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-    TelephonyLoginResponse:
-      type: object
-      properties:
-        username:
-          type: string
-          description: Username for this telephony login.
-        password:
-          type: string
-          description: Password for this telephony login.
-        expiresAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for expires at on this telephony login.
-          format: date-time
-        callbackToken:
-          type: string
-          description: Callback token for this telephony login.
-      description: Provides the short-lived access token and client configuration required to initialize an authenticated Leadping calling session.
-    TelephonyLoginRequest:
-      type: object
-      properties:
-        device:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Identifier and display name of the related device.
-      description: Identifies the Leadping user and calling context for which a short-lived telephony client token should be issued.
   securitySchemes:
     Bearer:
       type: http

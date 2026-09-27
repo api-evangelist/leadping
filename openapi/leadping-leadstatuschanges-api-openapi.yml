@@ -737,20 +737,6 @@ paths:
           recommended: false
 components:
   schemas:
-    OrderByOption:
-      required:
-      - field
-      type: object
-      properties:
-        field:
-          type: string
-        direction:
-          enum:
-          - asc
-          - desc
-          type:
-          - 'null'
-          - string
     LeadStatusChangeExportResponse:
       type: object
       properties:
@@ -771,6 +757,41 @@ components:
             description: Describes lead status change export row data returned by Leadping.
           description: The rows included with this lead status change export.
       description: Describes lead status change export data returned by Leadping.
+    PagedResultOfLeadStatusChangeResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/LeadStatusChangeResponse'
+            description: Describes an auditable lead status transition, including the previous and new status, source, actor, and effective time.
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+    OrderByOption:
+      required:
+      - field
+      type: object
+      properties:
+        field:
+          type: string
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
     ProblemDetails:
       type: object
       properties:
@@ -811,37 +832,18 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-    ExactMatchFilter:
+    LeadStatusChangeRequest:
       required:
-      - field
+      - type
+      - outcome
       type: object
       properties:
-        value: {}
-        field:
-          type: string
-    LeadStatusChangeExportRow:
-      type: object
-      properties:
-        leadId:
-          type:
-          - 'null'
-          - string
-          description: The lead ID associated with this lead status change export row.
-        leadStatusChangeId:
-          type:
-          - 'null'
-          - string
-          description: The lead status change ID associated with this lead status change export row.
         type:
-          type:
-          - 'null'
-          - string
-          description: Category of status change represented by this exported row.
+          type: string
+          description: Category of status change being recorded for the lead.
         outcome:
-          type:
-          - 'null'
-          - string
-          description: Result of the interaction or workflow step represented by this exported row.
+          type: string
+          description: Result of the interaction or workflow step that caused the status change.
         category:
           enum:
           - Open
@@ -854,119 +856,59 @@ components:
           - 'null'
           - string
           description: Controlled lead status change categories used for reporting, automation, and analytics.
-        oldLeadStatusChangeId:
+        notes:
           type:
           - 'null'
           - string
-          description: Unique identifier of the old lead status change associated with this Leadping lead status change export row.
-        oldLeadStatusChangeType:
-          type:
-          - 'null'
-          - string
-          description: Old lead status change type classification for this Leadping lead status change export row.
-        oldLeadStatusChangeOutcome:
-          type:
-          - 'null'
-          - string
-          description: Old lead status change outcome associated with this Leadping lead status change export row.
-        newLeadStatusChangeId:
-          type:
-          - 'null'
-          - string
-          description: Unique identifier of the new lead status change associated with this Leadping lead status change export row.
-        changeSource:
-          enum:
-          - User
-          - AI
-          - Automation
-          - System
-          - API
-          type:
-          - 'null'
-          - string
-          description: Known sources that can change a lead's current lead status change.
-        changedByUserId:
-          type:
-          - 'null'
-          - string
-          description: Unique identifier of the Leadping user who made the change.
-        changedByAutomationId:
-          type:
-          - 'null'
-          - string
-          description: Unique identifier of the automation that changed the lead status change, when applicable.
-        changedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the lead status change change occurred.
-          format: date-time
+          description: The operator or customer notes recorded for this lead status change.
         reason:
           type:
           - 'null'
           - string
-          description: Human-readable explanation for the current lead status change export row outcome.
+          description: The reason this lead status change was changed.
         followUpStatus:
           type:
           - 'null'
           - string
-          description: The current follow up status for this lead status change export row.
+          description: The current follow up status for this lead status change.
         callbackAt:
           type:
           - 'null'
           - string
-          description: UTC timestamp for callback at on this lead status change export row.
+          description: UTC timestamp for callback at on this lead status change.
           format: date-time
         taskDueAt:
           type:
           - 'null'
           - string
-          description: UTC timestamp for task due at on this lead status change export row.
+          description: UTC timestamp for task due at on this lead status change.
           format: date-time
         appointmentStartAt:
           type:
           - 'null'
           - string
-          description: UTC timestamp for appointment start at on this lead status change export row.
+          description: UTC timestamp for appointment start at on this lead status change.
           format: date-time
         appointmentEndAt:
           type:
           - 'null'
           - string
-          description: UTC timestamp for appointment end at on this lead status change export row.
+          description: UTC timestamp for appointment end at on this lead status change.
           format: date-time
-        assignedToUserId:
+        appointmentNotes:
           type:
           - 'null'
           - string
-          description: The assigned to user ID associated with this lead status change export row.
-        sourceId:
-          type:
-          - 'null'
-          - string
-          description: The source ID associated with this lead status change export row.
-        relatedCallEventId:
-          type:
-          - 'null'
-          - string
-          description: The related call event ID associated with this lead status change export row.
-        isMissedCallFollowUp:
-          type: boolean
-          description: Whether this lead status change export row is missed call follow up.
-        notes:
-          type:
-          - 'null'
-          - string
-          description: The operator or customer notes recorded for this lead status change export row.
-        createdAt:
+          description: Additional scheduling or preparation notes for the related appointment.
+      description: Defines a lead status transition or correction, including its target status, effective time, source, and explanatory context.
+    ExactMatchFilter:
+      required:
+      - field
+      type: object
+      properties:
+        value: {}
+        field:
           type: string
-          description: UTC timestamp for created at on this lead status change export row.
-          format: date-time
-        updatedAt:
-          type: string
-          description: UTC timestamp for updated at on this lead status change export row.
-          format: date-time
-      description: Describes lead status change export row data returned by Leadping.
     LeadStatusChangeResponse:
       type: object
       properties:
@@ -1119,29 +1061,29 @@ components:
           - string
           description: The source ID associated with this lead status change.
       description: Describes an auditable lead status transition, including the previous and new status, source, actor, and effective time.
-    RangeFilter:
-      required:
-      - field
+    LeadStatusChangeExportRow:
       type: object
       properties:
-        greaterThan: {}
-        greaterThanOrEqual: {}
-        lessThan: {}
-        lessThanOrEqual: {}
-        field:
-          type: string
-    LeadStatusChangeRequest:
-      required:
-      - type
-      - outcome
-      type: object
-      properties:
+        leadId:
+          type:
+          - 'null'
+          - string
+          description: The lead ID associated with this lead status change export row.
+        leadStatusChangeId:
+          type:
+          - 'null'
+          - string
+          description: The lead status change ID associated with this lead status change export row.
         type:
-          type: string
-          description: Category of status change being recorded for the lead.
+          type:
+          - 'null'
+          - string
+          description: Category of status change represented by this exported row.
         outcome:
-          type: string
-          description: Result of the interaction or workflow step that caused the status change.
+          type:
+          - 'null'
+          - string
+          description: Result of the interaction or workflow step represented by this exported row.
         category:
           enum:
           - Open
@@ -1154,51 +1096,119 @@ components:
           - 'null'
           - string
           description: Controlled lead status change categories used for reporting, automation, and analytics.
-        notes:
+        oldLeadStatusChangeId:
           type:
           - 'null'
           - string
-          description: The operator or customer notes recorded for this lead status change.
+          description: Unique identifier of the old lead status change associated with this Leadping lead status change export row.
+        oldLeadStatusChangeType:
+          type:
+          - 'null'
+          - string
+          description: Old lead status change type classification for this Leadping lead status change export row.
+        oldLeadStatusChangeOutcome:
+          type:
+          - 'null'
+          - string
+          description: Old lead status change outcome associated with this Leadping lead status change export row.
+        newLeadStatusChangeId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the new lead status change associated with this Leadping lead status change export row.
+        changeSource:
+          enum:
+          - User
+          - AI
+          - Automation
+          - System
+          - API
+          type:
+          - 'null'
+          - string
+          description: Known sources that can change a lead's current lead status change.
+        changedByUserId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the Leadping user who made the change.
+        changedByAutomationId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the automation that changed the lead status change, when applicable.
+        changedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the lead status change change occurred.
+          format: date-time
         reason:
           type:
           - 'null'
           - string
-          description: The reason this lead status change was changed.
+          description: Human-readable explanation for the current lead status change export row outcome.
         followUpStatus:
           type:
           - 'null'
           - string
-          description: The current follow up status for this lead status change.
+          description: The current follow up status for this lead status change export row.
         callbackAt:
           type:
           - 'null'
           - string
-          description: UTC timestamp for callback at on this lead status change.
+          description: UTC timestamp for callback at on this lead status change export row.
           format: date-time
         taskDueAt:
           type:
           - 'null'
           - string
-          description: UTC timestamp for task due at on this lead status change.
+          description: UTC timestamp for task due at on this lead status change export row.
           format: date-time
         appointmentStartAt:
           type:
           - 'null'
           - string
-          description: UTC timestamp for appointment start at on this lead status change.
+          description: UTC timestamp for appointment start at on this lead status change export row.
           format: date-time
         appointmentEndAt:
           type:
           - 'null'
           - string
-          description: UTC timestamp for appointment end at on this lead status change.
+          description: UTC timestamp for appointment end at on this lead status change export row.
           format: date-time
-        appointmentNotes:
+        assignedToUserId:
           type:
           - 'null'
           - string
-          description: Additional scheduling or preparation notes for the related appointment.
-      description: Defines a lead status transition or correction, including its target status, effective time, source, and explanatory context.
+          description: The assigned to user ID associated with this lead status change export row.
+        sourceId:
+          type:
+          - 'null'
+          - string
+          description: The source ID associated with this lead status change export row.
+        relatedCallEventId:
+          type:
+          - 'null'
+          - string
+          description: The related call event ID associated with this lead status change export row.
+        isMissedCallFollowUp:
+          type: boolean
+          description: Whether this lead status change export row is missed call follow up.
+        notes:
+          type:
+          - 'null'
+          - string
+          description: The operator or customer notes recorded for this lead status change export row.
+        createdAt:
+          type: string
+          description: UTC timestamp for created at on this lead status change export row.
+          format: date-time
+        updatedAt:
+          type: string
+          description: UTC timestamp for updated at on this lead status change export row.
+          format: date-time
+      description: Describes lead status change export row data returned by Leadping.
     RequestDataOptions:
       type: object
       properties:
@@ -1241,27 +1251,17 @@ components:
           - array
           items:
             $ref: '#/components/schemas/RangeFilter'
-    PagedResultOfLeadStatusChangeResponse:
+    RangeFilter:
+      required:
+      - field
       type: object
       properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/LeadStatusChangeResponse'
-            description: Describes an auditable lead status transition, including the previous and new status, source, actor, and effective time.
-        pageSize:
-          type: integer
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
+        field:
+          type: string
   securitySchemes:
     Bearer:
       type: http

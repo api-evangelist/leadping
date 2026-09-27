@@ -147,6 +147,29 @@ paths:
       security: []
 components:
   schemas:
+    ContactRequest:
+      required:
+      - email
+      - message
+      - token
+      type: object
+      properties:
+        name:
+          type:
+          - 'null'
+          - string
+          description: Display name for this contact form request in the Leadping API.
+        email:
+          type: string
+          description: Email address for the person represented by this contact form request.
+          format: email
+        message:
+          type: string
+          description: Message text supplied by the user or returned by the Leadping API for this contact form request.
+        token:
+          type: string
+          description: Invitation or workflow token used to authorize this request.
+      description: Defines the fields clients can send when working with contact form.
     ContactResponse:
       type: object
       properties:
@@ -190,29 +213,6 @@ components:
         status: 400
         detail: One or more request fields are invalid.
         instance: /leads/intake
-    ContactRequest:
-      required:
-      - email
-      - message
-      - token
-      type: object
-      properties:
-        name:
-          type:
-          - 'null'
-          - string
-          description: Display name for this contact form request in the Leadping API.
-        email:
-          type: string
-          description: Email address for the person represented by this contact form request.
-          format: email
-        message:
-          type: string
-          description: Message text supplied by the user or returned by the Leadping API for this contact form request.
-        token:
-          type: string
-          description: Invitation or workflow token used to authorize this request.
-      description: Defines the fields clients can send when working with contact form.
   securitySchemes:
     Bearer:
       type: http

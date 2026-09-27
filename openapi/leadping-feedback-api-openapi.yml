@@ -110,104 +110,6 @@ paths:
           recommended: true
 components:
   schemas:
-    FeedbackCreateRequest:
-      type: object
-      properties:
-        type:
-          enum:
-          - bug
-          - confusing
-          - feature_request
-          - missing_capability
-          - other
-          type:
-          - 'null'
-          - string
-          description: Defines the type of product feedback submitted from inside Leadping.
-        message:
-          type:
-          - 'null'
-          - string
-          description: Message text supplied by the user or returned by the Leadping API for this feedback creation request.
-        route:
-          type:
-          - 'null'
-          - string
-          description: Application route where this feedback creation request originated or should direct the user.
-        area:
-          type:
-          - 'null'
-          - string
-          description: Product area or app section connected to this feedback creation request.
-        allowContact:
-          type: boolean
-          description: Indicates whether the submitter permits Leadping support to contact them about the feedback.
-        clientVersion:
-          type:
-          - 'null'
-          - string
-          description: Client application version that submitted this feedback creation request.
-      description: Defines the fields clients can send when working with feedback creation.
-    FeedbackStatus:
-      enum:
-      - new
-      - reviewed
-      - planned
-      - in_progress
-      - shipped
-      - closed
-      - ignored
-      type: string
-      description: Defines admin triage statuses for durable product feedback.
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - 'null'
-          - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
-          type:
-          - 'null'
-          - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-        errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
-        traceId:
-          type: string
-          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-    FeedbackType:
-      enum:
-      - bug
-      - confusing
-      - feature_request
-      - missing_capability
-      - other
-      type: string
-      description: Defines the type of product feedback submitted from inside Leadping.
     FeedbackResponse:
       type: object
       properties:
@@ -258,6 +160,104 @@ components:
           description: UTC timestamp when this feedback item response was created.
           format: date-time
       description: Describes feedback item data returned by Leadping.
+    FeedbackCreateRequest:
+      type: object
+      properties:
+        type:
+          enum:
+          - bug
+          - confusing
+          - feature_request
+          - missing_capability
+          - other
+          type:
+          - 'null'
+          - string
+          description: Defines the type of product feedback submitted from inside Leadping.
+        message:
+          type:
+          - 'null'
+          - string
+          description: Message text supplied by the user or returned by the Leadping API for this feedback creation request.
+        route:
+          type:
+          - 'null'
+          - string
+          description: Application route where this feedback creation request originated or should direct the user.
+        area:
+          type:
+          - 'null'
+          - string
+          description: Product area or app section connected to this feedback creation request.
+        allowContact:
+          type: boolean
+          description: Indicates whether the submitter permits Leadping support to contact them about the feedback.
+        clientVersion:
+          type:
+          - 'null'
+          - string
+          description: Client application version that submitted this feedback creation request.
+      description: Defines the fields clients can send when working with feedback creation.
+    FeedbackStatus:
+      enum:
+      - new
+      - reviewed
+      - planned
+      - in_progress
+      - shipped
+      - closed
+      - ignored
+      type: string
+      description: Defines admin triage statuses for durable product feedback.
+    FeedbackType:
+      enum:
+      - bug
+      - confusing
+      - feature_request
+      - missing_capability
+      - other
+      type: string
+      description: Defines the type of product feedback submitted from inside Leadping.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
+        traceId:
+          type: string
+          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
   securitySchemes:
     Bearer:
       type: http

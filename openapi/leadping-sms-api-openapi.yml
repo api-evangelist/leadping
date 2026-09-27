@@ -352,75 +352,6 @@ paths:
           recommended: true
 components:
   schemas:
-    MessageMediaAttachment:
-      type: object
-      properties:
-        url:
-          type: string
-          description: URL from which the media attachment can be retrieved.
-          format: uri
-        contentType:
-          type:
-          - 'null'
-          - string
-          description: MIME content type of the media attachment.
-        size:
-          type:
-          - 'null'
-          - integer
-          description: Size of the media attachment in bytes.
-          format: int64
-        sha256:
-          type:
-          - 'null'
-          - string
-          description: SHA-256 digest of the media content, when available.
-        fileName:
-          type:
-          - 'null'
-          - string
-          description: Original file name of the media attachment, when available.
-      description: Media attached to an SMS/MMS conversation event.
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - 'null'
-          - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
-          type:
-          - 'null'
-          - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-        errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
-        traceId:
-          type: string
-          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
     SmsResponse:
       type: object
       properties:
@@ -638,6 +569,35 @@ components:
           - string
           format: date-time
       description: Describes an SMS or MMS message, including participants, delivery state, scheduling, media, and billing details.
+    MessageMediaAttachment:
+      type: object
+      properties:
+        url:
+          type: string
+          description: URL from which the media attachment can be retrieved.
+          format: uri
+        contentType:
+          type:
+          - 'null'
+          - string
+          description: MIME content type of the media attachment.
+        size:
+          type:
+          - 'null'
+          - integer
+          description: Size of the media attachment in bytes.
+          format: int64
+        sha256:
+          type:
+          - 'null'
+          - string
+          description: SHA-256 digest of the media content, when available.
+        fileName:
+          type:
+          - 'null'
+          - string
+          description: Original file name of the media attachment, when available.
+      description: Media attached to an SMS/MMS conversation event.
     SendSmsRequest:
       required:
       - conversationId
@@ -715,6 +675,46 @@ components:
           description: UTC timestamp when this communication-processing event occurred.
           format: date-time
       description: Describes one durable diagnostic entry from the processing of a communication.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
+        traceId:
+          type: string
+          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
   securitySchemes:
     Bearer:
       type: http

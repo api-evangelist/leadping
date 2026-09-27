@@ -755,41 +755,6 @@ paths:
           recommended: true
 components:
   schemas:
-    PagedResultOfEventTableRow:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/EventTableRow'
-            description: Summarizes event timeline data in paginated and searchable results.
-        pageSize:
-          type: integer
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-    OrderByOption:
-      required:
-      - field
-      type: object
-      properties:
-        field:
-          type: string
-        direction:
-          enum:
-          - asc
-          - desc
-          type:
-          - 'null'
-          - string
     EventTableRow:
       type: object
       properties:
@@ -1066,94 +1031,6 @@ components:
           description: Email address for the person who created this event timeline table row.
           format: email
       description: Summarizes event timeline data in paginated and searchable results.
-    MessageMediaAttachment:
-      type: object
-      properties:
-        url:
-          type: string
-          description: URL from which the media attachment can be retrieved.
-          format: uri
-        contentType:
-          type:
-          - 'null'
-          - string
-          description: MIME content type of the media attachment.
-        size:
-          type:
-          - 'null'
-          - integer
-          description: Size of the media attachment in bytes.
-          format: int64
-        sha256:
-          type:
-          - 'null'
-          - string
-          description: SHA-256 digest of the media content, when available.
-        fileName:
-          type:
-          - 'null'
-          - string
-          description: Original file name of the media attachment, when available.
-      description: Media attached to an SMS/MMS conversation event.
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - 'null'
-          - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
-          type:
-          - 'null'
-          - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-        errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
-        traceId:
-          type: string
-          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-    ExactMatchFilter:
-      required:
-      - field
-      type: object
-      properties:
-        value: {}
-        field:
-          type: string
-    RangeFilter:
-      required:
-      - field
-      type: object
-      properties:
-        greaterThan: {}
-        greaterThanOrEqual: {}
-        lessThan: {}
-        lessThanOrEqual: {}
-        field:
-          type: string
     IdNamePair:
       required:
       - id
@@ -1165,31 +1042,6 @@ components:
         name:
           type: string
       description: User summary connected to this automation configuration response.
-    CreateNoteRequest:
-      required:
-      - text
-      type: object
-      properties:
-        text:
-          type: string
-          description: Plain-text note content to add to the conversation timeline.
-      description: Defines the input used for create note.
-    EventTimelineType:
-      enum:
-      - Message
-      - Sms
-      - Mms
-      - Call
-      - Voicemail
-      - Note
-      - LeadStatusChange
-      - LeadCreated
-      - LeadUpdated
-      - Notification
-      - Payment
-      - Warmup
-      type: string
-      description: Classifies the kind of activity displayed in a lead or conversation event timeline.
     RequestDataOptions:
       type: object
       properties:
@@ -1232,6 +1084,73 @@ components:
           - array
           items:
             $ref: '#/components/schemas/RangeFilter'
+    OrderByOption:
+      required:
+      - field
+      type: object
+      properties:
+        field:
+          type: string
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
+    EventTimelineType:
+      enum:
+      - Message
+      - Sms
+      - Mms
+      - Call
+      - Voicemail
+      - Note
+      - LeadStatusChange
+      - LeadCreated
+      - LeadUpdated
+      - Notification
+      - Payment
+      - Warmup
+      type: string
+      description: Classifies the kind of activity displayed in a lead or conversation event timeline.
+    MessageMediaAttachment:
+      type: object
+      properties:
+        url:
+          type: string
+          description: URL from which the media attachment can be retrieved.
+          format: uri
+        contentType:
+          type:
+          - 'null'
+          - string
+          description: MIME content type of the media attachment.
+        size:
+          type:
+          - 'null'
+          - integer
+          description: Size of the media attachment in bytes.
+          format: int64
+        sha256:
+          type:
+          - 'null'
+          - string
+          description: SHA-256 digest of the media content, when available.
+        fileName:
+          type:
+          - 'null'
+          - string
+          description: Original file name of the media attachment, when available.
+      description: Media attached to an SMS/MMS conversation event.
+    ExactMatchFilter:
+      required:
+      - field
+      type: object
+      properties:
+        value: {}
+        field:
+          type: string
     EventDetailResponse:
       type: object
       properties:
@@ -1419,6 +1338,87 @@ components:
           - string
           format: date-time
       description: Describes event detail data returned by Leadping.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
+        traceId:
+          type: string
+          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+    RangeFilter:
+      required:
+      - field
+      type: object
+      properties:
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
+        field:
+          type: string
+    PagedResultOfEventTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/EventTableRow'
+            description: Summarizes event timeline data in paginated and searchable results.
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+    CreateNoteRequest:
+      required:
+      - text
+      type: object
+      properties:
+        text:
+          type: string
+          description: Plain-text note content to add to the conversation timeline.
+      description: Defines the input used for create note.
   securitySchemes:
     Bearer:
       type: http
