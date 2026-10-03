@@ -655,26 +655,6 @@ components:
         text: Thanks for your interest. When is a good time to talk?
         mediaUrls: []
         outboundIdempotencyKey: sms-example-001
-    CommunicationConsoleEntry:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier of this diagnostic console entry.
-        stage:
-          type: string
-          description: Communication-processing stage that produced the entry, such as validation, routing, or provider delivery.
-        status:
-          type: string
-          description: Outcome or state recorded for this processing stage.
-        message:
-          type: string
-          description: User-safe diagnostic message describing what occurred at this stage.
-        occurredAt:
-          type: string
-          description: UTC timestamp when this communication-processing event occurred.
-          format: date-time
-      description: Describes one durable diagnostic entry from the processing of a communication.
     ProblemDetails:
       type: object
       properties:
@@ -715,6 +695,26 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+    CommunicationConsoleEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of this diagnostic console entry.
+        stage:
+          type: string
+          description: Communication-processing stage that produced the entry, such as validation, routing, or provider delivery.
+        status:
+          type: string
+          description: Outcome or state recorded for this processing stage.
+        message:
+          type: string
+          description: User-safe diagnostic message describing what occurred at this stage.
+        occurredAt:
+          type: string
+          description: UTC timestamp when this communication-processing event occurred.
+          format: date-time
+      description: Describes one durable diagnostic entry from the processing of a communication.
   securitySchemes:
     Bearer:
       type: http

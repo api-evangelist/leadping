@@ -617,18 +617,6 @@ components:
           description: UTC timestamp for created at on this Stripe payment method.
           format: date-time
       description: Describes Stripe payment method data used in Leadping API requests and responses.
-    InvoicePdfAccessResponse:
-      type: object
-      properties:
-        url:
-          type: string
-          description: Short-lived URL that can be used to download the invoice PDF.
-          format: uri
-        expiresAt:
-          type: string
-          description: Date and time after which the download URL is no longer valid.
-          format: date-time
-      description: Short-lived access details for a private Leadping invoice PDF.
     StripeInvoiceResponse:
       type: object
       properties:
@@ -655,6 +643,18 @@ components:
           type: boolean
           description: Indicates whether a downloadable PDF is available for the invoice.
       description: Customer-safe Leadping invoice summary for billing.
+    InvoicePdfAccessResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          description: Short-lived URL that can be used to download the invoice PDF.
+          format: uri
+        expiresAt:
+          type: string
+          description: Date and time after which the download URL is no longer valid.
+          format: date-time
+      description: Short-lived access details for a private Leadping invoice PDF.
     ProblemDetails:
       type: object
       properties:

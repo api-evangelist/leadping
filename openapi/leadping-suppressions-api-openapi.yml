@@ -518,60 +518,6 @@ paths:
           recommended: false
 components:
   schemas:
-    OrderByOption:
-      required:
-      - field
-      type: object
-      properties:
-        field:
-          type: string
-        direction:
-          enum:
-          - asc
-          - desc
-          type:
-          - 'null'
-          - string
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - 'null'
-          - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
-          type:
-          - 'null'
-          - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-        errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
-        traceId:
-          type: string
-          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
     SuppressionCheckResult:
       type: object
       properties:
@@ -626,14 +572,20 @@ components:
           - string
           description: Customer-safe explanation of why contact is blocked or allowed.
       description: Reports whether Leadping may contact a recipient and identifies the active suppression when contact is blocked.
-    ExactMatchFilter:
+    OrderByOption:
       required:
       - field
       type: object
       properties:
-        value: {}
         field:
           type: string
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
     PagedResultOfSuppressionEntryResponse:
       type: object
       properties:
@@ -655,6 +607,57 @@ components:
           type:
           - 'null'
           - string
+    RangeFilter:
+      required:
+      - field
+      type: object
+      properties:
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
+        field:
+          type: string
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
+        traceId:
+          type: string
+          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
     SuppressionEntryResponse:
       type: object
       properties:
@@ -724,6 +727,14 @@ components:
             description: Records one auditable change to a recipient suppression entry.
           description: Chronological audit history of suppression and release changes.
       description: Describes a recipient suppression that prevents outreach through one or more communication channels.
+    ExactMatchFilter:
+      required:
+      - field
+      type: object
+      properties:
+        value: {}
+        field:
+          type: string
     RequestDataOptions:
       type: object
       properties:
@@ -766,45 +777,6 @@ components:
           - array
           items:
             $ref: '#/components/schemas/RangeFilter'
-    RangeFilter:
-      required:
-      - field
-      type: object
-      properties:
-        greaterThan: {}
-        greaterThanOrEqual: {}
-        lessThan: {}
-        lessThanOrEqual: {}
-        field:
-          type: string
-    SuppressionEntryRequest:
-      type: object
-      properties:
-        recipientIdentifier:
-          type:
-          - 'null'
-          - string
-          description: Optional provider or customer identifier that uniquely identifies the recipient.
-        phoneNumber:
-          type:
-          - 'null'
-          - string
-          description: Recipient phone number to suppress or check, preferably in E.164 format.
-        email:
-          type:
-          - 'null'
-          - string
-          description: Recipient email address to suppress or check.
-          format: email
-        channel:
-          type: string
-          description: Communication channel affected by the suppression, such as SMS, voice, email, or all channels.
-        reason:
-          type:
-          - 'null'
-          - string
-          description: Human-readable reason for creating or releasing the suppression.
-      description: Defines a recipient and communication channel to suppress, release, or check before Leadping sends outreach.
     SuppressionEntryAudit:
       type: object
       properties:
@@ -837,6 +809,34 @@ components:
             type: string
           description: Non-sensitive metadata that provides additional audit context.
       description: Records one auditable change to a recipient suppression entry.
+    SuppressionEntryRequest:
+      type: object
+      properties:
+        recipientIdentifier:
+          type:
+          - 'null'
+          - string
+          description: Optional provider or customer identifier that uniquely identifies the recipient.
+        phoneNumber:
+          type:
+          - 'null'
+          - string
+          description: Recipient phone number to suppress or check, preferably in E.164 format.
+        email:
+          type:
+          - 'null'
+          - string
+          description: Recipient email address to suppress or check.
+          format: email
+        channel:
+          type: string
+          description: Communication channel affected by the suppression, such as SMS, voice, email, or all channels.
+        reason:
+          type:
+          - 'null'
+          - string
+          description: Human-readable reason for creating or releasing the suppression.
+      description: Defines a recipient and communication channel to suppress, release, or check before Leadping sends outreach.
   securitySchemes:
     Bearer:
       type: http

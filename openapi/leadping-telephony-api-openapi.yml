@@ -123,28 +123,6 @@ paths:
           recommended: true
 components:
   schemas:
-    IdNamePair:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-      description: User summary connected to this automation configuration response.
-    TelephonyLoginRequest:
-      type: object
-      properties:
-        device:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Identifier and display name of the related device.
-      description: Identifies the Leadping user and calling context for which a short-lived telephony client token should be issued.
     TelephonyLoginResponse:
       type: object
       properties:
@@ -204,6 +182,28 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      description: User summary connected to this automation configuration response.
+    TelephonyLoginRequest:
+      type: object
+      properties:
+        device:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related device.
+      description: Identifies the Leadping user and calling context for which a short-lived telephony client token should be issued.
   securitySchemes:
     Bearer:
       type: http

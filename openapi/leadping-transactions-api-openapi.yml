@@ -225,38 +225,129 @@ paths:
           recommended: true
 components:
   schemas:
-    PagedResultOfTransactionTableRow:
+    TransactionResponse:
       type: object
       properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/TransactionTableRow'
-            description: Summarizes billing transaction data in paginated and searchable results.
-        pageSize:
-          type: integer
-          format: int32
-        totalCount:
+        organization:
           type:
           - 'null'
-          - integer
-          format: int32
-        continuationToken:
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related organization.
+        lead:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related lead.
+        amount:
+          type: number
+          description: Monetary amount for this billing transaction or wallet operation.
+          format: double
+        netAmount:
+          type: number
+          description: Net monetary amount after fees, credits, or adjustments.
+          format: double
+        billedAmount:
+          type: number
+          description: Customer-facing amount billed for the transaction.
+          format: double
+        billingChannel:
+          enum:
+          - lead
+          - sms
+          - mms
+          - email
+          - voice
+          - phone_number
+          - warmup
+          - website
+          - openai
+          - domain
+          - 10dlc
+          - payment
+          - connection
+          - automation
           type:
           - 'null'
           - string
-    IdNamePair:
-      required:
-      - id
-      - name
-      type: object
-      properties:
+          description: Identifies the messaging, calling, phone-number, lookup, or platform channel that generated billable usage.
+        billableUnit:
+          enum:
+          - lead_received
+          - phone_identity_lookup
+          - sms_segment
+          - mms_message
+          - email_message
+          - voice_minute
+          - phone_number_month
+          - warmup_sms_segment
+          - warmup_voice_minute
+          - website_setup
+          - openai_operation
+          - domain_registration
+          - 10dlc_application
+          - 10dlc_campaign_month
+          - payment_processing_fee
+          - connection_action
+          - automation_run
+          type:
+          - 'null'
+          - string
+          description: Identifies the metered unit used to price Leadping usage, such as a message, call minute, lookup, or phone number.
+        gatewayFeeAmount:
+          type:
+          - 'null'
+          - number
+          description: Payment gateway fee amount charged for the wallet transaction.
+          format: double
+        gatewayStatus:
+          type:
+          - 'null'
+          - string
+          description: Payment gateway status returned for this transaction.
+        platformFeeAmount:
+          type:
+          - 'null'
+          - number
+          description: Leadping platform fee amount included in the transaction.
+          format: double
+        notes:
+          type:
+          - 'null'
+          - string
+          description: Additional billing notes that explain the transaction for admins or customers.
+        description:
+          type:
+          - 'null'
+          - string
+          description: Human-readable description that explains this billing transaction response to API users.
+        paymentMethodDisplay:
+          type:
+          - 'null'
+          - string
+          description: Masked or human-readable payment method shown for this transaction.
+        transactionType:
+          allOf:
+          - $ref: '#/components/schemas/TransactionType'
+          description: Debit or credit classification for this wallet transaction.
+        transactionStatus:
+          allOf:
+          - $ref: '#/components/schemas/TransactionStatus'
+          description: Processing status for this wallet transaction.
         id:
           type: string
-        name:
+        createdAt:
           type: string
-      description: User summary connected to this automation configuration response.
+          format: date-time
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          format: date-time
+      description: Describes billing transaction data returned by Leadping.
     OrderByOption:
       required:
       - field
@@ -311,6 +402,24 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+    RangeFilter:
+      required:
+      - field
+      type: object
+      properties:
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
+        field:
+          type: string
+    TransactionType:
+      enum:
+      - Debit
+      - Adjustment
+      - Deposit
+      type: string
+      description: Classifies a wallet transaction as a debit, credit, refund, adjustment, deposit, or other balance movement.
     TransactionTableRow:
       type: object
       properties:
@@ -436,6 +545,27 @@ components:
           description: UTC timestamp when this billing transaction table row was created.
           format: date-time
       description: Summarizes billing transaction data in paginated and searchable results.
+    PagedResultOfTransactionTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/TransactionTableRow'
+            description: Summarizes billing transaction data in paginated and searchable results.
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
     ExactMatchFilter:
       required:
       - field
@@ -444,136 +574,6 @@ components:
         value: {}
         field:
           type: string
-    TransactionType:
-      enum:
-      - Debit
-      - Adjustment
-      - Deposit
-      type: string
-      description: Classifies a wallet transaction as a debit, credit, refund, adjustment, deposit, or other balance movement.
-    TransactionResponse:
-      type: object
-      properties:
-        organization:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Identifier and display name of the related organization.
-        lead:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Identifier and display name of the related lead.
-        amount:
-          type: number
-          description: Monetary amount for this billing transaction or wallet operation.
-          format: double
-        netAmount:
-          type: number
-          description: Net monetary amount after fees, credits, or adjustments.
-          format: double
-        billedAmount:
-          type: number
-          description: Customer-facing amount billed for the transaction.
-          format: double
-        billingChannel:
-          enum:
-          - lead
-          - sms
-          - mms
-          - email
-          - voice
-          - phone_number
-          - warmup
-          - website
-          - openai
-          - domain
-          - 10dlc
-          - payment
-          - connection
-          - automation
-          type:
-          - 'null'
-          - string
-          description: Identifies the messaging, calling, phone-number, lookup, or platform channel that generated billable usage.
-        billableUnit:
-          enum:
-          - lead_received
-          - phone_identity_lookup
-          - sms_segment
-          - mms_message
-          - email_message
-          - voice_minute
-          - phone_number_month
-          - warmup_sms_segment
-          - warmup_voice_minute
-          - website_setup
-          - openai_operation
-          - domain_registration
-          - 10dlc_application
-          - 10dlc_campaign_month
-          - payment_processing_fee
-          - connection_action
-          - automation_run
-          type:
-          - 'null'
-          - string
-          description: Identifies the metered unit used to price Leadping usage, such as a message, call minute, lookup, or phone number.
-        gatewayFeeAmount:
-          type:
-          - 'null'
-          - number
-          description: Payment gateway fee amount charged for the wallet transaction.
-          format: double
-        gatewayStatus:
-          type:
-          - 'null'
-          - string
-          description: Payment gateway status returned for this transaction.
-        platformFeeAmount:
-          type:
-          - 'null'
-          - number
-          description: Leadping platform fee amount included in the transaction.
-          format: double
-        notes:
-          type:
-          - 'null'
-          - string
-          description: Additional billing notes that explain the transaction for admins or customers.
-        description:
-          type:
-          - 'null'
-          - string
-          description: Human-readable description that explains this billing transaction response to API users.
-        paymentMethodDisplay:
-          type:
-          - 'null'
-          - string
-          description: Masked or human-readable payment method shown for this transaction.
-        transactionType:
-          allOf:
-          - $ref: '#/components/schemas/TransactionType'
-          description: Debit or credit classification for this wallet transaction.
-        transactionStatus:
-          allOf:
-          - $ref: '#/components/schemas/TransactionStatus'
-          description: Processing status for this wallet transaction.
-        id:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        modifiedAt:
-          type:
-          - 'null'
-          - string
-          format: date-time
-      description: Describes billing transaction data returned by Leadping.
     RequestDataOptions:
       type: object
       properties:
@@ -616,17 +616,6 @@ components:
           - array
           items:
             $ref: '#/components/schemas/RangeFilter'
-    RangeFilter:
-      required:
-      - field
-      type: object
-      properties:
-        greaterThan: {}
-        greaterThanOrEqual: {}
-        lessThan: {}
-        lessThanOrEqual: {}
-        field:
-          type: string
     TransactionStatus:
       enum:
       - Pending
@@ -634,6 +623,17 @@ components:
       - Failed
       type: string
       description: Describes the processing and settlement lifecycle of a Leadping wallet or billing transaction.
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      description: User summary connected to this automation configuration response.
   securitySchemes:
     Bearer:
       type: http

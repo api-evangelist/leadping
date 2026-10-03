@@ -463,26 +463,6 @@ components:
       - configuration_required
       type: string
       description: Describes the durable business outcome of a Leadping phone call after provider status normalization.
-    CommunicationConsoleEntry:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier of this diagnostic console entry.
-        stage:
-          type: string
-          description: Communication-processing stage that produced the entry, such as validation, routing, or provider delivery.
-        status:
-          type: string
-          description: Outcome or state recorded for this processing stage.
-        message:
-          type: string
-          description: User-safe diagnostic message describing what occurred at this stage.
-        occurredAt:
-          type: string
-          description: UTC timestamp when this communication-processing event occurred.
-          format: date-time
-      description: Describes one durable diagnostic entry from the processing of a communication.
     ProblemDetails:
       type: object
       properties:
@@ -523,6 +503,48 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+    InitiateCallRequest:
+      required:
+      - leadId
+      type: object
+      properties:
+        fromPhoneNumberId:
+          type:
+          - 'null'
+          - string
+          description: Sender phone number ID used for this outbound SMS or call.
+        conversationId:
+          type:
+          - 'null'
+          - string
+          description: Conversation ID that links this phone call initiation request to the Leadping inbox thread.
+        leadId:
+          type: string
+          description: Lead ID associated with the outbound call request.
+        wasManuallyOverridden:
+          type: boolean
+          description: Indicates whether a user manually overrode Leadping's automatic number selection for this phone call initiation request.
+        campaignId:
+          type:
+          - 'null'
+          - string
+          description: Messaging campaign identifier associated with this phone call initiation request.
+        sourceId:
+          type:
+          - 'null'
+          - string
+          description: Lead source ID used for call attribution and sender selection.
+        outboundIdempotencyKey:
+          type:
+          - 'null'
+          - string
+          description: Idempotency key used to prevent duplicate outbound delivery.
+      description: Defines the fields clients can send when working with phone call initiation.
+      example:
+        leadId: lead-123
+        conversationId: conversation-123
+        wasManuallyOverridden: false
+        outboundIdempotencyKey: call-example-001
     PhoneCallResponse:
       type: object
       properties:
@@ -665,48 +687,26 @@ components:
           - string
           format: date-time
       description: Describes a Leadping phone call, including participants, direction, provider state, timing, voicemail, and billing details.
-    InitiateCallRequest:
-      required:
-      - leadId
+    CommunicationConsoleEntry:
       type: object
       properties:
-        fromPhoneNumberId:
-          type:
-          - 'null'
-          - string
-          description: Sender phone number ID used for this outbound SMS or call.
-        conversationId:
-          type:
-          - 'null'
-          - string
-          description: Conversation ID that links this phone call initiation request to the Leadping inbox thread.
-        leadId:
+        id:
           type: string
-          description: Lead ID associated with the outbound call request.
-        wasManuallyOverridden:
-          type: boolean
-          description: Indicates whether a user manually overrode Leadping's automatic number selection for this phone call initiation request.
-        campaignId:
-          type:
-          - 'null'
-          - string
-          description: Messaging campaign identifier associated with this phone call initiation request.
-        sourceId:
-          type:
-          - 'null'
-          - string
-          description: Lead source ID used for call attribution and sender selection.
-        outboundIdempotencyKey:
-          type:
-          - 'null'
-          - string
-          description: Idempotency key used to prevent duplicate outbound delivery.
-      description: Defines the fields clients can send when working with phone call initiation.
-      example:
-        leadId: lead-123
-        conversationId: conversation-123
-        wasManuallyOverridden: false
-        outboundIdempotencyKey: call-example-001
+          description: Unique identifier of this diagnostic console entry.
+        stage:
+          type: string
+          description: Communication-processing stage that produced the entry, such as validation, routing, or provider delivery.
+        status:
+          type: string
+          description: Outcome or state recorded for this processing stage.
+        message:
+          type: string
+          description: User-safe diagnostic message describing what occurred at this stage.
+        occurredAt:
+          type: string
+          description: UTC timestamp when this communication-processing event occurred.
+          format: date-time
+      description: Describes one durable diagnostic entry from the processing of a communication.
   securitySchemes:
     Bearer:
       type: http

@@ -733,101 +733,24 @@ paths:
           recommended: false
 components:
   schemas:
-    SourceMetricsResponse:
+    TagSummary:
       type: object
       properties:
-        range:
-          allOf:
-          - $ref: '#/components/schemas/AnalyticsDateRange'
-          description: Range associated with this Leadping source metrics.
-        totalLeads:
-          type: integer
-          description: Total number of leads records represented by this Leadping source metrics.
-          format: int32
-        totalErrors:
-          type: integer
-          description: Total number of lead intake errors represented by this Leadping source metrics.
-          format: int32
-        points:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AnalyticsTrendPointOfint'
-            description: Associates a typed analytics value with one normalized time bucket in a trend series.
-          description: Collection of points included with this Leadping source metrics.
-        errorPoints:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AnalyticsTrendPointOfint'
-            description: Associates a typed analytics value with one normalized time bucket in a trend series.
-          description: Collection of lead intake error points included with this Leadping source metrics.
-        generatedAt:
+        id:
           type: string
-          description: Date and time when the source metrics was generated.
-          format: date-time
-      description: Aggregates lead volume, conversion, delivery, and activity metrics attributed to a Leadping source over the requested reporting period.
-    RequestDataOptions:
-      type: object
-      properties:
-        pageSize:
-          type: integer
-          format: int32
-        continuationToken:
+          description: Unique Leadping identifier for this tag summary.
+        name:
+          type: string
+          description: Display name for this tag summary in the Leadping API.
+        normalizedName:
+          type: string
+          description: Normalized name used for case-insensitive tag matching and deduplication.
+        color:
           type:
           - 'null'
           - string
-        orderBy:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/OrderByOption'
-        includeCount:
-          type:
-          - 'null'
-          - boolean
-        search:
-          type:
-          - 'null'
-          - string
-        searchFields:
-          type:
-          - 'null'
-          - array
-          items:
-            type: string
-        filters:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/ExactMatchFilter'
-        rangeFilters:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/RangeFilter'
-    AnalyticsTrendPointOfint:
-      type: object
-      properties:
-        startAt:
-          type: string
-          description: Date and time when this Leadping analytics trend point was start.
-          format: date-time
-        endAt:
-          type: string
-          description: Date and time when this Leadping analytics trend point was end.
-          format: date-time
-        label:
-          type: string
-          description: Human-readable label for this Leadping analytics trend point.
-        value:
-          type: integer
-          description: Value associated with this Leadping analytics trend point.
-          format: int32
-      description: Associates a typed analytics value with one normalized time bucket in a trend series.
+          description: Hex color used to display this tag or status in Leadping clients.
+      description: Summary schema for Leadping API tag summary data used in dashboards and reports.
     OrderByOption:
       required:
       - field
@@ -882,153 +805,6 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-    RangeFilter:
-      required:
-      - field
-      type: object
-      properties:
-        greaterThan: {}
-        greaterThanOrEqual: {}
-        lessThan: {}
-        lessThanOrEqual: {}
-        field:
-          type: string
-    AnalyticsDateRange:
-      type: object
-      properties:
-        startAt:
-          type: string
-          description: Date and time when this Leadping analytics date range was start.
-          format: date-time
-        endAt:
-          type: string
-          description: Date and time when this Leadping analytics date range was end.
-          format: date-time
-        bucketSize:
-          allOf:
-          - $ref: '#/components/schemas/AnalyticsBucketSize'
-          description: Bucket size associated with this Leadping analytics date range.
-      description: Defines the inclusive reporting window and comparison window used to calculate Leadping analytics.
-    AnalyticsBucketSize:
-      enum:
-      - 3
-      - 0
-      - 1
-      - 2
-      type: integer
-      description: Selects the time interval used to aggregate points in a Leadping analytics trend series.
-      format: int32
-    ExactMatchFilter:
-      required:
-      - field
-      type: object
-      properties:
-        value: {}
-        field:
-          type: string
-    SourceCredentialIssueResponse:
-      type: object
-      properties:
-        source:
-          allOf:
-          - $ref: '#/components/schemas/SourceResponse'
-          description: Source metadata safe for later retrieval.
-        secret:
-          type: string
-          description: Newly issued source credential. Leadping does not retain this plaintext value.
-      description: Returns a newly issued source credential exactly once.
-    TagSummary:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this tag summary.
-        name:
-          type: string
-          description: Display name for this tag summary in the Leadping API.
-        normalizedName:
-          type: string
-          description: Normalized name used for case-insensitive tag matching and deduplication.
-        color:
-          type:
-          - 'null'
-          - string
-          description: Hex color used to display this tag or status in Leadping clients.
-      description: Summary schema for Leadping API tag summary data used in dashboards and reports.
-    IdNamePair:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-      description: User summary connected to this automation configuration response.
-    SourceRequest:
-      required:
-      - allowedStates
-      - allowedProducts
-      - defaultTagIds
-      - defaultTagNames
-      type: object
-      properties:
-        name:
-          type:
-          - 'null'
-          - string
-          description: Human-readable source name.
-        description:
-          type:
-          - 'null'
-          - string
-          description: Human-readable description that explains this lead source request to API users.
-        allowedStates:
-          type: array
-          items:
-            type: string
-          description: State or region allowlist used to accept leads from this source.
-        allowedProducts:
-          type: array
-          items:
-            type: string
-          description: Product allowlist used to accept or route leads from this source.
-        requiresTrustedForm:
-          type: boolean
-          description: Indicates whether leads from this source must include a TrustedForm certificate for consent proof.
-        defaultTagIds:
-          type: array
-          items:
-            type: string
-          description: Tag IDs automatically assigned to leads created by this source.
-        defaultTagNames:
-          type: array
-          items:
-            type: string
-          description: Tag names automatically assigned to leads created by this source.
-      description: Defines the fields clients can send when working with lead source.
-    PagedResultOfSourceTableRow:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/SourceTableRow'
-            description: Summarizes lead source data in paginated and searchable results.
-        pageSize:
-          type: integer
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
     SourceResponse:
       type: object
       properties:
@@ -1144,6 +920,219 @@ components:
           - string
           format: date-time
       description: Describes lead source data returned by Leadping.
+    RangeFilter:
+      required:
+      - field
+      type: object
+      properties:
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
+        field:
+          type: string
+    AnalyticsTrendPointOfint:
+      type: object
+      properties:
+        startAt:
+          type: string
+          description: Date and time when this Leadping analytics trend point was start.
+          format: date-time
+        endAt:
+          type: string
+          description: Date and time when this Leadping analytics trend point was end.
+          format: date-time
+        label:
+          type: string
+          description: Human-readable label for this Leadping analytics trend point.
+        value:
+          type: integer
+          description: Value associated with this Leadping analytics trend point.
+          format: int32
+      description: Associates a typed analytics value with one normalized time bucket in a trend series.
+    ExactMatchFilter:
+      required:
+      - field
+      type: object
+      properties:
+        value: {}
+        field:
+          type: string
+    SourceCredentialIssueResponse:
+      type: object
+      properties:
+        source:
+          allOf:
+          - $ref: '#/components/schemas/SourceResponse'
+          description: Source metadata safe for later retrieval.
+        secret:
+          type: string
+          description: Newly issued source credential. Leadping does not retain this plaintext value.
+      description: Returns a newly issued source credential exactly once.
+    AnalyticsBucketSize:
+      enum:
+      - 3
+      - 0
+      - 1
+      - 2
+      type: integer
+      description: Selects the time interval used to aggregate points in a Leadping analytics trend series.
+      format: int32
+    SourceRequest:
+      required:
+      - allowedStates
+      - allowedProducts
+      - defaultTagIds
+      - defaultTagNames
+      type: object
+      properties:
+        name:
+          type:
+          - 'null'
+          - string
+          description: Human-readable source name.
+        description:
+          type:
+          - 'null'
+          - string
+          description: Human-readable description that explains this lead source request to API users.
+        allowedStates:
+          type: array
+          items:
+            type: string
+          description: State or region allowlist used to accept leads from this source.
+        allowedProducts:
+          type: array
+          items:
+            type: string
+          description: Product allowlist used to accept or route leads from this source.
+        requiresTrustedForm:
+          type: boolean
+          description: Indicates whether leads from this source must include a TrustedForm certificate for consent proof.
+        defaultTagIds:
+          type: array
+          items:
+            type: string
+          description: Tag IDs automatically assigned to leads created by this source.
+        defaultTagNames:
+          type: array
+          items:
+            type: string
+          description: Tag names automatically assigned to leads created by this source.
+      description: Defines the fields clients can send when working with lead source.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/OrderByOption'
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+        search:
+          type:
+          - 'null'
+          - string
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/ExactMatchFilter'
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/RangeFilter'
+    SourceMetricsResponse:
+      type: object
+      properties:
+        range:
+          allOf:
+          - $ref: '#/components/schemas/AnalyticsDateRange'
+          description: Range associated with this Leadping source metrics.
+        totalLeads:
+          type: integer
+          description: Total number of leads records represented by this Leadping source metrics.
+          format: int32
+        totalErrors:
+          type: integer
+          description: Total number of lead intake errors represented by this Leadping source metrics.
+          format: int32
+        points:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AnalyticsTrendPointOfint'
+            description: Associates a typed analytics value with one normalized time bucket in a trend series.
+          description: Collection of points included with this Leadping source metrics.
+        errorPoints:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AnalyticsTrendPointOfint'
+            description: Associates a typed analytics value with one normalized time bucket in a trend series.
+          description: Collection of lead intake error points included with this Leadping source metrics.
+        generatedAt:
+          type: string
+          description: Date and time when the source metrics was generated.
+          format: date-time
+      description: Aggregates lead volume, conversion, delivery, and activity metrics attributed to a Leadping source over the requested reporting period.
+    AnalyticsDateRange:
+      type: object
+      properties:
+        startAt:
+          type: string
+          description: Date and time when this Leadping analytics date range was start.
+          format: date-time
+        endAt:
+          type: string
+          description: Date and time when this Leadping analytics date range was end.
+          format: date-time
+        bucketSize:
+          allOf:
+          - $ref: '#/components/schemas/AnalyticsBucketSize'
+          description: Bucket size associated with this Leadping analytics date range.
+      description: Defines the inclusive reporting window and comparison window used to calculate Leadping analytics.
+    PagedResultOfSourceTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/SourceTableRow'
+            description: Summarizes lead source data in paginated and searchable results.
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
     SourceTableRow:
       type: object
       properties:
@@ -1268,6 +1257,17 @@ components:
             description: Summary schema for Leadping API tag summary data used in dashboards and reports.
           description: Default tag summaries automatically applied to leads from this source.
       description: Summarizes lead source data in paginated and searchable results.
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      description: User summary connected to this automation configuration response.
   securitySchemes:
     Bearer:
       type: http

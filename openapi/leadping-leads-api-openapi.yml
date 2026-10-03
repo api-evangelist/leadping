@@ -1727,342 +1727,89 @@ paths:
       description: Production
 components:
   schemas:
-    Coordinate:
-      required:
-      - latitude
-      - longitude
+    PhoneLookupPortability:
       type: object
       properties:
-        latitude:
-          type: number
-          description: Latitude of the geographic coordinate in decimal degrees, from -90 through 90.
-          format: double
-        longitude:
-          type: number
-          description: Longitude of the geographic coordinate in decimal degrees, from -180 through 180.
-          format: double
-      description: Latitude and longitude coordinate for this lead contact profile.
-    StreetAddress:
-      type: object
-      properties:
-        line1:
+        alternativeSpid:
           type:
           - 'null'
           - string
-        line2:
+          description: Alternative service provider identifier reported for the number.
+        alternativeCarrierName:
           type:
           - 'null'
           - string
+          description: Name of the carrier associated with the alternative service provider identifier.
+        alternativeCarrierType:
+          type:
+          - 'null'
+          - string
+          description: Carrier type associated with the alternative service provider identifier.
         city:
           type:
           - 'null'
           - string
+          description: City reported by the portability lookup.
+        lineType:
+          type:
+          - 'null'
+          - string
+          description: Provider-native line type reported by the portability lookup.
+        localRoutingNumber:
+          type:
+          - 'null'
+          - string
+          description: Local routing number used to route calls for the ported number.
+        operatingCompanyNumber:
+          type:
+          - 'null'
+          - string
+          description: Operating company number associated with the phone number.
+        portedDate:
+          type:
+          - 'null'
+          - string
+          description: Date on which the phone number was ported, as reported by the provider.
+        portedStatus:
+          type:
+          - 'null'
+          - string
+          description: Current number-portability status reported by the provider.
+        spid:
+          type:
+          - 'null'
+          - string
+          description: Service provider identifier currently associated with the number.
+        carrierName:
+          type:
+          - 'null'
+          - string
+          description: Name of the carrier currently serving the number.
+        carrierType:
+          type:
+          - 'null'
+          - string
+          description: Type of carrier currently serving the number.
         state:
           type:
           - 'null'
           - string
-        province:
-          type:
-          - 'null'
-          - string
-        region:
-          type:
-          - 'null'
-          - string
-        postalCode:
-          type:
-          - 'null'
-          - string
-        country:
-          type:
-          - 'null'
-          - string
-        additionalInfo:
-          type:
-          - 'null'
-          - string
-      description: Postal street address for the lead contact profile.
-    PhoneIdentityLookupAction:
+          description: State or region reported by the portability lookup.
+      description: Number-portability and routing data returned by Telnyx.
+    OrderByOption:
+      required:
+      - field
       type: object
       properties:
-        id:
+        field:
           type: string
-          description: The unique identifier of this phone identity lookup action.
-        type:
-          allOf:
-          - $ref: '#/components/schemas/PhoneIdentityLookupActionType'
-          description: The category of enrichment, validation, or reputation lookup that was performed.
-        provider:
-          type: string
-          description: The provider that performed the phone identity lookup.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/PhoneIdentityLookupActionStatus'
-          description: The processing outcome reported for the phone identity lookup.
-        occurredAt:
-          type: string
-          description: The UTC timestamp when the lookup action occurred.
-          format: date-time
-        providerCostAmount:
-          type:
-          - 'null'
-          - number
-          description: The provider cost incurred by this lookup action, in USD.
-          format: double
-        providerPricingVersion:
+        direction:
+          enum:
+          - asc
+          - desc
           type:
           - 'null'
           - string
-          description: The provider pricing version used to calculate the lookup cost.
-      description: An auditable lookup, enrichment, or reputation check performed for a phone identity.
-    AutomationWorkflowRunResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for the automation workflow run.
-        organizationId:
-          type:
-          - 'null'
-          - string
-          description: Unique identifier of the organization associated with this Leadping automation workflow run.
-        leadId:
-          type:
-          - 'null'
-          - string
-          description: Unique identifier of the lead associated with this Leadping automation workflow run.
-        automation:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Identifier and display name of the related automation.
-        triggerType:
-          type:
-          - 'null'
-          - string
-          description: Trigger type classification for this Leadping automation workflow run.
-        triggerDisplay:
-          type:
-          - 'null'
-          - string
-          description: Human-readable trigger display for this Leadping automation workflow run.
-        status:
-          type: string
-          description: Current status for this Leadping automation workflow run.
-        statusDisplay:
-          type: string
-          description: Human-readable status display for this Leadping automation workflow run.
-        currentStep:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Identifier and display name of the workflow step currently awaiting or performing work.
-        currentStepOrder:
-          type:
-          - 'null'
-          - integer
-          description: Current step order associated with this Leadping automation workflow run.
-          format: int32
-        nextExecutionAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the next execution is scheduled.
-          format: date-time
-        lastExecutionAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time of the most recent execution for this Leadping automation workflow run.
-          format: date-time
-        startedAt:
-          type: string
-          description: Date and time when the automation workflow run started.
-          format: date-time
-        updatedAt:
-          type: string
-          description: Date and time when the automation workflow run was last updated.
-          format: date-time
-        completedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the automation workflow run completed.
-          format: date-time
-        failedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the automation workflow run failed.
-          format: date-time
-        cancelledAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the automation workflow run was cancelled.
-          format: date-time
-        retryCount:
-          type: integer
-          description: Total number of retry records represented by this Leadping automation workflow run.
-          format: int32
-        maxRetryCount:
-          type: integer
-          description: Total number of max retry records represented by this Leadping automation workflow run.
-          format: int32
-        nextRetryAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the next retry is scheduled.
-          format: date-time
-        lastErrorCode:
-          type:
-          - 'null'
-          - string
-          description: Machine-readable code for the most recent workflow execution error.
-        lastErrorMessage:
-          type:
-          - 'null'
-          - string
-          description: Human-readable last error message for this Leadping automation workflow run.
-        skipReasonCode:
-          type:
-          - 'null'
-          - string
-          description: Machine-readable code explaining why the workflow run or action was skipped.
-        skipReasonDisplay:
-          type:
-          - 'null'
-          - string
-          description: Human-readable skip reason display for this Leadping automation workflow run.
-        lastActionSummary:
-          type:
-          - 'null'
-          - string
-          description: Human-readable last action summary for this Leadping automation workflow run.
-        actions:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AutomationWorkflowActionResponse'
-            description: User-safe action status returned for lead automation workflow visibility.
-          description: Collection of actions included with this Leadping automation workflow run.
-        events:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AutomationWorkflowEventResponse'
-            description: User-safe workflow history event returned for lead automation status.
-          description: Collection of events included with this Leadping automation workflow run.
-      description: User-safe automation workflow run status returned for a lead.
-    PhoneIdentityResponse:
-      type: object
-      properties:
-        number:
-          type: string
-          description: The canonical E.164 phone number.
-        lookup:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/PhoneLookup'
-          description: Provider lookup and enrichment data for the number.
-        providerEnrichment:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/PhoneLookupProviderSnapshot'
-          description: Lossless provider response retained for administrative diagnostics.
-        lastEnrichedAt:
-          type:
-          - 'null'
-          - string
-          description: The most recent time lookup data was enriched.
-          format: date-time
-        lookupActions:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/PhoneIdentityLookupAction'
-            description: An auditable lookup, enrichment, or reputation check performed for a phone identity.
-          description: Lookup, enrichment, and reputation actions performed for this identity.
-        name:
-          type: string
-        id:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        modifiedAt:
-          type:
-          - 'null'
-          - string
-          format: date-time
-      description: Describes Leadping's canonical identity for a phone number, including normalization, carrier, line type, reputation, and lookup history.
-    TagSummary:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this tag summary.
-        name:
-          type: string
-          description: Display name for this tag summary in the Leadping API.
-        normalizedName:
-          type: string
-          description: Normalized name used for case-insensitive tag matching and deduplication.
-        color:
-          type:
-          - 'null'
-          - string
-          description: Hex color used to display this tag or status in Leadping clients.
-      description: Summary schema for Leadping API tag summary data used in dashboards and reports.
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - 'null'
-          - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
-          type:
-          - 'null'
-          - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-        errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
-        traceId:
-          type: string
-          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
     RangeFilter:
       required:
       - field
@@ -2074,6 +1821,104 @@ components:
         lessThanOrEqual: {}
         field:
           type: string
+    PhoneLookupCallerName:
+      type: object
+      properties:
+        name:
+          type:
+          - 'null'
+          - string
+          description: Caller name associated with the phone number, when reported by the provider.
+        errorCode:
+          type:
+          - 'null'
+          - string
+          description: Provider error code returned when caller-name data could not be resolved.
+      description: Caller-name data returned by the phone lookup provider.
+    PhoneNumberLocation:
+      type: object
+      properties:
+        location:
+          type:
+          - 'null'
+          - string
+          description: Geographic location metadata for the phone number, lead, or lookup result.
+        state:
+          type:
+          - 'null'
+          - string
+          description: State, province, or region for the lead or organization postal address.
+        canonicalCity:
+          type:
+          - 'null'
+          - string
+          description: Canonical city resolved by Leadping from its ZIP-code geography data.
+        canonicalState:
+          type:
+          - 'null'
+          - string
+          description: Canonical state or territory abbreviation resolved by Leadping.
+        countryCode:
+          type:
+          - 'null'
+          - string
+          description: Country code for the phone number or location represented by this phone number location.
+        coordinate:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/Coordinate'
+          description: Latitude and longitude coordinate for this phone number location.
+        coordinateSource:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLocationSource'
+          description: Describes how the coordinate was resolved.
+        timeZoneId:
+          type:
+          - 'null'
+          - string
+          description: IANA or Windows time zone identifier used for local scheduling and reporting.
+        timeZoneSource:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLocationSource'
+          description: Describes how the time zone was resolved.
+      description: Public Leadping API schema for phone number location data.
+    ExactMatchFilter:
+      required:
+      - field
+      type: object
+      properties:
+        value: {}
+        field:
+          type: string
+    PagedResultOfLeadTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/LeadTableRow'
+            description: Summarizes lead data in paginated and searchable results.
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
     LeadResponse:
       type: object
       properties:
@@ -2307,34 +2152,437 @@ components:
           - boolean
           description: Indicates whether the lead reported a medical condition relevant to qualification.
       description: Public Leadping API schema for lead demographic profile data.
-    ExactMatchFilter:
-      required:
-      - field
+    PhoneLocationSource:
       type: object
       properties:
-        value: {}
-        field:
+        method:
           type: string
-    LeadArchiveRequest:
-      type: object
-      properties:
-        reason:
-          allOf:
-          - $ref: '#/components/schemas/LeadArchiveReason'
-          description: Human-readable reason supplied for this request or result.
-        note:
-          maxLength: 500
+          description: The resolution method, such as Telnyx-city-state, coordinates, phone-number, or state-default.
+        query:
           type:
           - 'null'
           - string
-          description: Optional archive note that gives additional context for why the lead was archived.
-      description: Defines the fields clients can send when working with lead archive.
-    PhoneIdentityLookupActionStatus:
-      enum:
-      - succeeded
-      - failed
-      type: string
-      description: Identifies the outcome of a phone identity lookup action.
+          description: The city, state, coordinates, phone number, or representative ZIP used by the method.
+      description: Describes how a phone location value was resolved.
+    LeadContact:
+      type: object
+      properties:
+        firstName:
+          type:
+          - 'null'
+          - string
+          description: First name of the lead, user, or contact represented by this lead contact profile.
+        lastName:
+          type:
+          - 'null'
+          - string
+          description: Last name of the lead, user, or contact represented by this lead contact profile.
+        streetAddress:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/StreetAddress'
+          description: Postal street address for the lead contact profile.
+        coordinate:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/Coordinate'
+          description: Latitude and longitude coordinate for this lead contact profile.
+        timeZoneId:
+          type:
+          - 'null'
+          - string
+          description: IANA or Windows time zone identifier used for local scheduling and reporting.
+        phone:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/Phone'
+          description: Phone details for the lead, user, or organization represented by this lead contact profile.
+        email:
+          type:
+          - 'null'
+          - string
+          description: Email address for the person represented by this lead contact profile.
+          format: email
+        avatarUrl:
+          type:
+          - 'null'
+          - string
+          description: Optional profile image URL for the contact. Clients fall back to Gravatar and then initials when this value is not supplied.
+          format: uri
+      description: Public Leadping API schema for lead contact profile data.
+    AutomationWorkflowActionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for the automation workflow action.
+        stepId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the step associated with this Leadping automation workflow action.
+        stepOrder:
+          type: integer
+          description: Step order associated with this Leadping automation workflow action.
+          format: int32
+        stepDisplayName:
+          type: string
+          description: Human-readable step display name associated with this Leadping automation workflow action.
+        actionType:
+          type: string
+          description: Action type classification for this Leadping automation workflow action.
+        actionTypeDisplay:
+          type: string
+          description: Human-readable action type display for this Leadping automation workflow action.
+        status:
+          type: string
+          description: Current status for this Leadping automation workflow action.
+        statusDisplay:
+          type: string
+          description: Human-readable status display for this Leadping automation workflow action.
+        scheduledAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow action was scheduled.
+          format: date-time
+        startedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow action started.
+          format: date-time
+        completedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow action completed.
+          format: date-time
+        failedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow action failed.
+          format: date-time
+        skippedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the workflow action was skipped.
+          format: date-time
+        retryCount:
+          type: integer
+          description: Total number of retry records represented by this Leadping automation workflow action.
+          format: int32
+        nextRetryAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the next retry is scheduled.
+          format: date-time
+        userSummary:
+          type:
+          - 'null'
+          - string
+          description: Human-readable user summary for this Leadping automation workflow action.
+        safeReason:
+          type:
+          - 'null'
+          - string
+          description: Safe reason associated with this Leadping automation workflow action.
+        failureCode:
+          type:
+          - 'null'
+          - string
+          description: Reason or diagnostic code that explains the current outcome for this Leadping automation workflow action.
+      description: User-safe action status returned for lead automation workflow visibility.
+    AutomationWorkflowRunResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for the automation workflow run.
+        organizationId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the organization associated with this Leadping automation workflow run.
+        leadId:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier of the lead associated with this Leadping automation workflow run.
+        automation:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related automation.
+        triggerType:
+          type:
+          - 'null'
+          - string
+          description: Trigger type classification for this Leadping automation workflow run.
+        triggerDisplay:
+          type:
+          - 'null'
+          - string
+          description: Human-readable trigger display for this Leadping automation workflow run.
+        status:
+          type: string
+          description: Current status for this Leadping automation workflow run.
+        statusDisplay:
+          type: string
+          description: Human-readable status display for this Leadping automation workflow run.
+        currentStep:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the workflow step currently awaiting or performing work.
+        currentStepOrder:
+          type:
+          - 'null'
+          - integer
+          description: Current step order associated with this Leadping automation workflow run.
+          format: int32
+        nextExecutionAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the next execution is scheduled.
+          format: date-time
+        lastExecutionAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time of the most recent execution for this Leadping automation workflow run.
+          format: date-time
+        startedAt:
+          type: string
+          description: Date and time when the automation workflow run started.
+          format: date-time
+        updatedAt:
+          type: string
+          description: Date and time when the automation workflow run was last updated.
+          format: date-time
+        completedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow run completed.
+          format: date-time
+        failedAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow run failed.
+          format: date-time
+        cancelledAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the automation workflow run was cancelled.
+          format: date-time
+        retryCount:
+          type: integer
+          description: Total number of retry records represented by this Leadping automation workflow run.
+          format: int32
+        maxRetryCount:
+          type: integer
+          description: Total number of max retry records represented by this Leadping automation workflow run.
+          format: int32
+        nextRetryAt:
+          type:
+          - 'null'
+          - string
+          description: Date and time when the next retry is scheduled.
+          format: date-time
+        lastErrorCode:
+          type:
+          - 'null'
+          - string
+          description: Machine-readable code for the most recent workflow execution error.
+        lastErrorMessage:
+          type:
+          - 'null'
+          - string
+          description: Human-readable last error message for this Leadping automation workflow run.
+        skipReasonCode:
+          type:
+          - 'null'
+          - string
+          description: Machine-readable code explaining why the workflow run or action was skipped.
+        skipReasonDisplay:
+          type:
+          - 'null'
+          - string
+          description: Human-readable skip reason display for this Leadping automation workflow run.
+        lastActionSummary:
+          type:
+          - 'null'
+          - string
+          description: Human-readable last action summary for this Leadping automation workflow run.
+        actions:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationWorkflowActionResponse'
+            description: User-safe action status returned for lead automation workflow visibility.
+          description: Collection of actions included with this Leadping automation workflow run.
+        events:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationWorkflowEventResponse'
+            description: User-safe workflow history event returned for lead automation status.
+          description: Collection of events included with this Leadping automation workflow run.
+      description: User-safe automation workflow run status returned for a lead.
+    StreetAddress:
+      type: object
+      properties:
+        line1:
+          type:
+          - 'null'
+          - string
+        line2:
+          type:
+          - 'null'
+          - string
+        city:
+          type:
+          - 'null'
+          - string
+        state:
+          type:
+          - 'null'
+          - string
+        province:
+          type:
+          - 'null'
+          - string
+        region:
+          type:
+          - 'null'
+          - string
+        postalCode:
+          type:
+          - 'null'
+          - string
+        country:
+          type:
+          - 'null'
+          - string
+        additionalInfo:
+          type:
+          - 'null'
+          - string
+      description: Postal street address for the lead contact profile.
+    AutomationWorkflowStatusResponse:
+      type: object
+      properties:
+        leadId:
+          type: string
+          description: Unique identifier of the lead associated with this Leadping automation workflow status.
+        runs:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AutomationWorkflowRunResponse'
+            description: User-safe automation workflow run status returned for a lead.
+          description: Collection of runs included with this Leadping automation workflow status.
+      description: Automation workflow status collection for a lead.
+    LeadRequest:
+      required:
+      - metadata
+      - contact
+      - customer
+      - tagIds
+      - tagNames
+      type: object
+      properties:
+        metadata:
+          allOf:
+          - $ref: '#/components/schemas/LeadMetadata'
+          description: Structured metadata used for attribution, integrations, and reporting on this lead request.
+        contact:
+          allOf:
+          - $ref: '#/components/schemas/LeadContact'
+          description: Contact details for the lead or customer represented by this lead request.
+        customer:
+          allOf:
+          - $ref: '#/components/schemas/LeadProfile'
+          description: Demographic profile details for the lead represented by this lead request.
+        enabled:
+          type:
+          - 'null'
+          - boolean
+          description: Indicates whether this lead request is active and available in the Leadping API.
+        tagIds:
+          type: array
+          items:
+            type: string
+          description: Tag IDs assigned to or filtered against this lead.
+        tagNames:
+          type: array
+          items:
+            type: string
+          description: Tag names assigned to this lead when matching existing tags by name.
+        id:
+          type:
+          - 'null'
+          - string
+      description: Defines the fields clients can send when working with lead.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/OrderByOption'
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+        search:
+          type:
+          - 'null'
+          - string
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/ExactMatchFilter'
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/RangeFilter'
     LeadIntakeRequest:
       type: object
       properties:
@@ -2524,6 +2772,190 @@ components:
         tagNames:
         - website
         - new-lead
+    LeadTableRow:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this lead table row.
+        assignedToUserId:
+          type:
+          - 'null'
+          - string
+          description: Leadping user currently responsible for this lead, or null when unassigned.
+        assignedTo:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the assigned organization member.
+        firstName:
+          type:
+          - 'null'
+          - string
+          description: First name of the lead, user, or contact represented by this lead table row.
+        lastName:
+          type:
+          - 'null'
+          - string
+          description: Last name of the lead, user, or contact represented by this lead table row.
+        phone:
+          type: string
+          description: Phone details for the lead, user, or organization represented by this lead table row.
+        phoneIdentityId:
+          type:
+          - 'null'
+          - string
+          description: Identifier of the canonical phone identity associated with this lead's phone number.
+        email:
+          type: string
+          description: Email address for the person represented by this lead table row.
+          format: email
+        avatarUrl:
+          type:
+          - 'null'
+          - string
+          description: Optional profile image URL explicitly associated with the lead.
+          format: uri
+        createdAt:
+          type: string
+          description: UTC timestamp when this lead table row was created.
+          format: date-time
+        updatedAt:
+          type: string
+          description: UTC timestamp when this lead table row was last updated.
+          format: date-time
+        status:
+          type: string
+          description: Current lifecycle status for this lead table row in the Leadping API.
+        statusTone:
+          type: string
+          description: Presentation tone that helps clients style the current status of this lead table row.
+        enabled:
+          type: boolean
+          description: Indicates whether this lead table row is active and available in the Leadping API.
+        archivedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when this record was archived.
+          format: date-time
+        archivedByUserId:
+          type:
+          - 'null'
+          - string
+          description: User ID of the person who archived this record.
+        archiveReason:
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          type:
+          - 'null'
+          - integer
+          description: Defines why a lead was removed from the active working pipeline.
+          format: int32
+        isArchived:
+          type: boolean
+          description: Whether this lead is archived.
+        currentLeadStatus:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/CurrentLeadStatusSummary'
+          description: Current lead status change summary that describes the lead outcome.
+        processingStatus:
+          enum:
+          - Quarantined
+          - Verifying
+          - Validating
+          - Enriching
+          - Ready
+          - Invalid
+          - Failed
+          type:
+          - 'null'
+          - string
+          description: Defines the asynchronous verification and enrichment lifecycle for a lead.
+        processingStatusReason:
+          type:
+          - 'null'
+          - string
+          description: Explanation when asynchronous lead processing is blocked or fails.
+        processingStatusChangedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the processing stage last changed.
+          format: date-time
+        price:
+          type:
+          - 'null'
+          - number
+          description: Lead price or transaction price supplied to the Leadping API.
+          format: double
+        organization:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related organization.
+        source:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Identifier and display name of the related source.
+        tags:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/TagSummary'
+            description: Summary schema for Leadping API tag summary data used in dashboards and reports.
+          description: Tags currently attached to this lead, source, or record.
+      description: Summarizes lead data in paginated and searchable results.
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      description: User summary connected to this automation configuration response.
+    LeadTagsRequest:
+      required:
+      - tagIds
+      - tagNames
+      type: object
+      properties:
+        tagIds:
+          type: array
+          items:
+            type: string
+          description: Tag IDs assigned to or filtered against this lead.
+        tagNames:
+          type: array
+          items:
+            type: string
+          description: Tag names assigned to this lead when matching existing tags by name.
+        createMissing:
+          type: boolean
+          description: Indicates whether Leadping should create missing records while processing the request.
+      description: Defines the fields clients can send when working with lead tag update.
     CurrentLeadStatusSummary:
       type: object
       properties:
@@ -2580,111 +3012,86 @@ components:
           - string
           description: Known sources that can change a lead's current lead status change.
       description: Summary schema for Leadping API current lead status change summary data used in dashboards and reports.
-    AutomationWorkflowActionResponse:
+    PhoneLookupCarrier:
+      type: object
+      properties:
+        mobileCountryCode:
+          type:
+          - 'null'
+          - string
+          description: Mobile country code (MCC) reported by the carrier lookup.
+        mobileNetworkCode:
+          type:
+          - 'null'
+          - string
+          description: Mobile network code (MNC) reported by the carrier lookup.
+        name:
+          type:
+          - 'null'
+          - string
+          description: Human-readable name of the phone lookup carrier.
+        normalizedCarrier:
+          type:
+          - 'null'
+          - string
+          description: Normalized carrier name used for consistent matching and reporting.
+        type:
+          enum:
+          - FixedLine
+          - Mobile
+          - Voip
+          - FixedLineOrMobile
+          - TollFree
+          - PremiumRate
+          - SharedCost
+          - PersonalNumber
+          - Pager
+          - Uan
+          - Voicemail
+          - Unknown
+          type:
+          - 'null'
+          - string
+          description: Type classification for this Leadping phone lookup carrier.
+        errorCode:
+          type:
+          - 'null'
+          - string
+          description: Reason or diagnostic code that explains the current outcome for this Leadping phone lookup carrier.
+      description: Complete carrier metadata returned by a phone number lookup provider.
+    PhoneIdentityLookupAction:
       type: object
       properties:
         id:
           type: string
-          description: Unique Leadping identifier for the automation workflow action.
-        stepId:
-          type:
-          - 'null'
-          - string
-          description: Unique identifier of the step associated with this Leadping automation workflow action.
-        stepOrder:
-          type: integer
-          description: Step order associated with this Leadping automation workflow action.
-          format: int32
-        stepDisplayName:
+          description: The unique identifier of this phone identity lookup action.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PhoneIdentityLookupActionType'
+          description: The category of enrichment, validation, or reputation lookup that was performed.
+        provider:
           type: string
-          description: Human-readable step display name associated with this Leadping automation workflow action.
-        actionType:
-          type: string
-          description: Action type classification for this Leadping automation workflow action.
-        actionTypeDisplay:
-          type: string
-          description: Human-readable action type display for this Leadping automation workflow action.
+          description: The provider that performed the phone identity lookup.
         status:
+          allOf:
+          - $ref: '#/components/schemas/PhoneIdentityLookupActionStatus'
+          description: The processing outcome reported for the phone identity lookup.
+        occurredAt:
           type: string
-          description: Current status for this Leadping automation workflow action.
-        statusDisplay:
-          type: string
-          description: Human-readable status display for this Leadping automation workflow action.
-        scheduledAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the automation workflow action was scheduled.
+          description: The UTC timestamp when the lookup action occurred.
           format: date-time
-        startedAt:
+        providerCostAmount:
+          type:
+          - 'null'
+          - number
+          description: The provider cost incurred by this lookup action, in USD.
+          format: double
+        providerPricingVersion:
           type:
           - 'null'
           - string
-          description: Date and time when the automation workflow action started.
-          format: date-time
-        completedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the automation workflow action completed.
-          format: date-time
-        failedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the automation workflow action failed.
-          format: date-time
-        skippedAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the workflow action was skipped.
-          format: date-time
-        retryCount:
-          type: integer
-          description: Total number of retry records represented by this Leadping automation workflow action.
-          format: int32
-        nextRetryAt:
-          type:
-          - 'null'
-          - string
-          description: Date and time when the next retry is scheduled.
-          format: date-time
-        userSummary:
-          type:
-          - 'null'
-          - string
-          description: Human-readable user summary for this Leadping automation workflow action.
-        safeReason:
-          type:
-          - 'null'
-          - string
-          description: Safe reason associated with this Leadping automation workflow action.
-        failureCode:
-          type:
-          - 'null'
-          - string
-          description: Reason or diagnostic code that explains the current outcome for this Leadping automation workflow action.
-      description: User-safe action status returned for lead automation workflow visibility.
-    PhoneIdentityLookupActionType:
-      enum:
-      - validation
-      - enrichment
-      - unwanted-number-check
-      type: string
-      description: Identifies the kind of lookup action performed for a phone identity.
-    PhoneLocationSource:
-      type: object
-      properties:
-        method:
-          type: string
-          description: The resolution method, such as Telnyx-city-state, coordinates, phone-number, or state-default.
-        query:
-          type:
-          - 'null'
-          - string
-          description: The city, state, coordinates, phone number, or representative ZIP used by the method.
-      description: Describes how a phone location value was resolved.
+          description: The provider pricing version used to calculate the lookup cost.
+      description: An auditable lookup, enrichment, or reputation check performed for a phone identity.
     AutomationWorkflowEventResponse:
       type: object
       properties:
@@ -2723,92 +3130,22 @@ components:
           description: Date and time when the automation workflow event event occurred.
           format: date-time
       description: User-safe workflow history event returned for lead automation status.
-    LeadTagsRequest:
-      required:
-      - tagIds
-      - tagNames
+    PhoneIdentityLookupActionType:
+      enum:
+      - validation
+      - enrichment
+      - unwanted-number-check
+      type: string
+      description: Identifies the kind of lookup action performed for a phone identity.
+    LeadAssignmentRequest:
       type: object
       properties:
-        tagIds:
-          type: array
-          items:
-            type: string
-          description: Tag IDs assigned to or filtered against this lead.
-        tagNames:
-          type: array
-          items:
-            type: string
-          description: Tag names assigned to this lead when matching existing tags by name.
-        createMissing:
-          type: boolean
-          description: Indicates whether Leadping should create missing records while processing the request.
-      description: Defines the fields clients can send when working with lead tag update.
-    LeadContact:
-      type: object
-      properties:
-        firstName:
+        assignedToUserId:
           type:
           - 'null'
           - string
-          description: First name of the lead, user, or contact represented by this lead contact profile.
-        lastName:
-          type:
-          - 'null'
-          - string
-          description: Last name of the lead, user, or contact represented by this lead contact profile.
-        streetAddress:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/StreetAddress'
-          description: Postal street address for the lead contact profile.
-        coordinate:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/Coordinate'
-          description: Latitude and longitude coordinate for this lead contact profile.
-        timeZoneId:
-          type:
-          - 'null'
-          - string
-          description: IANA or Windows time zone identifier used for local scheduling and reporting.
-        phone:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/Phone'
-          description: Phone details for the lead, user, or organization represented by this lead contact profile.
-        email:
-          type:
-          - 'null'
-          - string
-          description: Email address for the person represented by this lead contact profile.
-          format: email
-        avatarUrl:
-          type:
-          - 'null'
-          - string
-          description: Optional profile image URL for the contact. Clients fall back to Gravatar and then initials when this value is not supplied.
-          format: uri
-      description: Public Leadping API schema for lead contact profile data.
-    PhoneLookupCallerName:
-      type: object
-      properties:
-        name:
-          type:
-          - 'null'
-          - string
-          description: Caller name associated with the phone number, when reported by the provider.
-        errorCode:
-          type:
-          - 'null'
-          - string
-          description: Provider error code returned when caller-name data could not be resolved.
-      description: Caller-name data returned by the phone lookup provider.
+          description: Gets or sets the assigned to user ID.
+      description: Assigns an organization lead to an active organization member. A null user ID returns the lead to the unassigned queue.
     Phone:
       type: object
       properties:
@@ -2826,80 +3163,119 @@ components:
           - string
           description: Type classification used to route and interpret this lead phone number in the Leadping API.
       description: Public Leadping API schema for lead phone number data.
-    PhoneLookupProviderSnapshot:
+    PhoneLookup:
       type: object
       properties:
-        provider:
+        number:
+          type:
+          - 'null'
+          - string
+          description: E.164 phone number exposed by this phone lookup result.
+        nationalFormat:
+          type:
+          - 'null'
+          - string
+          description: Provider-formatted national phone number.
+        recordType:
+          type:
+          - 'null'
+          - string
+          description: Provider record discriminator.
+        fraud:
+          type:
+          - 'null'
+          - string
+          description: Fraud value returned by the provider, when available.
+        isValid:
+          type: boolean
+          description: Indicates whether this phone lookup result passed validation.
+        lineType:
+          enum:
+          - Wireline
+          - Wireless
+          - VoWiFi
+          - VoIP
+          - PrePaidWireless
+          - Unknown
+          type:
+          - 'null'
+          - string
+          description: Carrier line type reported for this phone number, such as mobile, VoIP, or landline.
+        carrier:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLookupCarrier'
+          description: Complete carrier metadata reported for this phone number.
+        callerName:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLookupCallerName'
+          description: Caller-name data returned by the provider.
+        portability:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLookupPortability'
+          description: Complete portability data returned by Telnyx.
+        location:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneNumberLocation'
+          description: Geographic location metadata for the phone number, lead, or lookup result.
+        id:
           type: string
-          description: The provider that supplied the phone lookup record.
-        lookupType:
+          description: Unique Leadping identifier for the saved phone lookup record.
+        createdAt:
           type: string
-          description: The provider lookup product or operation that produced this snapshot.
-        schemaVersion:
-          type: integer
-          description: The Leadping schema version used to interpret the stored provider record.
-          format: int32
-        retrievedAt:
-          type: string
-          description: The UTC timestamp when Leadping retrieved the provider record.
+          description: UTC timestamp when the phone lookup record was created.
           format: date-time
-        rawRecordJson:
-          type: string
-          description: The complete provider response serialized as JSON for lossless audit and replay.
-      description: Lossless provider snapshot retained with a phone identity for replay, audits, and fields added by providers later.
-    IdNamePair:
-      required:
-      - id
-      - name
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the phone lookup record was last updated.
+          format: date-time
+      description: Public Leadping API schema for phone lookup result data.
+    LeadArchiveReason:
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      type: integer
+      description: Defines why a lead was removed from the active working pipeline.
+      format: int32
+    TagSummary:
       type: object
       properties:
         id:
           type: string
+          description: Unique Leadping identifier for this tag summary.
         name:
           type: string
-      description: User summary connected to this automation configuration response.
-    RequestDataOptions:
-      type: object
-      properties:
-        pageSize:
-          type: integer
-          format: int32
-        continuationToken:
+          description: Display name for this tag summary in the Leadping API.
+        normalizedName:
+          type: string
+          description: Normalized name used for case-insensitive tag matching and deduplication.
+        color:
           type:
           - 'null'
           - string
-        orderBy:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/OrderByOption'
-        includeCount:
-          type:
-          - 'null'
-          - boolean
-        search:
-          type:
-          - 'null'
-          - string
-        searchFields:
-          type:
-          - 'null'
-          - array
-          items:
-            type: string
-        filters:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/ExactMatchFilter'
-        rangeFilters:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/RangeFilter'
+          description: Hex color used to display this tag or status in Leadping clients.
+      description: Summary schema for Leadping API tag summary data used in dashboards and reports.
     LeadMetadata:
       required:
       - trustedFormUrl
@@ -3085,409 +3461,185 @@ components:
           - string
           description: Organization ID that owns this lead's attribution metadata.
       description: Public Leadping API schema for lead attribution metadata data.
-    AutomationWorkflowStatusResponse:
+    ProblemDetails:
       type: object
       properties:
-        leadId:
-          type: string
-          description: Unique identifier of the lead associated with this Leadping automation workflow status.
-        runs:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/AutomationWorkflowRunResponse'
-            description: User-safe automation workflow run status returned for a lead.
-          description: Collection of runs included with this Leadping automation workflow status.
-      description: Automation workflow status collection for a lead.
-    LeadTableRow:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this lead table row.
-        assignedToUserId:
+        type:
           type:
           - 'null'
           - string
-          description: Leadping user currently responsible for this lead, or null when unassigned.
-        assignedTo:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Identifier and display name of the assigned organization member.
-        firstName:
+          description: URI reference that identifies the problem type.
+        title:
           type:
           - 'null'
           - string
-          description: First name of the lead, user, or contact represented by this lead table row.
-        lastName:
-          type:
-          - 'null'
-          - string
-          description: Last name of the lead, user, or contact represented by this lead table row.
-        phone:
-          type: string
-          description: Phone details for the lead, user, or organization represented by this lead table row.
-        phoneIdentityId:
-          type:
-          - 'null'
-          - string
-          description: Identifier of the canonical phone identity associated with this lead's phone number.
-        email:
-          type: string
-          description: Email address for the person represented by this lead table row.
-          format: email
-        avatarUrl:
-          type:
-          - 'null'
-          - string
-          description: Optional profile image URL explicitly associated with the lead.
-          format: uri
-        createdAt:
-          type: string
-          description: UTC timestamp when this lead table row was created.
-          format: date-time
-        updatedAt:
-          type: string
-          description: UTC timestamp when this lead table row was last updated.
-          format: date-time
+          description: Short, human-readable summary of the problem.
         status:
-          type: string
-          description: Current lifecycle status for this lead table row in the Leadping API.
-        statusTone:
-          type: string
-          description: Presentation tone that helps clients style the current status of this lead table row.
-        enabled:
-          type: boolean
-          description: Indicates whether this lead table row is active and available in the Leadping API.
-        archivedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when this record was archived.
-          format: date-time
-        archivedByUserId:
-          type:
-          - 'null'
-          - string
-          description: User ID of the person who archived this record.
-        archiveReason:
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
           type:
           - 'null'
           - integer
-          description: Defines why a lead was removed from the active working pipeline.
+          description: HTTP status code returned for the problem.
           format: int32
-        isArchived:
-          type: boolean
-          description: Whether this lead is archived.
-        currentLeadStatus:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/CurrentLeadStatusSummary'
-          description: Current lead status change summary that describes the lead outcome.
-        processingStatus:
-          enum:
-          - Quarantined
-          - Verifying
-          - Validating
-          - Enriching
-          - Ready
-          - Invalid
-          - Failed
+        detail:
           type:
           - 'null'
           - string
-          description: Defines the asynchronous verification and enrichment lifecycle for a lead.
-        processingStatusReason:
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
           type:
           - 'null'
           - string
-          description: Explanation when asynchronous lead processing is blocked or fails.
-        processingStatusChangedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when the processing stage last changed.
-          format: date-time
-        price:
-          type:
-          - 'null'
-          - number
-          description: Lead price or transaction price supplied to the Leadping API.
-          format: double
-        organization:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Identifier and display name of the related organization.
-        source:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Identifier and display name of the related source.
-        tags:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/TagSummary'
-            description: Summary schema for Leadping API tag summary data used in dashboards and reports.
-          description: Tags currently attached to this lead, source, or record.
-      description: Summarizes lead data in paginated and searchable results.
-    LeadArchiveReason:
-      enum:
-      - 0
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
-      - 6
-      - 7
-      - 8
-      - 9
-      type: integer
-      description: Defines why a lead was removed from the active working pipeline.
-      format: int32
-    PhoneLookup:
+          description: URI reference that identifies this specific occurrence of the problem.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
+        traceId:
+          type: string
+          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+    PhoneIdentityResponse:
       type: object
       properties:
         number:
-          type:
-          - 'null'
-          - string
-          description: E.164 phone number exposed by this phone lookup result.
-        nationalFormat:
-          type:
-          - 'null'
-          - string
-          description: Provider-formatted national phone number.
-        recordType:
-          type:
-          - 'null'
-          - string
-          description: Provider record discriminator.
-        fraud:
-          type:
-          - 'null'
-          - string
-          description: Fraud value returned by the provider, when available.
-        isValid:
-          type: boolean
-          description: Indicates whether this phone lookup result passed validation.
-        lineType:
-          enum:
-          - Wireline
-          - Wireless
-          - VoWiFi
-          - VoIP
-          - PrePaidWireless
-          - Unknown
-          type:
-          - 'null'
-          - string
-          description: Carrier line type reported for this phone number, such as mobile, VoIP, or landline.
-        carrier:
+          type: string
+          description: The canonical E.164 phone number.
+        lookup:
           type:
           - 'null'
           - object
           allOf:
-          - $ref: '#/components/schemas/PhoneLookupCarrier'
-          description: Complete carrier metadata reported for this phone number.
-        callerName:
+          - $ref: '#/components/schemas/PhoneLookup'
+          description: Provider lookup and enrichment data for the number.
+        providerEnrichment:
           type:
           - 'null'
           - object
           allOf:
-          - $ref: '#/components/schemas/PhoneLookupCallerName'
-          description: Caller-name data returned by the provider.
-        portability:
+          - $ref: '#/components/schemas/PhoneLookupProviderSnapshot'
+          description: Lossless provider response retained for administrative diagnostics.
+        lastEnrichedAt:
           type:
           - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/PhoneLookupPortability'
-          description: Complete portability data returned by Telnyx.
-        location:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/PhoneNumberLocation'
-          description: Geographic location metadata for the phone number, lead, or lookup result.
+          - string
+          description: The most recent time lookup data was enriched.
+          format: date-time
+        lookupActions:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/PhoneIdentityLookupAction'
+            description: An auditable lookup, enrichment, or reputation check performed for a phone identity.
+          description: Lookup, enrichment, and reputation actions performed for this identity.
+        name:
+          type: string
         id:
           type: string
-          description: Unique Leadping identifier for the saved phone lookup record.
         createdAt:
           type: string
-          description: UTC timestamp when the phone lookup record was created.
           format: date-time
         modifiedAt:
           type:
           - 'null'
           - string
-          description: UTC timestamp when the phone lookup record was last updated.
           format: date-time
-      description: Public Leadping API schema for phone lookup result data.
-    OrderByOption:
-      required:
-      - field
+      description: Describes Leadping's canonical identity for a phone number, including normalization, carrier, line type, reputation, and lookup history.
+    PhoneIdentityLookupActionStatus:
+      enum:
+      - succeeded
+      - failed
+      type: string
+      description: Identifies the outcome of a phone identity lookup action.
+    PhoneLookupProviderSnapshot:
       type: object
       properties:
-        field:
+        provider:
           type: string
-        direction:
-          enum:
-          - asc
-          - desc
-          type:
-          - 'null'
-          - string
-    PhoneNumberLocation:
-      type: object
-      properties:
-        location:
-          type:
-          - 'null'
-          - string
-          description: Geographic location metadata for the phone number, lead, or lookup result.
-        state:
-          type:
-          - 'null'
-          - string
-          description: State, province, or region for the lead or organization postal address.
-        canonicalCity:
-          type:
-          - 'null'
-          - string
-          description: Canonical city resolved by Leadping from its ZIP-code geography data.
-        canonicalState:
-          type:
-          - 'null'
-          - string
-          description: Canonical state or territory abbreviation resolved by Leadping.
-        countryCode:
-          type:
-          - 'null'
-          - string
-          description: Country code for the phone number or location represented by this phone number location.
-        coordinate:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/Coordinate'
-          description: Latitude and longitude coordinate for this phone number location.
-        coordinateSource:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/PhoneLocationSource'
-          description: Describes how the coordinate was resolved.
-        timeZoneId:
-          type:
-          - 'null'
-          - string
-          description: IANA or Windows time zone identifier used for local scheduling and reporting.
-        timeZoneSource:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/PhoneLocationSource'
-          description: Describes how the time zone was resolved.
-      description: Public Leadping API schema for phone number location data.
-    LeadAssignmentRequest:
-      type: object
-      properties:
-        assignedToUserId:
-          type:
-          - 'null'
-          - string
-          description: Gets or sets the assigned to user ID.
-      description: Assigns an organization lead to an active organization member. A null user ID returns the lead to the unassigned queue.
-    PagedResultOfLeadTableRow:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/LeadTableRow'
-            description: Summarizes lead data in paginated and searchable results.
-        pageSize:
+          description: The provider that supplied the phone lookup record.
+        lookupType:
+          type: string
+          description: The provider lookup product or operation that produced this snapshot.
+        schemaVersion:
           type: integer
+          description: The Leadping schema version used to interpret the stored provider record.
           format: int32
-        totalCount:
+        retrievedAt:
+          type: string
+          description: The UTC timestamp when Leadping retrieved the provider record.
+          format: date-time
+        rawRecordJson:
+          type: string
+          description: The complete provider response serialized as JSON for lossless audit and replay.
+      description: Lossless provider snapshot retained with a phone identity for replay, audits, and fields added by providers later.
+    Coordinate:
+      required:
+      - latitude
+      - longitude
+      type: object
+      properties:
+        latitude:
+          type: number
+          description: Latitude of the geographic coordinate in decimal degrees, from -90 through 90.
+          format: double
+        longitude:
+          type: number
+          description: Longitude of the geographic coordinate in decimal degrees, from -180 through 180.
+          format: double
+      description: Latitude and longitude coordinate for this lead contact profile.
+    LeadArchiveRequest:
+      type: object
+      properties:
+        reason:
+          allOf:
+          - $ref: '#/components/schemas/LeadArchiveReason'
+          description: Human-readable reason supplied for this request or result.
+        note:
+          maxLength: 500
+          type:
+          - 'null'
+          - string
+          description: Optional archive note that gives additional context for why the lead was archived.
+      description: Defines the fields clients can send when working with lead archive.
+    ProblemDetails_2:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
           type:
           - 'null'
           - integer
+          description: HTTP status code returned for the problem.
           format: int32
-        continuationToken:
+        detail:
           type:
           - 'null'
           - string
-    LeadRequest:
-      required:
-      - metadata
-      - contact
-      - customer
-      - tagIds
-      - tagNames
-      type: object
-      properties:
-        metadata:
-          allOf:
-          - $ref: '#/components/schemas/LeadMetadata'
-          description: Structured metadata used for attribution, integrations, and reporting on this lead request.
-        contact:
-          allOf:
-          - $ref: '#/components/schemas/LeadContact'
-          description: Contact details for the lead or customer represented by this lead request.
-        customer:
-          allOf:
-          - $ref: '#/components/schemas/LeadProfile'
-          description: Demographic profile details for the lead represented by this lead request.
-        enabled:
-          type:
-          - 'null'
-          - boolean
-          description: Indicates whether this lead request is active and available in the Leadping API.
-        tagIds:
-          type: array
-          items:
-            type: string
-          description: Tag IDs assigned to or filtered against this lead.
-        tagNames:
-          type: array
-          items:
-            type: string
-          description: Tag names assigned to this lead when matching existing tags by name.
-        id:
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
           type:
           - 'null'
           - string
-      description: Defines the fields clients can send when working with lead.
-    PhoneLookupCarrier:
+          description: URI reference that identifies this specific occurrence of the problem.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+      example:
+        type: https://leadping.ai/docs/errors/validation
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /leads/intake
+    PhoneLookupCarrier_2:
       type: object
       properties:
         mobileCountryCode:
@@ -3527,118 +3679,93 @@ components:
           type:
           - 'null'
           - string
-          description: Type classification for this Leadping phone lookup carrier.
+          description: Classifies a telephone number by the network service or carrier category that provides it.
         errorCode:
           type:
           - 'null'
           - string
           description: Reason or diagnostic code that explains the current outcome for this Leadping phone lookup carrier.
       description: Complete carrier metadata returned by a phone number lookup provider.
-    PhoneLookupPortability:
+    PhoneLookup_2:
       type: object
       properties:
-        alternativeSpid:
+        number:
           type:
           - 'null'
           - string
-          description: Alternative service provider identifier reported for the number.
-        alternativeCarrierName:
+          description: E.164 phone number exposed by this phone lookup result.
+        nationalFormat:
           type:
           - 'null'
           - string
-          description: Name of the carrier associated with the alternative service provider identifier.
-        alternativeCarrierType:
+          description: Provider-formatted national phone number.
+        recordType:
           type:
           - 'null'
           - string
-          description: Carrier type associated with the alternative service provider identifier.
-        city:
+          description: Provider record discriminator.
+        fraud:
           type:
           - 'null'
           - string
-          description: City reported by the portability lookup.
+          description: Fraud value returned by the provider, when available.
+        isValid:
+          type: boolean
+          description: Indicates whether this phone lookup result passed validation.
         lineType:
+          enum:
+          - Wireline
+          - Wireless
+          - VoWiFi
+          - VoIP
+          - PrePaidWireless
+          - Unknown
           type:
           - 'null'
           - string
-          description: Provider-native line type reported by the portability lookup.
-        localRoutingNumber:
+          description: Classifies the access technology or service type associated with a telephone number.
+        carrier:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLookupCarrier_2'
+          description: Complete carrier metadata reported for this phone number.
+        callerName:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLookupCallerName'
+          description: Caller-name data returned by the provider.
+        portability:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneLookupPortability'
+          description: Complete portability data returned by Telnyx.
+        location:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/PhoneNumberLocation'
+          description: Geographic location metadata for the phone number, lead, or lookup result.
+        id:
+          type: string
+          description: Stable unique identifier of the resource.
+        createdAt:
+          type: string
+          description: UTC timestamp when the resource was created.
+          format: date-time
+        modifiedAt:
           type:
           - 'null'
           - string
-          description: Local routing number used to route calls for the ported number.
-        operatingCompanyNumber:
-          type:
-          - 'null'
-          - string
-          description: Operating company number associated with the phone number.
-        portedDate:
-          type:
-          - 'null'
-          - string
-          description: Date on which the phone number was ported, as reported by the provider.
-        portedStatus:
-          type:
-          - 'null'
-          - string
-          description: Current number-portability status reported by the provider.
-        spid:
-          type:
-          - 'null'
-          - string
-          description: Service provider identifier currently associated with the number.
-        carrierName:
-          type:
-          - 'null'
-          - string
-          description: Name of the carrier currently serving the number.
-        carrierType:
-          type:
-          - 'null'
-          - string
-          description: Type of carrier currently serving the number.
-        state:
-          type:
-          - 'null'
-          - string
-          description: State or region reported by the portability lookup.
-      description: Number-portability and routing data returned by Telnyx.
-    ProblemDetails_2:
-      type: object
-      properties:
-        type:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - 'null'
-          - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
-          type:
-          - 'null'
-          - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-      example:
-        type: https://leadping.ai/docs/errors/validation
-        title: Request validation failed
-        status: 400
-        detail: One or more request fields are invalid.
-        instance: /leads/intake
+          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
+          format: date-time
+      description: Public Leadping API schema for phone lookup result data.
     PhoneIdentityResponse_2:
       type: object
       properties:
@@ -3689,53 +3816,6 @@ components:
           description: UTC timestamp when the resource was last modified, or null when it has not been updated.
           format: date-time
       description: Describes Leadping's canonical identity for a phone number, including normalization, carrier, line type, reputation, and lookup history.
-    PhoneLookupCarrier_2:
-      type: object
-      properties:
-        mobileCountryCode:
-          type:
-          - 'null'
-          - string
-          description: Mobile country code (MCC) reported by the carrier lookup.
-        mobileNetworkCode:
-          type:
-          - 'null'
-          - string
-          description: Mobile network code (MNC) reported by the carrier lookup.
-        name:
-          type:
-          - 'null'
-          - string
-          description: Human-readable name of the phone lookup carrier.
-        normalizedCarrier:
-          type:
-          - 'null'
-          - string
-          description: Normalized carrier name used for consistent matching and reporting.
-        type:
-          enum:
-          - FixedLine
-          - Mobile
-          - Voip
-          - FixedLineOrMobile
-          - TollFree
-          - PremiumRate
-          - SharedCost
-          - PersonalNumber
-          - Pager
-          - Uan
-          - Voicemail
-          - Unknown
-          type:
-          - 'null'
-          - string
-          description: Classifies a telephone number by the network service or carrier category that provides it.
-        errorCode:
-          type:
-          - 'null'
-          - string
-          description: Reason or diagnostic code that explains the current outcome for this Leadping phone lookup carrier.
-      description: Complete carrier metadata returned by a phone number lookup provider.
     LeadResponse_2:
       type: object
       properties:
@@ -3859,86 +3939,6 @@ components:
           description: UTC timestamp when the resource was last modified, or null when it has not been updated.
           format: date-time
       description: Describes lead data returned by Leadping.
-    PhoneLookup_2:
-      type: object
-      properties:
-        number:
-          type:
-          - 'null'
-          - string
-          description: E.164 phone number exposed by this phone lookup result.
-        nationalFormat:
-          type:
-          - 'null'
-          - string
-          description: Provider-formatted national phone number.
-        recordType:
-          type:
-          - 'null'
-          - string
-          description: Provider record discriminator.
-        fraud:
-          type:
-          - 'null'
-          - string
-          description: Fraud value returned by the provider, when available.
-        isValid:
-          type: boolean
-          description: Indicates whether this phone lookup result passed validation.
-        lineType:
-          enum:
-          - Wireline
-          - Wireless
-          - VoWiFi
-          - VoIP
-          - PrePaidWireless
-          - Unknown
-          type:
-          - 'null'
-          - string
-          description: Classifies the access technology or service type associated with a telephone number.
-        carrier:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/PhoneLookupCarrier_2'
-          description: Complete carrier metadata reported for this phone number.
-        callerName:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/PhoneLookupCallerName'
-          description: Caller-name data returned by the provider.
-        portability:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/PhoneLookupPortability'
-          description: Complete portability data returned by Telnyx.
-        location:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/PhoneNumberLocation'
-          description: Geographic location metadata for the phone number, lead, or lookup result.
-        id:
-          type: string
-          description: Stable unique identifier of the resource.
-        createdAt:
-          type: string
-          description: UTC timestamp when the resource was created.
-          format: date-time
-        modifiedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when the resource was last modified, or null when it has not been updated.
-          format: date-time
-      description: Public Leadping API schema for phone lookup result data.
   securitySchemes:
     Bearer:
       type: http

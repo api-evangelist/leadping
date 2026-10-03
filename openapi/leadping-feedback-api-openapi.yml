@@ -198,26 +198,6 @@ components:
           - string
           description: Client application version that submitted this feedback creation request.
       description: Defines the fields clients can send when working with feedback creation.
-    FeedbackStatus:
-      enum:
-      - new
-      - reviewed
-      - planned
-      - in_progress
-      - shipped
-      - closed
-      - ignored
-      type: string
-      description: Defines admin triage statuses for durable product feedback.
-    FeedbackType:
-      enum:
-      - bug
-      - confusing
-      - feature_request
-      - missing_capability
-      - other
-      type: string
-      description: Defines the type of product feedback submitted from inside Leadping.
     ProblemDetails:
       type: object
       properties:
@@ -258,6 +238,26 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+    FeedbackType:
+      enum:
+      - bug
+      - confusing
+      - feature_request
+      - missing_capability
+      - other
+      type: string
+      description: Defines the type of product feedback submitted from inside Leadping.
+    FeedbackStatus:
+      enum:
+      - new
+      - reviewed
+      - planned
+      - in_progress
+      - shipped
+      - closed
+      - ignored
+      type: string
+      description: Defines admin triage statuses for durable product feedback.
   securitySchemes:
     Bearer:
       type: http
