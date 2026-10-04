@@ -418,6 +418,20 @@ paths:
           recommended: true
 components:
   schemas:
+    OrderByOption:
+      required:
+      - field
+      type: object
+      properties:
+        field:
+          type: string
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
     PagedResultOfCallEventTableRow:
       type: object
       properties:
@@ -595,20 +609,17 @@ components:
           - string
           description: Display name for the organization associated with this call event.
       description: Summarizes call event data in paginated and searchable results.
-    OrderByOption:
+    RangeFilter:
       required:
       - field
       type: object
       properties:
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
         field:
           type: string
-        direction:
-          enum:
-          - asc
-          - desc
-          type:
-          - 'null'
-          - string
     ProblemDetails:
       type: object
       properties:
@@ -649,25 +660,6 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-    RangeFilter:
-      required:
-      - field
-      type: object
-      properties:
-        greaterThan: {}
-        greaterThanOrEqual: {}
-        lessThan: {}
-        lessThanOrEqual: {}
-        field:
-          type: string
-    ExactMatchFilter:
-      required:
-      - field
-      type: object
-      properties:
-        value: {}
-        field:
-          type: string
     RequestDataOptions:
       type: object
       properties:
@@ -710,6 +702,14 @@ components:
           - array
           items:
             $ref: '#/components/schemas/RangeFilter'
+    ExactMatchFilter:
+      required:
+      - field
+      type: object
+      properties:
+        value: {}
+        field:
+          type: string
     CommunicationConsoleEntry:
       type: object
       properties:

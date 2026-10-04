@@ -754,22 +754,27 @@ paths:
           recommended: true
 components:
   schemas:
-    NotificationType:
-      enum:
-      - General
-      - Lead
-      - Call
-      - Sms
-      - Billing
-      - System
-      - Success
-      - Warning
-      - Error
-      - Info
-      - Announcement
-      - Activation
-      type: string
-      description: Identifies the Leadping workflow or account event communicated by a user notification.
+    PagedResultOfNotificationTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/NotificationTableRow'
+            description: Describes notification data returned by Leadping.
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
     OrderByOption:
       required:
       - field
@@ -784,6 +789,78 @@ components:
           type:
           - 'null'
           - string
+    RangeFilter:
+      required:
+      - field
+      type: object
+      properties:
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
+        field:
+          type: string
+    NotificationTableRow:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/NotificationType'
+          description: The type classification for this notification.
+        priority:
+          allOf:
+          - $ref: '#/components/schemas/NotificationPriority'
+          description: Priority for this notification.
+        message:
+          type: string
+          description: Message for this notification.
+        details:
+          type:
+          - 'null'
+          - string
+          description: Optional supporting details displayed beneath the notification message.
+        isRead:
+          type: boolean
+          description: Whether this notification is read.
+        readAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp for read at on this notification.
+          format: date-time
+        actionUrl:
+          type:
+          - 'null'
+          - string
+          description: The URL associated with this notification.
+        actionButtonText:
+          type:
+          - 'null'
+          - string
+          description: Action button text for this notification.
+        relatedEntityId:
+          type:
+          - 'null'
+          - string
+          description: The related entity ID associated with this notification.
+        relatedEntityType:
+          type:
+          - 'null'
+          - string
+          description: The related entity type classification for this notification.
+        name:
+          type: string
+        id:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          format: date-time
+      description: Describes notification data returned by Leadping.
     ProblemDetails:
       type: object
       properties:
@@ -824,33 +901,6 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-    RangeFilter:
-      required:
-      - field
-      type: object
-      properties:
-        greaterThan: {}
-        greaterThanOrEqual: {}
-        lessThan: {}
-        lessThanOrEqual: {}
-        field:
-          type: string
-    NotificationPriority:
-      enum:
-      - Low
-      - Medium
-      - High
-      - Critical
-      type: string
-      description: Ranks the urgency and presentation importance of a Leadping user notification.
-    ExactMatchFilter:
-      required:
-      - field
-      type: object
-      properties:
-        value: {}
-        field:
-          type: string
     NotificationResponse:
       type: object
       properties:
@@ -918,6 +968,56 @@ components:
           - string
           format: date-time
       description: Describes notification data used in Leadping API requests and responses.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/OrderByOption'
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+        search:
+          type:
+          - 'null'
+          - string
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/ExactMatchFilter'
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/RangeFilter'
+    ExactMatchFilter:
+      required:
+      - field
+      type: object
+      properties:
+        value: {}
+        field:
+          type: string
     PushInstallationRequest:
       type: object
       properties:
@@ -969,130 +1069,30 @@ components:
             type: string
           description: Optional client metadata stored with the push installation.
       description: Describes a mobile push installation. Identity and Azure tags are derived by the API.
-    RequestDataOptions:
-      type: object
-      properties:
-        pageSize:
-          type: integer
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-        orderBy:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/OrderByOption'
-        includeCount:
-          type:
-          - 'null'
-          - boolean
-        search:
-          type:
-          - 'null'
-          - string
-        searchFields:
-          type:
-          - 'null'
-          - array
-          items:
-            type: string
-        filters:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/ExactMatchFilter'
-        rangeFilters:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/RangeFilter'
-    PagedResultOfNotificationTableRow:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/NotificationTableRow'
-            description: Describes notification data returned by Leadping.
-        pageSize:
-          type: integer
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-    NotificationTableRow:
-      type: object
-      properties:
-        type:
-          allOf:
-          - $ref: '#/components/schemas/NotificationType'
-          description: The type classification for this notification.
-        priority:
-          allOf:
-          - $ref: '#/components/schemas/NotificationPriority'
-          description: Priority for this notification.
-        message:
-          type: string
-          description: Message for this notification.
-        details:
-          type:
-          - 'null'
-          - string
-          description: Optional supporting details displayed beneath the notification message.
-        isRead:
-          type: boolean
-          description: Whether this notification is read.
-        readAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp for read at on this notification.
-          format: date-time
-        actionUrl:
-          type:
-          - 'null'
-          - string
-          description: The URL associated with this notification.
-        actionButtonText:
-          type:
-          - 'null'
-          - string
-          description: Action button text for this notification.
-        relatedEntityId:
-          type:
-          - 'null'
-          - string
-          description: The related entity ID associated with this notification.
-        relatedEntityType:
-          type:
-          - 'null'
-          - string
-          description: The related entity type classification for this notification.
-        name:
-          type: string
-        id:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        modifiedAt:
-          type:
-          - 'null'
-          - string
-          format: date-time
-      description: Describes notification data returned by Leadping.
+    NotificationPriority:
+      enum:
+      - Low
+      - Medium
+      - High
+      - Critical
+      type: string
+      description: Ranks the urgency and presentation importance of a Leadping user notification.
+    NotificationType:
+      enum:
+      - General
+      - Lead
+      - Call
+      - Sms
+      - Billing
+      - System
+      - Success
+      - Warning
+      - Error
+      - Info
+      - Announcement
+      - Activation
+      type: string
+      description: Identifies the Leadping workflow or account event communicated by a user notification.
   securitySchemes:
     Bearer:
       type: http

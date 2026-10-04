@@ -170,13 +170,6 @@ components:
           type: string
           description: Invitation or workflow token used to authorize this request.
       description: Defines the fields clients can send when working with contact form.
-    ContactResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Message text supplied by the user or returned by the Leadping API for this contact form response.
-      description: Describes contact form data returned by Leadping.
     ProblemDetails:
       type: object
       properties:
@@ -213,6 +206,13 @@ components:
         status: 400
         detail: One or more request fields are invalid.
         instance: /leads/intake
+    ContactResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Message text supplied by the user or returned by the Leadping API for this contact form response.
+      description: Describes contact form data returned by Leadping.
   securitySchemes:
     Bearer:
       type: http

@@ -425,29 +425,6 @@ paths:
           recommended: true
 components:
   schemas:
-    TagRequest:
-      type: object
-      properties:
-        name:
-          type:
-          - 'null'
-          - string
-          description: Display name for this tag request in the Leadping API.
-        color:
-          type:
-          - 'null'
-          - string
-          description: Hex color used to display this tag or status in Leadping clients.
-        description:
-          type:
-          - 'null'
-          - string
-          description: Human-readable description that explains this tag request to API users.
-        id:
-          type:
-          - 'null'
-          - string
-      description: Defines the fields clients can send when working with tag.
     ProblemDetails:
       type: object
       properties:
@@ -488,6 +465,29 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+    TagRequest:
+      type: object
+      properties:
+        name:
+          type:
+          - 'null'
+          - string
+          description: Display name for this tag request in the Leadping API.
+        color:
+          type:
+          - 'null'
+          - string
+          description: Hex color used to display this tag or status in Leadping clients.
+        description:
+          type:
+          - 'null'
+          - string
+          description: Human-readable description that explains this tag request to API users.
+        id:
+          type:
+          - 'null'
+          - string
+      description: Defines the fields clients can send when working with tag.
     TagResponse:
       type: object
       properties:

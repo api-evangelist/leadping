@@ -205,24 +205,14 @@ paths:
           recommended: false
 components:
   schemas:
-    UsageChannel:
-      enum:
-      - lead
-      - sms
-      - mms
-      - email
-      - voice
-      - phone_number
-      - warmup
-      - website
-      - openai
-      - domain
-      - 10dlc
-      - payment
-      - connection
-      - automation
-      type: string
-      description: Identifies the messaging, calling, phone-number, lookup, or platform channel that generated billable usage.
+    ExactMatchFilter:
+      required:
+      - field
+      type: object
+      properties:
+        value: {}
+        field:
+          type: string
     OrderByOption:
       required:
       - field
@@ -237,57 +227,6 @@ components:
           type:
           - 'null'
           - string
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - 'null'
-          - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
-          type:
-          - 'null'
-          - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-        errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
-        traceId:
-          type: string
-          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-    RangeFilter:
-      required:
-      - field
-      type: object
-      properties:
-        greaterThan: {}
-        greaterThanOrEqual: {}
-        lessThan: {}
-        lessThanOrEqual: {}
-        field:
-          type: string
     UsageLedgerTableRow:
       type: object
       properties:
@@ -380,48 +319,46 @@ components:
           description: UTC timestamp for created at on this usage ledger.
           format: date-time
       description: Describes usage ledger data used in Leadping API requests and responses.
-    ExactMatchFilter:
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      description: User summary connected to this automation configuration response.
+    RangeFilter:
       required:
       - field
       type: object
       properties:
-        value: {}
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
         field:
           type: string
-    PagedResultOfUsageLedgerTableRow:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/UsageLedgerTableRow'
-            description: Describes usage ledger data used in Leadping API requests and responses.
-        pageSize:
-          type: integer
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-    UsageStatus:
+    UsageChannel:
       enum:
-      - recorded
-      - rated
-      - pending_invoice
-      - invoiced
-      - charged
-      - failed
-      - refunded_credited
-      - non_billable_internal
-      - blocked_due_to_billing
+      - lead
+      - sms
+      - mms
+      - email
+      - voice
+      - phone_number
+      - warmup
+      - website
+      - openai
+      - domain
+      - 10dlc
+      - payment
+      - connection
+      - automation
       type: string
-      description: Describes whether a metered usage record is pending, rated, billed, reconciled, excluded, or failed.
+      description: Identifies the messaging, calling, phone-number, lookup, or platform channel that generated billable usage.
     UsageCounterLine:
       type: object
       properties:
@@ -443,6 +380,95 @@ components:
           description: The display order for this usage counter.
           format: int32
       description: Describes one named usage total displayed in organization billing and activity summaries.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
+        traceId:
+          type: string
+          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+    UsageSummaryLine:
+      type: object
+      properties:
+        channel:
+          allOf:
+          - $ref: '#/components/schemas/UsageChannel'
+          description: Channel for this usage summary line.
+        billableUnit:
+          allOf:
+          - $ref: '#/components/schemas/BillableUnit'
+          description: Billable unit for this usage summary line.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/UsageStatus'
+          description: The current status for this usage summary line.
+        quantity:
+          type: number
+          description: Quantity for this usage summary line.
+          format: double
+        customerChargeAmount:
+          type: number
+          description: The monetary customer charge amount for this usage summary line.
+          format: double
+        recordCount:
+          type: integer
+          description: The record count for this usage summary line.
+          format: int32
+      description: Describes usage summary line data used in Leadping API requests and responses.
+    PagedResultOfUsageLedgerTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/UsageLedgerTableRow'
+            description: Describes usage ledger data used in Leadping API requests and responses.
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
     RequestDataOptions:
       type: object
       properties:
@@ -485,34 +511,6 @@ components:
           - array
           items:
             $ref: '#/components/schemas/RangeFilter'
-    UsageSummaryLine:
-      type: object
-      properties:
-        channel:
-          allOf:
-          - $ref: '#/components/schemas/UsageChannel'
-          description: Channel for this usage summary line.
-        billableUnit:
-          allOf:
-          - $ref: '#/components/schemas/BillableUnit'
-          description: Billable unit for this usage summary line.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/UsageStatus'
-          description: The current status for this usage summary line.
-        quantity:
-          type: number
-          description: Quantity for this usage summary line.
-          format: double
-        customerChargeAmount:
-          type: number
-          description: The monetary customer charge amount for this usage summary line.
-          format: double
-        recordCount:
-          type: integer
-          description: The record count for this usage summary line.
-          format: int32
-      description: Describes usage summary line data used in Leadping API requests and responses.
     BillableUnit:
       enum:
       - lead_received
@@ -580,17 +578,19 @@ components:
             description: Describes one named usage total displayed in organization billing and activity summaries.
           description: The named usage counters included with this usage summary.
       description: Describes usage summary response data used by Leadping.
-    IdNamePair:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-      description: User summary connected to this automation configuration response.
+    UsageStatus:
+      enum:
+      - recorded
+      - rated
+      - pending_invoice
+      - invoiced
+      - charged
+      - failed
+      - refunded_credited
+      - non_billable_internal
+      - blocked_due_to_billing
+      type: string
+      description: Describes whether a metered usage record is pending, rated, billed, reconciled, excluded, or failed.
   securitySchemes:
     Bearer:
       type: http

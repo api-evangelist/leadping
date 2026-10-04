@@ -110,56 +110,15 @@ paths:
           recommended: true
 components:
   schemas:
-    FeedbackResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this feedback item response.
-        organizationId:
-          type:
-          - 'null'
-          - string
-          description: Organization ID connected to the feedback item, when the feedback came from an organization workspace.
-        userId:
-          type:
-          - 'null'
-          - string
-          description: User ID for the person who submitted the feedback.
-        type:
-          allOf:
-          - $ref: '#/components/schemas/FeedbackType'
-          description: Type classification used to route and interpret this feedback item response in the Leadping API.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/FeedbackStatus'
-          description: Current lifecycle status for this feedback item response in the Leadping API.
-        area:
-          type:
-          - 'null'
-          - string
-          description: Product area or app section connected to this feedback item response.
-        route:
-          type:
-          - 'null'
-          - string
-          description: Application route where this feedback item response originated or should direct the user.
-        message:
-          type: string
-          description: Message text supplied by the user or returned by the Leadping API for this feedback item response.
-        allowContact:
-          type: boolean
-          description: Indicates whether the submitter permits Leadping support to contact them about the feedback.
-        clientVersion:
-          type:
-          - 'null'
-          - string
-          description: Client application version that submitted this feedback item response.
-        createdAt:
-          type: string
-          description: UTC timestamp when this feedback item response was created.
-          format: date-time
-      description: Describes feedback item data returned by Leadping.
+    FeedbackType:
+      enum:
+      - bug
+      - confusing
+      - feature_request
+      - missing_capability
+      - other
+      type: string
+      description: Defines the type of product feedback submitted from inside Leadping.
     FeedbackCreateRequest:
       type: object
       properties:
@@ -238,15 +197,6 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-    FeedbackType:
-      enum:
-      - bug
-      - confusing
-      - feature_request
-      - missing_capability
-      - other
-      type: string
-      description: Defines the type of product feedback submitted from inside Leadping.
     FeedbackStatus:
       enum:
       - new
@@ -258,6 +208,56 @@ components:
       - ignored
       type: string
       description: Defines admin triage statuses for durable product feedback.
+    FeedbackResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Leadping identifier for this feedback item response.
+        organizationId:
+          type:
+          - 'null'
+          - string
+          description: Organization ID connected to the feedback item, when the feedback came from an organization workspace.
+        userId:
+          type:
+          - 'null'
+          - string
+          description: User ID for the person who submitted the feedback.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/FeedbackType'
+          description: Type classification used to route and interpret this feedback item response in the Leadping API.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/FeedbackStatus'
+          description: Current lifecycle status for this feedback item response in the Leadping API.
+        area:
+          type:
+          - 'null'
+          - string
+          description: Product area or app section connected to this feedback item response.
+        route:
+          type:
+          - 'null'
+          - string
+          description: Application route where this feedback item response originated or should direct the user.
+        message:
+          type: string
+          description: Message text supplied by the user or returned by the Leadping API for this feedback item response.
+        allowContact:
+          type: boolean
+          description: Indicates whether the submitter permits Leadping support to contact them about the feedback.
+        clientVersion:
+          type:
+          - 'null'
+          - string
+          description: Client application version that submitted this feedback item response.
+        createdAt:
+          type: string
+          description: UTC timestamp when this feedback item response was created.
+          format: date-time
+      description: Describes feedback item data returned by Leadping.
   securitySchemes:
     Bearer:
       type: http

@@ -225,6 +225,77 @@ paths:
           recommended: true
 components:
   schemas:
+    PagedResultOfTransactionTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/TransactionTableRow'
+            description: Summarizes billing transaction data in paginated and searchable results.
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+    OrderByOption:
+      required:
+      - field
+      type: object
+      properties:
+        field:
+          type: string
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      description: User summary connected to this automation configuration response.
+    TransactionType:
+      enum:
+      - Debit
+      - Adjustment
+      - Deposit
+      type: string
+      description: Classifies a wallet transaction as a debit, credit, refund, adjustment, deposit, or other balance movement.
+    RangeFilter:
+      required:
+      - field
+      type: object
+      properties:
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
+        field:
+          type: string
+    TransactionStatus:
+      enum:
+      - Pending
+      - Confirmed
+      - Failed
+      type: string
+      description: Describes the processing and settlement lifecycle of a Leadping wallet or billing transaction.
     TransactionResponse:
       type: object
       properties:
@@ -348,20 +419,6 @@ components:
           - string
           format: date-time
       description: Describes billing transaction data returned by Leadping.
-    OrderByOption:
-      required:
-      - field
-      type: object
-      properties:
-        field:
-          type: string
-        direction:
-          enum:
-          - asc
-          - desc
-          type:
-          - 'null'
-          - string
     ProblemDetails:
       type: object
       properties:
@@ -402,24 +459,6 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-    RangeFilter:
-      required:
-      - field
-      type: object
-      properties:
-        greaterThan: {}
-        greaterThanOrEqual: {}
-        lessThan: {}
-        lessThanOrEqual: {}
-        field:
-          type: string
-    TransactionType:
-      enum:
-      - Debit
-      - Adjustment
-      - Deposit
-      type: string
-      description: Classifies a wallet transaction as a debit, credit, refund, adjustment, deposit, or other balance movement.
     TransactionTableRow:
       type: object
       properties:
@@ -545,35 +584,6 @@ components:
           description: UTC timestamp when this billing transaction table row was created.
           format: date-time
       description: Summarizes billing transaction data in paginated and searchable results.
-    PagedResultOfTransactionTableRow:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/TransactionTableRow'
-            description: Summarizes billing transaction data in paginated and searchable results.
-        pageSize:
-          type: integer
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-    ExactMatchFilter:
-      required:
-      - field
-      type: object
-      properties:
-        value: {}
-        field:
-          type: string
     RequestDataOptions:
       type: object
       properties:
@@ -616,24 +626,14 @@ components:
           - array
           items:
             $ref: '#/components/schemas/RangeFilter'
-    TransactionStatus:
-      enum:
-      - Pending
-      - Confirmed
-      - Failed
-      type: string
-      description: Describes the processing and settlement lifecycle of a Leadping wallet or billing transaction.
-    IdNamePair:
+    ExactMatchFilter:
       required:
-      - id
-      - name
+      - field
       type: object
       properties:
-        id:
+        value: {}
+        field:
           type: string
-        name:
-          type: string
-      description: User summary connected to this automation configuration response.
   securitySchemes:
     Bearer:
       type: http

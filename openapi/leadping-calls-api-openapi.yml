@@ -439,30 +439,6 @@ paths:
           recommended: true
 components:
   schemas:
-    PhoneCallStatus:
-      enum:
-      - scheduled
-      - queued
-      - initiated
-      - ringing
-      - in_progress
-      - active
-      - completed
-      - ended
-      - busy
-      - no_answer
-      - failed
-      - canceled
-      - missed
-      - transferred
-      - voicemail
-      - blocked_billing
-      - blocked_phone_number_status
-      - blocked_configuration
-      - blocked_permission
-      - configuration_required
-      type: string
-      description: Describes the durable business outcome of a Leadping phone call after provider status normalization.
     ProblemDetails:
       type: object
       properties:
@@ -545,6 +521,30 @@ components:
         conversationId: conversation-123
         wasManuallyOverridden: false
         outboundIdempotencyKey: call-example-001
+    PhoneCallStatus:
+      enum:
+      - scheduled
+      - queued
+      - initiated
+      - ringing
+      - in_progress
+      - active
+      - completed
+      - ended
+      - busy
+      - no_answer
+      - failed
+      - canceled
+      - missed
+      - transferred
+      - voicemail
+      - blocked_billing
+      - blocked_phone_number_status
+      - blocked_configuration
+      - blocked_permission
+      - configuration_required
+      type: string
+      description: Describes the durable business outcome of a Leadping phone call after provider status normalization.
     PhoneCallResponse:
       type: object
       properties:

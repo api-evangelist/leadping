@@ -755,6 +755,31 @@ paths:
           recommended: true
 components:
   schemas:
+    OrderByOption:
+      required:
+      - field
+      type: object
+      properties:
+        field:
+          type: string
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      description: User summary connected to this automation configuration response.
     MessageMediaAttachment:
       type: object
       properties:
@@ -784,6 +809,26 @@ components:
           - string
           description: Original file name of the media attachment, when available.
       description: Media attached to an SMS/MMS conversation event.
+    RangeFilter:
+      required:
+      - field
+      type: object
+      properties:
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
+        field:
+          type: string
+    CreateNoteRequest:
+      required:
+      - text
+      type: object
+      properties:
+        text:
+          type: string
+          description: Plain-text note content to add to the conversation timeline.
+      description: Defines the input used for create note.
     EventTableRow:
       type: object
       properties:
@@ -1060,20 +1105,6 @@ components:
           description: Email address for the person who created this event timeline table row.
           format: email
       description: Summarizes event timeline data in paginated and searchable results.
-    OrderByOption:
-      required:
-      - field
-      type: object
-      properties:
-        field:
-          type: string
-        direction:
-          enum:
-          - asc
-          - desc
-          type:
-          - 'null'
-          - string
     ProblemDetails:
       type: object
       properties:
@@ -1114,25 +1145,6 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-    RangeFilter:
-      required:
-      - field
-      type: object
-      properties:
-        greaterThan: {}
-        greaterThanOrEqual: {}
-        lessThan: {}
-        lessThanOrEqual: {}
-        field:
-          type: string
-    ExactMatchFilter:
-      required:
-      - field
-      type: object
-      properties:
-        value: {}
-        field:
-          type: string
     EventDetailResponse:
       type: object
       properties:
@@ -1378,15 +1390,14 @@ components:
           - array
           items:
             $ref: '#/components/schemas/RangeFilter'
-    CreateNoteRequest:
+    ExactMatchFilter:
       required:
-      - text
+      - field
       type: object
       properties:
-        text:
+        value: {}
+        field:
           type: string
-          description: Plain-text note content to add to the conversation timeline.
-      description: Defines the input used for create note.
     PagedResultOfEventTableRow:
       type: object
       properties:
@@ -1408,17 +1419,6 @@ components:
           type:
           - 'null'
           - string
-    IdNamePair:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-      description: User summary connected to this automation configuration response.
   securitySchemes:
     Bearer:
       type: http

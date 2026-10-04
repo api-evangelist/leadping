@@ -418,6 +418,52 @@ paths:
           recommended: true
 components:
   schemas:
+    OrderByOption:
+      required:
+      - field
+      type: object
+      properties:
+        field:
+          type: string
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
+    PagedResultOfSmsEventTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/SmsEventTableRow'
+            description: Summarizes SMS event data in paginated and searchable results.
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+    IdNamePair:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      description: User summary connected to this automation configuration response.
     MessageMediaAttachment:
       type: object
       properties:
@@ -447,60 +493,6 @@ components:
           - string
           description: Original file name of the media attachment, when available.
       description: Media attached to an SMS/MMS conversation event.
-    OrderByOption:
-      required:
-      - field
-      type: object
-      properties:
-        field:
-          type: string
-        direction:
-          enum:
-          - asc
-          - desc
-          type:
-          - 'null'
-          - string
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - 'null'
-          - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
-          type:
-          - 'null'
-          - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-        errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
-        traceId:
-          type: string
-          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
     RangeFilter:
       required:
       - field
@@ -512,27 +504,6 @@ components:
         lessThanOrEqual: {}
         field:
           type: string
-    PagedResultOfSmsEventTableRow:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/SmsEventTableRow'
-            description: Summarizes SMS event data in paginated and searchable results.
-        pageSize:
-          type: integer
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
     SmsEventTableRow:
       type: object
       properties:
@@ -765,14 +736,46 @@ components:
           - string
           description: Organization display name shown for this SMS event.
       description: Summarizes SMS event data in paginated and searchable results.
-    ExactMatchFilter:
-      required:
-      - field
+    ProblemDetails:
       type: object
       properties:
-        value: {}
-        field:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
+        traceId:
           type: string
+          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
     RequestDataOptions:
       type: object
       properties:
@@ -815,17 +818,14 @@ components:
           - array
           items:
             $ref: '#/components/schemas/RangeFilter'
-    IdNamePair:
+    ExactMatchFilter:
       required:
-      - id
-      - name
+      - field
       type: object
       properties:
-        id:
+        value: {}
+        field:
           type: string
-        name:
-          type: string
-      description: User summary connected to this automation configuration response.
     CommunicationConsoleEntry:
       type: object
       properties:

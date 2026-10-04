@@ -733,24 +733,6 @@ paths:
           recommended: false
 components:
   schemas:
-    TagSummary:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Leadping identifier for this tag summary.
-        name:
-          type: string
-          description: Display name for this tag summary in the Leadping API.
-        normalizedName:
-          type: string
-          description: Normalized name used for case-insensitive tag matching and deduplication.
-        color:
-          type:
-          - 'null'
-          - string
-          description: Hex color used to display this tag or status in Leadping clients.
-      description: Summary schema for Leadping API tag summary data used in dashboards and reports.
     OrderByOption:
       required:
       - field
@@ -765,219 +747,6 @@ components:
           type:
           - 'null'
           - string
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - 'null'
-          - string
-          description: Short, human-readable summary of the problem.
-        status:
-          type:
-          - 'null'
-          - integer
-          description: HTTP status code returned for the problem.
-          format: int32
-        detail:
-          type:
-          - 'null'
-          - string
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - 'null'
-          - string
-          description: URI reference that identifies this specific occurrence of the problem.
-        errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
-        traceId:
-          type: string
-          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
-      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-    SourceResponse:
-      type: object
-      properties:
-        description:
-          type:
-          - 'null'
-          - string
-          description: Human-readable description that explains this lead source response to API users.
-        enabled:
-          type: boolean
-          description: Indicates whether this lead source response is active and available in the Leadping API.
-        apiKeyPreview:
-          type:
-          - 'null'
-          - string
-          description: Masked preview of the source API key for compact display.
-        apiKeyRotatedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when the source credential was most recently rotated.
-          format: date-time
-        firstLeadReceivedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when this source first delivered a lead to Leadping.
-          format: date-time
-        lastLeadReceivedAt:
-          type:
-          - 'null'
-          - string
-          description: UTC timestamp when this source most recently delivered a lead to Leadping.
-          format: date-time
-        user:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: User summary connected to this lead source response.
-        createdByUser:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: User summary for the person who created this lead source response.
-        createdByUserEmail:
-          type:
-          - 'null'
-          - string
-          description: Email used to resolve the creator's avatar.
-          format: email
-        modifiedByUser:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: User summary for the person who last modified this lead source response.
-        organization:
-          type:
-          - 'null'
-          - object
-          allOf:
-          - $ref: '#/components/schemas/IdNamePair'
-          description: Organization summary connected to this lead source response.
-        costPerLead:
-          type:
-          - 'null'
-          - number
-          description: Configured cost charged when this source creates a billable lead.
-          format: double
-        allowedStates:
-          type: array
-          items:
-            type: string
-          description: State or region allowlist used to accept leads from this source.
-        allowedProducts:
-          type: array
-          items:
-            type: string
-          description: Product allowlist used to accept or route leads from this source.
-        requiresTrustedForm:
-          type: boolean
-          description: Indicates whether leads from this source must include a TrustedForm certificate for consent proof.
-        complianceApproved:
-          type: boolean
-          description: Indicates whether the organization or sender passed compliance review.
-        defaultTagIds:
-          type: array
-          items:
-            type: string
-          description: Tag IDs automatically assigned to leads created by this source.
-        defaultTags:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/TagSummary'
-            description: Summary schema for Leadping API tag summary data used in dashboards and reports.
-          description: Default tag summaries automatically applied to leads from this source.
-        name:
-          type: string
-        id:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        modifiedAt:
-          type:
-          - 'null'
-          - string
-          format: date-time
-      description: Describes lead source data returned by Leadping.
-    RangeFilter:
-      required:
-      - field
-      type: object
-      properties:
-        greaterThan: {}
-        greaterThanOrEqual: {}
-        lessThan: {}
-        lessThanOrEqual: {}
-        field:
-          type: string
-    AnalyticsTrendPointOfint:
-      type: object
-      properties:
-        startAt:
-          type: string
-          description: Date and time when this Leadping analytics trend point was start.
-          format: date-time
-        endAt:
-          type: string
-          description: Date and time when this Leadping analytics trend point was end.
-          format: date-time
-        label:
-          type: string
-          description: Human-readable label for this Leadping analytics trend point.
-        value:
-          type: integer
-          description: Value associated with this Leadping analytics trend point.
-          format: int32
-      description: Associates a typed analytics value with one normalized time bucket in a trend series.
-    ExactMatchFilter:
-      required:
-      - field
-      type: object
-      properties:
-        value: {}
-        field:
-          type: string
-    SourceCredentialIssueResponse:
-      type: object
-      properties:
-        source:
-          allOf:
-          - $ref: '#/components/schemas/SourceResponse'
-          description: Source metadata safe for later retrieval.
-        secret:
-          type: string
-          description: Newly issued source credential. Leadping does not retain this plaintext value.
-      description: Returns a newly issued source credential exactly once.
-    AnalyticsBucketSize:
-      enum:
-      - 3
-      - 0
-      - 1
-      - 2
-      type: integer
-      description: Selects the time interval used to aggregate points in a Leadping analytics trend series.
-      format: int32
     SourceRequest:
       required:
       - allowedStates
@@ -1020,48 +789,17 @@ components:
             type: string
           description: Tag names automatically assigned to leads created by this source.
       description: Defines the fields clients can send when working with lead source.
-    RequestDataOptions:
+    IdNamePair:
+      required:
+      - id
+      - name
       type: object
       properties:
-        pageSize:
-          type: integer
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-        orderBy:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/OrderByOption'
-        includeCount:
-          type:
-          - 'null'
-          - boolean
-        search:
-          type:
-          - 'null'
-          - string
-        searchFields:
-          type:
-          - 'null'
-          - array
-          items:
-            type: string
-        filters:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/ExactMatchFilter'
-        rangeFilters:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/RangeFilter'
+        id:
+          type: string
+        name:
+          type: string
+      description: User summary connected to this automation configuration response.
     SourceMetricsResponse:
       type: object
       properties:
@@ -1096,43 +834,6 @@ components:
           description: Date and time when the source metrics was generated.
           format: date-time
       description: Aggregates lead volume, conversion, delivery, and activity metrics attributed to a Leadping source over the requested reporting period.
-    AnalyticsDateRange:
-      type: object
-      properties:
-        startAt:
-          type: string
-          description: Date and time when this Leadping analytics date range was start.
-          format: date-time
-        endAt:
-          type: string
-          description: Date and time when this Leadping analytics date range was end.
-          format: date-time
-        bucketSize:
-          allOf:
-          - $ref: '#/components/schemas/AnalyticsBucketSize'
-          description: Bucket size associated with this Leadping analytics date range.
-      description: Defines the inclusive reporting window and comparison window used to calculate Leadping analytics.
-    PagedResultOfSourceTableRow:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/SourceTableRow'
-            description: Summarizes lead source data in paginated and searchable results.
-        pageSize:
-          type: integer
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
     SourceTableRow:
       type: object
       properties:
@@ -1257,17 +958,316 @@ components:
             description: Summary schema for Leadping API tag summary data used in dashboards and reports.
           description: Default tag summaries automatically applied to leads from this source.
       description: Summarizes lead source data in paginated and searchable results.
-    IdNamePair:
-      required:
-      - id
-      - name
+    AnalyticsTrendPointOfint:
+      type: object
+      properties:
+        startAt:
+          type: string
+          description: Date and time when this Leadping analytics trend point was start.
+          format: date-time
+        endAt:
+          type: string
+          description: Date and time when this Leadping analytics trend point was end.
+          format: date-time
+        label:
+          type: string
+          description: Human-readable label for this Leadping analytics trend point.
+        value:
+          type: integer
+          description: Value associated with this Leadping analytics trend point.
+          format: int32
+      description: Associates a typed analytics value with one normalized time bucket in a trend series.
+    TagSummary:
       type: object
       properties:
         id:
           type: string
+          description: Unique Leadping identifier for this tag summary.
         name:
           type: string
-      description: User summary connected to this automation configuration response.
+          description: Display name for this tag summary in the Leadping API.
+        normalizedName:
+          type: string
+          description: Normalized name used for case-insensitive tag matching and deduplication.
+        color:
+          type:
+          - 'null'
+          - string
+          description: Hex color used to display this tag or status in Leadping clients.
+      description: Summary schema for Leadping API tag summary data used in dashboards and reports.
+    RangeFilter:
+      required:
+      - field
+      type: object
+      properties:
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
+        field:
+          type: string
+    SourceCredentialIssueResponse:
+      type: object
+      properties:
+        source:
+          allOf:
+          - $ref: '#/components/schemas/SourceResponse'
+          description: Source metadata safe for later retrieval.
+        secret:
+          type: string
+          description: Newly issued source credential. Leadping does not retain this plaintext value.
+      description: Returns a newly issued source credential exactly once.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - 'null'
+          - string
+          description: Short, human-readable summary of the problem.
+        status:
+          type:
+          - 'null'
+          - integer
+          description: HTTP status code returned for the problem.
+          format: int32
+        detail:
+          type:
+          - 'null'
+          - string
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - 'null'
+          - string
+          description: URI reference that identifies this specific occurrence of the problem.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Validation errors keyed by the JSON request field name. Present for request validation failures.
+        traceId:
+          type: string
+          description: Request trace identifier used to correlate this problem with Leadping diagnostics.
+      description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+    AnalyticsDateRange:
+      type: object
+      properties:
+        startAt:
+          type: string
+          description: Date and time when this Leadping analytics date range was start.
+          format: date-time
+        endAt:
+          type: string
+          description: Date and time when this Leadping analytics date range was end.
+          format: date-time
+        bucketSize:
+          allOf:
+          - $ref: '#/components/schemas/AnalyticsBucketSize'
+          description: Bucket size associated with this Leadping analytics date range.
+      description: Defines the inclusive reporting window and comparison window used to calculate Leadping analytics.
+    AnalyticsBucketSize:
+      enum:
+      - 3
+      - 0
+      - 1
+      - 2
+      type: integer
+      description: Selects the time interval used to aggregate points in a Leadping analytics trend series.
+      format: int32
+    SourceResponse:
+      type: object
+      properties:
+        description:
+          type:
+          - 'null'
+          - string
+          description: Human-readable description that explains this lead source response to API users.
+        enabled:
+          type: boolean
+          description: Indicates whether this lead source response is active and available in the Leadping API.
+        apiKeyPreview:
+          type:
+          - 'null'
+          - string
+          description: Masked preview of the source API key for compact display.
+        apiKeyRotatedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when the source credential was most recently rotated.
+          format: date-time
+        firstLeadReceivedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when this source first delivered a lead to Leadping.
+          format: date-time
+        lastLeadReceivedAt:
+          type:
+          - 'null'
+          - string
+          description: UTC timestamp when this source most recently delivered a lead to Leadping.
+          format: date-time
+        user:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: User summary connected to this lead source response.
+        createdByUser:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: User summary for the person who created this lead source response.
+        createdByUserEmail:
+          type:
+          - 'null'
+          - string
+          description: Email used to resolve the creator's avatar.
+          format: email
+        modifiedByUser:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: User summary for the person who last modified this lead source response.
+        organization:
+          type:
+          - 'null'
+          - object
+          allOf:
+          - $ref: '#/components/schemas/IdNamePair'
+          description: Organization summary connected to this lead source response.
+        costPerLead:
+          type:
+          - 'null'
+          - number
+          description: Configured cost charged when this source creates a billable lead.
+          format: double
+        allowedStates:
+          type: array
+          items:
+            type: string
+          description: State or region allowlist used to accept leads from this source.
+        allowedProducts:
+          type: array
+          items:
+            type: string
+          description: Product allowlist used to accept or route leads from this source.
+        requiresTrustedForm:
+          type: boolean
+          description: Indicates whether leads from this source must include a TrustedForm certificate for consent proof.
+        complianceApproved:
+          type: boolean
+          description: Indicates whether the organization or sender passed compliance review.
+        defaultTagIds:
+          type: array
+          items:
+            type: string
+          description: Tag IDs automatically assigned to leads created by this source.
+        defaultTags:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/TagSummary'
+            description: Summary schema for Leadping API tag summary data used in dashboards and reports.
+          description: Default tag summaries automatically applied to leads from this source.
+        name:
+          type: string
+        id:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type:
+          - 'null'
+          - string
+          format: date-time
+      description: Describes lead source data returned by Leadping.
+    RequestDataOptions:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/OrderByOption'
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+        search:
+          type:
+          - 'null'
+          - string
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/ExactMatchFilter'
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/RangeFilter'
+    ExactMatchFilter:
+      required:
+      - field
+      type: object
+      properties:
+        value: {}
+        field:
+          type: string
+    PagedResultOfSourceTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/SourceTableRow'
+            description: Summarizes lead source data in paginated and searchable results.
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
   securitySchemes:
     Bearer:
       type: http

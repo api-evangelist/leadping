@@ -351,6 +351,20 @@ paths:
           recommended: true
 components:
   schemas:
+    OrderByOption:
+      required:
+      - field
+      type: object
+      properties:
+        field:
+          type: string
+        direction:
+          enum:
+          - asc
+          - desc
+          type:
+          - 'null'
+          - string
     ConversationResponse:
       type: object
       properties:
@@ -475,6 +489,38 @@ components:
           - string
           description: Phone number ID currently active for outbound delivery.
       description: Describes conversation data returned by Leadping.
+    PagedResultOfConversationResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ConversationResponse'
+            description: Describes conversation data returned by Leadping.
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+    RangeFilter:
+      required:
+      - field
+      type: object
+      properties:
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
+        field:
+          type: string
     CurrentLeadStatusSummary:
       type: object
       properties:
@@ -531,20 +577,6 @@ components:
           - string
           description: Known sources that can change a lead's current lead status change.
       description: Summary schema for Leadping API current lead status change summary data used in dashboards and reports.
-    OrderByOption:
-      required:
-      - field
-      type: object
-      properties:
-        field:
-          type: string
-        direction:
-          enum:
-          - asc
-          - desc
-          type:
-          - 'null'
-          - string
     ProblemDetails:
       type: object
       properties:
@@ -585,46 +617,6 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-    RangeFilter:
-      required:
-      - field
-      type: object
-      properties:
-        greaterThan: {}
-        greaterThanOrEqual: {}
-        lessThan: {}
-        lessThanOrEqual: {}
-        field:
-          type: string
-    PagedResultOfConversationResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/ConversationResponse'
-            description: Describes conversation data returned by Leadping.
-        pageSize:
-          type: integer
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-    ExactMatchFilter:
-      required:
-      - field
-      type: object
-      properties:
-        value: {}
-        field:
-          type: string
     IdNameValue:
       required:
       - id
@@ -682,6 +674,14 @@ components:
           - array
           items:
             $ref: '#/components/schemas/RangeFilter'
+    ExactMatchFilter:
+      required:
+      - field
+      type: object
+      properties:
+        value: {}
+        field:
+          type: string
   securitySchemes:
     Bearer:
       type: http

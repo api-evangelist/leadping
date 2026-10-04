@@ -617,44 +617,6 @@ components:
           description: UTC timestamp for created at on this Stripe payment method.
           format: date-time
       description: Describes Stripe payment method data used in Leadping API requests and responses.
-    StripeInvoiceResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Provider identifier for the invoice.
-        number:
-          type:
-          - 'null'
-          - string
-          description: Human-readable invoice number, when assigned.
-        createdAt:
-          type: string
-          description: Date and time when the invoice was created.
-          format: date-time
-        amount:
-          type: number
-          description: Total invoice amount in the invoice currency.
-          format: double
-        status:
-          type: string
-          description: Current provider-reported invoice status.
-        hasPdf:
-          type: boolean
-          description: Indicates whether a downloadable PDF is available for the invoice.
-      description: Customer-safe Leadping invoice summary for billing.
-    InvoicePdfAccessResponse:
-      type: object
-      properties:
-        url:
-          type: string
-          description: Short-lived URL that can be used to download the invoice PDF.
-          format: uri
-        expiresAt:
-          type: string
-          description: Date and time after which the download URL is no longer valid.
-          format: date-time
-      description: Short-lived access details for a private Leadping invoice PDF.
     ProblemDetails:
       type: object
       properties:
@@ -695,6 +657,44 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
+    InvoicePdfAccessResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          description: Short-lived URL that can be used to download the invoice PDF.
+          format: uri
+        expiresAt:
+          type: string
+          description: Date and time after which the download URL is no longer valid.
+          format: date-time
+      description: Short-lived access details for a private Leadping invoice PDF.
+    StripeInvoiceResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Provider identifier for the invoice.
+        number:
+          type:
+          - 'null'
+          - string
+          description: Human-readable invoice number, when assigned.
+        createdAt:
+          type: string
+          description: Date and time when the invoice was created.
+          format: date-time
+        amount:
+          type: number
+          description: Total invoice amount in the invoice currency.
+          format: double
+        status:
+          type: string
+          description: Current provider-reported invoice status.
+        hasPdf:
+          type: boolean
+          description: Indicates whether a downloadable PDF is available for the invoice.
+      description: Customer-safe Leadping invoice summary for billing.
   securitySchemes:
     Bearer:
       type: http
