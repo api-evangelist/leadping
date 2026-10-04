@@ -3,6 +3,7 @@ provider: Leadping
 generated_by: planning/capability-mapping/scripts/classify_capabilities.py
 model: claude-opus-5
 frame:
+- Software & Technology
 - Telecommunications
 min_confidence: 0.7
 capability_model:
@@ -11,7 +12,7 @@ capability_model:
   attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
     CC BY 4.0
   notice: NOTICE
-edge_count: 4
+edge_count: 5
 edges:
 - tag: Leads
   spec_file: leadping-leads-api-openapi.yml
@@ -55,3 +56,12 @@ edges:
     default payment method; schema StripePaymentMethodResponse
   reason: Payment-method stewardship and invoice retrieval for the SaaS subscription — payment collection
     side of subscription billing. Mixed with invoice presentment, hence not higher.
+- tag: BlogArticles
+  spec_file: leadping-blogarticles-api-openapi.yml
+  capability_id: BC-400.70
+  capability_id_l1: BC-400
+  capability_name: Content Marketing Management
+  confidence: 0.7
+  evidence: GET /blog  BlogArticles_GetPublished  Lists published blog articles
+  reason: Operations retrieve published blog articles by list and slug — content publication/distribution,
+    i.e. Content Marketing Management, not lead capture despite the vendor's main business.
