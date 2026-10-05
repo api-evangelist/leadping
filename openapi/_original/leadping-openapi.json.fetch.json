@@ -1,0 +1,12 @@
+{
+ "url": "https://api.leadping.ai/openapi/v1.json",
+ "requested_url": "https://api.leadping.ai/openapi.json",
+ "status": 200,
+ "content_type": "application/json;charset=utf-8",
+ "bytes": 1313413,
+ "sha256": "414d90ff0de1708f609e844e5051a2aa7a3c3f7aebdebac1a2e53f49578723f0",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "equivalent",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the provider's current document describes the same operations (Jaccard 0.98), but the bytes differ, so the archive is an earlier or reformatted copy."
+}
