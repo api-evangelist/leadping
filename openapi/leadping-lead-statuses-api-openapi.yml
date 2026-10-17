@@ -453,16 +453,6 @@ components:
           type: string
           description: Request trace identifier used to correlate this problem with Leadping diagnostics.
       description: Standard problem-details response containing machine-readable and human-readable information about an HTTP API error.
-    LeadStatusCategory:
-      enum:
-      - Open
-      - Qualified
-      - Converted
-      - Lost
-      - Invalid
-      - Duplicate
-      type: string
-      description: Controlled lead status change categories used for reporting, automation, and analytics.
     LeadStatusRequest:
       type: object
       properties:
@@ -526,6 +516,16 @@ components:
           description: Date and time when the lead status was last modified.
           format: date-time
       description: Describes an organization-defined lead status used to classify pipeline progress, drive automation, and report lifecycle outcomes.
+    LeadStatusCategory:
+      enum:
+      - Open
+      - Qualified
+      - Converted
+      - Lost
+      - Invalid
+      - Duplicate
+      type: string
+      description: Controlled lead status change categories used for reporting, automation, and analytics.
   securitySchemes:
     Bearer:
       type: http

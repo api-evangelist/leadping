@@ -205,14 +205,66 @@ paths:
           recommended: false
 components:
   schemas:
-    ExactMatchFilter:
-      required:
-      - field
+    UsageChannel:
+      enum:
+      - lead
+      - sms
+      - mms
+      - email
+      - voice
+      - phone_number
+      - warmup
+      - website
+      - openai
+      - domain
+      - 10dlc
+      - payment
+      - connection
+      - automation
+      type: string
+      description: Identifies the messaging, calling, phone-number, lookup, or platform channel that generated billable usage.
+    RequestDataOptions:
       type: object
       properties:
-        value: {}
-        field:
-          type: string
+        pageSize:
+          type: integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
+        orderBy:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/OrderByOption'
+        includeCount:
+          type:
+          - 'null'
+          - boolean
+        search:
+          type:
+          - 'null'
+          - string
+        searchFields:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/ExactMatchFilter'
+        rangeFilters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/RangeFilter'
     OrderByOption:
       required:
       - field
@@ -227,6 +279,73 @@ components:
           type:
           - 'null'
           - string
+    UsageCounterLine:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The stable key for this usage counter.
+        label:
+          type: string
+          description: The human-readable label for this usage counter.
+        value:
+          type: number
+          description: Numeric for this usage counter.
+          format: double
+        unit:
+          type: string
+          description: The unit label for this usage counter.
+        sortOrder:
+          type: integer
+          description: The display order for this usage counter.
+          format: int32
+      description: Describes one named usage total displayed in organization billing and activity summaries.
+    UsageSummaryResponse:
+      type: object
+      properties:
+        periodStart:
+          type: string
+          description: UTC timestamp for period start on this usage summary.
+          format: date-time
+        periodEnd:
+          type: string
+          description: UTC timestamp for period end on this usage summary.
+          format: date-time
+        customerChargeTotal:
+          type: number
+          description: The customer charge total for this usage summary.
+          format: double
+        billableQuantityTotal:
+          type: number
+          description: The billable quantity total for this usage summary.
+          format: double
+        transactionCount:
+          type: integer
+          description: The usage record count for this usage summary.
+          format: int32
+        pendingInvoiceCount:
+          type: integer
+          description: The pending invoice count for this usage summary.
+          format: int32
+        failedCount:
+          type: integer
+          description: The failed count for this usage summary.
+          format: int32
+        lines:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/UsageSummaryLine'
+            description: Describes usage summary line data used in Leadping API requests and responses.
+          description: The lines included with this usage summary.
+        counters:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/UsageCounterLine'
+            description: Describes one named usage total displayed in organization billing and activity summaries.
+          description: The named usage counters included with this usage summary.
+      description: Describes usage summary response data used by Leadping.
     UsageLedgerTableRow:
       type: object
       properties:
@@ -319,6 +438,27 @@ components:
           description: UTC timestamp for created at on this usage ledger.
           format: date-time
       description: Describes usage ledger data used in Leadping API requests and responses.
+    PagedResultOfUsageLedgerTableRow:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/UsageLedgerTableRow'
+            description: Describes usage ledger data used in Leadping API requests and responses.
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type:
+          - 'null'
+          - integer
+          format: int32
+        continuationToken:
+          type:
+          - 'null'
+          - string
     IdNamePair:
       required:
       - id
@@ -330,56 +470,14 @@ components:
         name:
           type: string
       description: User summary connected to this automation configuration response.
-    RangeFilter:
+    ExactMatchFilter:
       required:
       - field
       type: object
       properties:
-        greaterThan: {}
-        greaterThanOrEqual: {}
-        lessThan: {}
-        lessThanOrEqual: {}
+        value: {}
         field:
           type: string
-    UsageChannel:
-      enum:
-      - lead
-      - sms
-      - mms
-      - email
-      - voice
-      - phone_number
-      - warmup
-      - website
-      - openai
-      - domain
-      - 10dlc
-      - payment
-      - connection
-      - automation
-      type: string
-      description: Identifies the messaging, calling, phone-number, lookup, or platform channel that generated billable usage.
-    UsageCounterLine:
-      type: object
-      properties:
-        key:
-          type: string
-          description: The stable key for this usage counter.
-        label:
-          type: string
-          description: The human-readable label for this usage counter.
-        value:
-          type: number
-          description: Numeric for this usage counter.
-          format: double
-        unit:
-          type: string
-          description: The unit label for this usage counter.
-        sortOrder:
-          type: integer
-          description: The display order for this usage counter.
-          format: int32
-      description: Describes one named usage total displayed in organization billing and activity summaries.
     ProblemDetails:
       type: object
       properties:
@@ -448,69 +546,6 @@ components:
           description: The record count for this usage summary line.
           format: int32
       description: Describes usage summary line data used in Leadping API requests and responses.
-    PagedResultOfUsageLedgerTableRow:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/UsageLedgerTableRow'
-            description: Describes usage ledger data used in Leadping API requests and responses.
-        pageSize:
-          type: integer
-          format: int32
-        totalCount:
-          type:
-          - 'null'
-          - integer
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-    RequestDataOptions:
-      type: object
-      properties:
-        pageSize:
-          type: integer
-          format: int32
-        continuationToken:
-          type:
-          - 'null'
-          - string
-        orderBy:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/OrderByOption'
-        includeCount:
-          type:
-          - 'null'
-          - boolean
-        search:
-          type:
-          - 'null'
-          - string
-        searchFields:
-          type:
-          - 'null'
-          - array
-          items:
-            type: string
-        filters:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/ExactMatchFilter'
-        rangeFilters:
-          type:
-          - 'null'
-          - array
-          items:
-            $ref: '#/components/schemas/RangeFilter'
     BillableUnit:
       enum:
       - lead_received
@@ -532,52 +567,17 @@ components:
       - automation_run
       type: string
       description: Identifies the metered unit used to price Leadping usage, such as a message, call minute, lookup, or phone number.
-    UsageSummaryResponse:
+    RangeFilter:
+      required:
+      - field
       type: object
       properties:
-        periodStart:
+        greaterThan: {}
+        greaterThanOrEqual: {}
+        lessThan: {}
+        lessThanOrEqual: {}
+        field:
           type: string
-          description: UTC timestamp for period start on this usage summary.
-          format: date-time
-        periodEnd:
-          type: string
-          description: UTC timestamp for period end on this usage summary.
-          format: date-time
-        customerChargeTotal:
-          type: number
-          description: The customer charge total for this usage summary.
-          format: double
-        billableQuantityTotal:
-          type: number
-          description: The billable quantity total for this usage summary.
-          format: double
-        transactionCount:
-          type: integer
-          description: The usage record count for this usage summary.
-          format: int32
-        pendingInvoiceCount:
-          type: integer
-          description: The pending invoice count for this usage summary.
-          format: int32
-        failedCount:
-          type: integer
-          description: The failed count for this usage summary.
-          format: int32
-        lines:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/UsageSummaryLine'
-            description: Describes usage summary line data used in Leadping API requests and responses.
-          description: The lines included with this usage summary.
-        counters:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/UsageCounterLine'
-            description: Describes one named usage total displayed in organization billing and activity summaries.
-          description: The named usage counters included with this usage summary.
-      description: Describes usage summary response data used by Leadping.
     UsageStatus:
       enum:
       - recorded
