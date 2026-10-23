@@ -551,3 +551,9 @@ components:
 externalDocs:
   description: Leadping API documentation, authentication guide, concepts, and integration guidance.
   url: https://leadping.ai/docs/api-reference
+x-provenance:
+  method: harvested
+  publisher: Leadping
+  source: https://api.leadping.ai/openapi/v1.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
